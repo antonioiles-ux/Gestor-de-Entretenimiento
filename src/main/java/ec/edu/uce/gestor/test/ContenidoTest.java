@@ -11,13 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ContenidoTest {
     //Objeto de prueba
     private Contenido contenido;
+    private Date fechaContenido;
 
     //Preparar el objeto de prueba
     @BeforeEach
     public void setUp(){
-        Date fecha = new Date();
-        contenido = new Contenido(2, "StarWars", "George Lucas", "Ciencia Ficcion", fecha);
-
+        fechaContenido = new Date();
+        contenido = new Contenido(1, "StarWars", "George Lucas", "Ciencia Ficcion", fechaContenido);
     }
 
     @Test
@@ -32,15 +32,13 @@ public class ContenidoTest {
 
     @Test
     public void contenidoValido() {
-        Date fecha = new Date();
-
-        Contenido contenido = new Contenido(1, "El Principito", "Antoine de Saint-Exupéry", "Fábula", fecha);
 
         assertEquals(1, contenido.getIdContenido());
-        assertEquals("El Principito", contenido.getTitulo());
-        assertEquals("Antoine de Saint-Exupéry", contenido.getAutor());
-        assertEquals("Fábula", contenido.getGenero());
-        assertEquals(fecha, contenido.getFechaPublicacion());
+        assertEquals("StarWars", contenido.getTitulo());
+        assertEquals("George Lucas", contenido.getAutor());
+        assertEquals("Ciencia Ficcion", contenido.getGenero());
+        assertEquals(fechaContenido, contenido.getFechaPublicacion());
+
     }
 
     @Test
@@ -51,7 +49,7 @@ public class ContenidoTest {
 
     @Test
     public void testGetId(){
-        assertEquals(2,contenido.getIdContenido());
+        assertEquals(1,contenido.getIdContenido());
     }
 
     @Test
@@ -71,15 +69,14 @@ public class ContenidoTest {
 
     @Test
     public void testGetFecha(){
-        Date fecha = new Date();
-        assertEquals(fecha, contenido.getFechaPublicacion());
+        assertNotNull(contenido.getFechaPublicacion());
+        assertEquals(fechaContenido, contenido.getFechaPublicacion());
     }
 
     @Test
     public void testSetIdContenido() {
-        Contenido contenido = new Contenido();
-        contenido.setIdContenido(10);
 
+        assertTrue(contenido.setIdContenido(10));
         assertEquals(10, contenido.getIdContenido());
     }
 
@@ -138,5 +135,4 @@ public class ContenidoTest {
         assertFalse(contenido.setIdContenido(-1));
         assertEquals(idContenidoAntes, contenido.getIdContenido());
     }
-    //Cambiado exitosamente
 }
