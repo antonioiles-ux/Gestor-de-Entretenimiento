@@ -10,6 +10,10 @@ public class Contenido {
     private Date fechaPublicacion;
 
     public Contenido(){
+        this.idContenido = 0;
+        this.titulo = "sin titulo";
+        this.autor = "sin autor";
+        this.genero = "sin genero";
     }
 
     public Contenido(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion){
@@ -24,40 +28,60 @@ public class Contenido {
         return idContenido;
     }
 
-    public void setIdContenido(int idContenido){
+    public boolean setIdContenido(int idContenido){
+        if (idContenido <= 0){
+            return false;
+        }
         this.idContenido = idContenido;
+        return true;
     }
 
     public String getTitulo(){
         return titulo;
     }
 
-    public void setTitulo(String titulo){
+    public boolean setTitulo(String titulo){
+        if (titulo == "") {
+            return false;
+        }
         this.titulo = titulo;
+        return true;
     }
 
     public String getAutor(){
         return autor;
     }
 
-    public void setAutor(String autor){
+    public boolean setAutor(String autor){
+        if (autor == "") {
+            return false;
+        }
         this.autor = autor;
+        return true;
     }
 
     public String getGenero(){
         return genero;
     }
 
-    public void setGenero(String genero){
+    public boolean setGenero(String genero){
+        if (genero == "") {
+            return false;
+        }
         this.genero = genero;
+        return true;
     }
 
     public Date getFechaPublicacion(){
         return fechaPublicacion;
     }
 
-    public void setFechaPublicacion(Date fechaPublicacion){
+    public boolean setFechaPublicacion(Date fechaPublicacion){
+        if (fechaPublicacion == null) {
+            return false;
+        }
         this.fechaPublicacion = fechaPublicacion;
+        return true;
     }
 
 }
