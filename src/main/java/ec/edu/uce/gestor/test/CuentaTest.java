@@ -1,37 +1,36 @@
 package ec.edu.uce.gestor.test;
 
 import ec.edu.uce.gestor.dominio.Cuenta;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
-
-import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CuentaTest {
 
     // objeto de prueba
     private Cuenta cuenta;
+    private Date fechaRegistro;
 
     // prepara el object de prueba antes de cada test
     @BeforeEach
     public void setUp() {
-        cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", "2025-01-15");
-        Date fechaRegistro = new Date();
+        Date fechaR = new Date();
+        cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", fechaR);
     }
 
     // Constructores
 
     @Test
     void cuentaDatosValidos() {
-        Cuenta c = new Cuenta(1, "ana33@gmail.com", "ana12345", "2025-02-20");
+        Date fechaR = new Date();
+        Cuenta c = new Cuenta(1, "ana33@gmail.com", "ana12345", fechaR);
 
         assertEquals(1, c.getIdCuenta());
         assertEquals("ana33@gmail.com", c.getCorreoElectronico());
         assertEquals("ana12345", c.getContrasena());
-        assertEquals("2025-02-20", c.getFechaRegistro());
+        assertEquals(fechaR, c.getFechaRegistro());
     }
 
     @Test
@@ -41,7 +40,7 @@ public class CuentaTest {
         assertEquals(0, c.getIdCuenta());
         assertEquals("sin correo", c.getCorreoElectronico());
         assertEquals("sin contrasena", c.getContrasena());
-        assertEquals("sin fecha", c.getFechaRegistro());
+        assertEquals(null, c.getFechaRegistro());
     }
 
     @Test
@@ -68,11 +67,11 @@ public class CuentaTest {
 
     @Test
     public void testGetFechaRegistro() {
-        assertEquals("2025-01-15", cuenta.getFechaRegistro());
+        Date fechaR = new Date();
+        assertEquals(fechaR, cuenta.getFechaRegistro());
     }
 
     // Id cuenta
-
     @Test
     public void idCuentaValido() {
         assertTrue(cuenta.setIdCuenta(10));
@@ -127,16 +126,9 @@ public class CuentaTest {
     // Fecha registro
 
     @Test
-    public void fechaRegistroValida() {
-        assertTrue(cuenta.setFechaRegistro("2025-03-10"));
-        assertEquals("2025-03-10", cuenta.getFechaRegistro());
-    }
-
-    @Test
     public void fechaRegistroInvalida() {
-        String fechaAntes = cuenta.getFechaRegistro();
+        Date fechaAntes = cuenta.getFechaRegistro();
 
-        assertFalse(cuenta.setFechaRegistro(""));
         assertFalse(cuenta.setFechaRegistro(null));
         assertEquals(fechaAntes, cuenta.getFechaRegistro());
     }
