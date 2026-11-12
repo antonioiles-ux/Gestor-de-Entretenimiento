@@ -14,6 +14,7 @@ public class Contenido {
         this.titulo = "sin titulo";
         this.autor = "sin autor";
         this.genero = "sin genero";
+        this.fechaPublicacion = null;
     }
 
     public Contenido(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion){
