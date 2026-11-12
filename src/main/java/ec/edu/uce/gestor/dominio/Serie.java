@@ -1,5 +1,5 @@
 package ec.edu.uce.gestor.dominio;
-//hola mundo
+
 import java.util.Date;
 public class Serie extends Contenido {
     private int numeroTemporadas;
@@ -43,4 +43,13 @@ public class Serie extends Contenido {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Serie {" +
+                "Temporadas=" + numeroTemporadas +
+                ", Episodios=" + numeroEpisodios +
+               ", Detalles Generales=" + super.toString()+"}";
+                }
+
 }

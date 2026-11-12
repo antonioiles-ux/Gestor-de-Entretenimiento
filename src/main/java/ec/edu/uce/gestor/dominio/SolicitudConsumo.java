@@ -46,6 +46,7 @@ public class SolicitudConsumo {
         if (estado == null || estado.matches(".*\\d.*")) {
             return false; // Retorna false (lo que hará que el assertFalse de la prueba pase)
         }
+
         this.estado = estado;
         return true;
     }
@@ -72,4 +73,9 @@ public class SolicitudConsumo {
         this.tipoContenido = tipoContenido;
         return true;
     }
+
+        @Override
+        public String toString() {
+            return "id: "+this.getIdSolicitud()+"Estado: "+ this.getEstado()+"Fecha: "+ this.getFechaSolicitud()+"Tipo de contenido:"+ this.getTipoContenido()+ super.toString();
+        }
 }
