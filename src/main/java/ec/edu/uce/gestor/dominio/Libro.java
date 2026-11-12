@@ -1,5 +1,7 @@
 package ec.edu.uce.gestor.dominio;
 
+import ec.edu.uce.gestor.Util.Validaciones;
+
 public class Libro extends Contenido {
 
     private int numeroPaginas;
@@ -17,15 +19,32 @@ public class Libro extends Contenido {
         return numeroPaginas;
     }
 
-    public void setNumeroPaginas(int numeroPaginas) {
-        this.numeroPaginas = numeroPaginas;
+    public boolean setNumeroPaginas(int numeroPaginas) {
+        if (numeroPaginas > 0 && Validaciones.validarNumeros(String.valueOf(numeroPaginas))) {
+            this.numeroPaginas = numeroPaginas;
+            return true;
+        }
+        return false;
     }
 
     public String getDescripcion() {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public boolean setDescripcion(String descripcion) {
+        if (descripcion != null && !descripcion.trim().isEmpty()) {
+            this.descripcion = descripcion;
+            return true;
+        }
+        return false;
     }
+    @Override
+    public String toString() {
+        return "Libro {" +
+                "Páginas=" + numeroPaginas +
+                ", Descripción='" + descripcion + '\'' +
+                ", Datos Generales=" + super.toString() +
+                '}';
+    }
+
 }
