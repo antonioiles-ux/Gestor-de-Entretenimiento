@@ -7,6 +7,10 @@ public class Opinion {
     private String fechaEdicion;
 
     public Opinion() {
+        this.idOpinion = 0;
+        this.comentario = "sin comentario";
+        this.fechaRegistro = "sin fecha de registro";
+        this.fechaEdicion = "sin fecha de edicion";
     }
 
     public Opinion(int idOpinion, String comentario, String fechaRegistro, String fechaEdicion){
