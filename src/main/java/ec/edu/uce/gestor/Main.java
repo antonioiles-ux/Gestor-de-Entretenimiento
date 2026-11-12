@@ -1,17 +1,19 @@
 package ec.edu.uce.gestor;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    static void main() {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        IO.println(String.format("Hello and welcome!"));
+import ec.edu.uce.gestor.dominio.Libro;
+import ec.edu.uce.gestor.dominio.Serie;
+import java.util.Date;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            IO.println("i = " + i);
-        }
+public class Main {
+
+    public static void main(String[] args) {
+        Libro l = new Libro(1, "sin descripcion");
+
+        // Se reemplaza el 2016 por new Date() para pasar la fecha actual temporalmente
+        Serie s = new Serie(1, "Breaking Bad", "Vince Gilligan", "Serie Carteles", new Date(), 5, 62);
+
+        // Al ejecutar estas líneas, Java llama automáticamente al toString() de cada objeto
+        System.out.println(l);
+        System.out.println(s);
     }
 }

@@ -43,4 +43,13 @@ public class Serie extends Contenido {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Serie {" +
+                "Temporadas=" + numeroTemporadas +
+                ", Episodios=" + numeroEpisodios +
+               ", Detalles Generales=" + super.toString()+"}";
+                }
+
 }
