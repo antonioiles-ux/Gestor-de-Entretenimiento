@@ -84,4 +84,9 @@ public class Contenido {
         return true;
     }
 
+    @Override
+    public String toString(){
+        return "ID CONTENIDO:" +this.getIdContenido()+"  Titulo:" +this.getTitulo()+"  Autor:" +this.getAutor()+"  Genero:" +this.getGenero()+"  Fecha Publicacion:" +this.getFechaPublicacion();
+    }
+
 }
