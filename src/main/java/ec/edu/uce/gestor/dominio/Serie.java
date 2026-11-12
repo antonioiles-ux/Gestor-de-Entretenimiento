@@ -1,5 +1,5 @@
 package ec.edu.uce.gestor.dominio;
-//hola mundo
+
 import java.util.Date;
 public class Serie extends Contenido {
     private int numeroTemporadas;
