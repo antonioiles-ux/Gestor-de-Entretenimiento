@@ -9,7 +9,12 @@ public class SolicitudConsumo {
     private Date fechaSolicitud;
     private String tipoContenido;
 
+    // Constructor por defecto (¡Aquí estaba el error de null!)
     public SolicitudConsumo() {
+        this.idSolicitud = 0;
+        this.estado = "Pendiente";
+        this.fechaSolicitud = new Date();
+        this.tipoContenido = "Sin asignar";
     }
 
     public SolicitudConsumo(int idSolicitud, String estado, Date fechaSolicitud, String tipoContenido) {
@@ -23,31 +28,36 @@ public class SolicitudConsumo {
         return idSolicitud;
     }
 
-    public void setIdSolicitud(int idSolicitud) {
+    // Setters cambiados a boolean
+    public boolean setIdSolicitud(int idSolicitud) {
         this.idSolicitud = idSolicitud;
+        return true;
     }
 
     public String getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public boolean setEstado(String estado) {
         this.estado = estado;
+        return true;
     }
 
     public Date getFechaSolicitud() {
         return fechaSolicitud;
     }
 
-    public void setFechaSolicitud(Date fechaSolicitud) {
+    public boolean setFechaSolicitud(Date fechaSolicitud) {
         this.fechaSolicitud = fechaSolicitud;
+        return true;
     }
 
     public String getTipoContenido() {
         return tipoContenido;
     }
 
-    public void setTipoContenido(String tipoContenido) {
+    public boolean setTipoContenido(String tipoContenido) {
         this.tipoContenido = tipoContenido;
+        return true;
     }
 }
