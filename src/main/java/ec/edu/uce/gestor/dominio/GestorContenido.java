@@ -21,6 +21,6 @@ public class GestorContenido extends Usuario {
 
     @Override
     public String toString(){
-        return "IdGestor: "+ this.getIdGestor();
+        return "IdGestor: "+ this.getIdGestor()+", "+super.toString();
     }
 }
