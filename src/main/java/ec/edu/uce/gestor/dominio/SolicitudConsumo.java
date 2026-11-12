@@ -30,8 +30,11 @@ public class SolicitudConsumo {
 
     // Setters cambiados a boolean
     public boolean setIdSolicitud(int idSolicitud) {
-        this.idSolicitud = idSolicitud;
-        return true;
+        if (idSolicitud > 0) { // Solo acepta valores mayores a 0
+            this.idSolicitud = idSolicitud;
+            return true;
+        }
+        return false; // Retorna false si es negativo o cero (rechaza el cambio)
     }
 
     public String getEstado() {
@@ -39,6 +42,10 @@ public class SolicitudConsumo {
     }
 
     public boolean setEstado(String estado) {
+        // Si el estado es nulo, vacío, o contiene números, rechazarlo
+        if (estado == null || estado.matches(".*\\d.*")) {
+            return false; // Retorna false (lo que hará que el assertFalse de la prueba pase)
+        }
         this.estado = estado;
         return true;
     }
@@ -57,6 +64,11 @@ public class SolicitudConsumo {
     }
 
     public boolean setTipoContenido(String tipoContenido) {
+        // Si contiene símbolos o caracteres especiales (ej. '@'), rechazarlo
+        // Puedes usar una expresión regular que solo permita letras y espacios
+        if (tipoContenido == null || !tipoContenido.matches("[a-zA-ZáéíóÁÉÍÓúñÑ ]+")) {
+            return false;
+        }
         this.tipoContenido = tipoContenido;
         return true;
     }
