@@ -72,5 +72,11 @@ public class Cuenta {
 
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Id Cuenta: " + this.getIdCuenta() + ", Correo: " + this.getCorreoElectronico() + ", Contraseña: " + this.getContrasena() +
+                ", Fecha de registro: " + this.getFechaRegistro();
+    }
 }
 

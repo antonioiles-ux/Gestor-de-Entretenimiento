@@ -5,6 +5,9 @@ import ec.edu.uce.gestor.dominio.Cuenta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CuentaTest {
@@ -12,10 +15,11 @@ public class CuentaTest {
     // objeto de prueba
     private Cuenta cuenta;
 
-    // prepara el objeto de prueba antes de cada test
+    // prepara el object de prueba antes de cada test
     @BeforeEach
     public void setUp() {
         cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", "2025-01-15");
+        Date fechaRegistro = new Date();
     }
 
     // Constructores
