@@ -18,4 +18,9 @@ public class GestorContenido extends Usuario {
     public void setIdGestor(int idGestor) {
         this.idGestor = idGestor;
     }
+
+    @Override
+    public String toString(){
+        return "IdGestor: "+ this.getIdGestor();
+    }
 }

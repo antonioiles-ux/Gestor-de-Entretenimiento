@@ -28,4 +28,9 @@ public class Libro extends Contenido {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+
+    @Override
+    public String toString(){
+        return "Numero paginas: "+this.getNumeroPaginas()+" Descripcion: "+ this.getDescripcion();
+    }
 }
