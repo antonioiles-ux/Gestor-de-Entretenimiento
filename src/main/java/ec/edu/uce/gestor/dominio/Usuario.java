@@ -6,6 +6,8 @@ public class Usuario {
     private int idUsuario;
 
     public Usuario() {
+        this.nombreCompleto = "sin nombre";
+        this.idUsuario = 0;
     }
 
     public Usuario(String nombreCompleto, int idUsuario) {
@@ -17,15 +19,25 @@ public class Usuario {
         return nombreCompleto;
     }
 
-    public void setNombreCompleto(String nombreCompleto) {
+    public boolean setNombreCompleto(String nombreCompleto) {
+        if (nombreCompleto == null || nombreCompleto.equals("")) {
+            return false;
+        }
         this.nombreCompleto = nombreCompleto;
+
+        return true;
     }
 
     public int getIdUsuario() {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public boolean setIdUsuario(int idUsuario) {
+        if (idUsuario <= 0) {
+            return false;
+        }
         this.idUsuario = idUsuario;
+
+        return true;
     }
 }

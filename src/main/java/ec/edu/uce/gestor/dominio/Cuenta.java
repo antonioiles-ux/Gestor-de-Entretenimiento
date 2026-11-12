@@ -8,6 +8,10 @@ public class Cuenta {
     private String fechaRegistro;
 
     public Cuenta() {
+        this.idCuenta = 0;
+        this.correoElectronico = "sin correo";
+        this.contrasena = "sin contrasena";
+        this.fechaRegistro = "sin fecha";
     }
 
     public Cuenta(int idCuenta, String correoElectronico, String contrasena, String fechaRegistro) {
@@ -21,38 +25,52 @@ public class Cuenta {
         return idCuenta;
     }
 
-    public void setIdCuenta(int idCuenta) {
+    public boolean setIdCuenta(int idCuenta) {
+        if (idCuenta <= 0) {
+            return false;
+        }
         this.idCuenta = idCuenta;
+
+        return true;
     }
 
     public String getCorreoElectronico() {
         return correoElectronico;
     }
 
-    public void setCorreoElectronico(String correoElectronico) {
+    public boolean setCorreoElectronico(String correoElectronico) {
+        if (correoElectronico == null || correoElectronico.equals("") || !correoElectronico.contains("@")) {
+            return false;
+        }
         this.correoElectronico = correoElectronico;
+
+        return true;
     }
 
     public String getContrasena() {
         return contrasena;
     }
 
-    public void setContrasena(String contrasena) {
+    public boolean setContrasena(String contrasena) {
+        if (contrasena == null || contrasena.length() < 6) {
+            return false;
+        }
         this.contrasena = contrasena;
+
+        return true;
     }
 
     public String getFechaRegistro() {
         return fechaRegistro;
     }
-    public void setFechaRegistro(String fechaRegistro) {
-        this.fechaRegistro = fechaRegistro;
-    }
 
-    @Override
-    public String toString() {
-        return "Cuenta{" +
-                "idCuenta=" + idCuenta +
-                ", correoElectronico='" + correoElectronico + '\'' +
-                '}';
+    public boolean setFechaRegistro(String fechaRegistro) {
+        if (fechaRegistro == null || fechaRegistro.equals("")) {
+            return false;
+        }
+        this.fechaRegistro = fechaRegistro;
+
+        return true;
     }
 }
+
