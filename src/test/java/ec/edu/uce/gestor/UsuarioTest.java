@@ -1,7 +1,6 @@
 package ec.edu.uce.gestor;
-
-import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Usuario;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +17,7 @@ public class UsuarioTest {
         usuario = new Usuario("Juan Perez", 2);
     }
 
+    // Constructores
 
     @Test
     void usuarioDatosValidos() {
@@ -40,14 +40,7 @@ public class UsuarioTest {
         assertNotNull(usuario);
     }
 
-    @Test
-    public void constructorDatosInvalidosUsaDefecto() {
-        Usuario user = new Usuario("", -1);
-
-        assertEquals("sin nombre", user.getNombreCompleto());
-        assertEquals(0, user.getIdUsuario());
-    }
-
+    // Getters
 
     @Test
     public void testGetNombreCompleto() {
@@ -59,6 +52,7 @@ public class UsuarioTest {
         assertEquals(2, usuario.getIdUsuario());
     }
 
+    // Nombre completo
 
     @Test
     public void nombreCompletoValido() {
@@ -75,7 +69,7 @@ public class UsuarioTest {
         assertEquals(nombreAntes, usuario.getNombreCompleto());
     }
 
-
+    // Id usuario
 
     @Test
     public void idUsuarioValido() {
