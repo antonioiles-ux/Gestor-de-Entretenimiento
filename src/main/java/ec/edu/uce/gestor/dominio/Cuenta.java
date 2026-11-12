@@ -1,20 +1,22 @@
 package ec.edu.uce.gestor.dominio;
 
+import java.util.Date;
+
 public class Cuenta {
 
     private int idCuenta;
     private String correoElectronico;
     private String contrasena;
-    private String fechaRegistro;
+    private Date fechaRegistro;
 
     public Cuenta() {
         this.idCuenta = 0;
         this.correoElectronico = "sin correo";
         this.contrasena = "sin contrasena";
-        this.fechaRegistro = "sin fecha";
+        this.fechaRegistro = null;
     }
 
-    public Cuenta(int idCuenta, String correoElectronico, String contrasena, String fechaRegistro) {
+    public Cuenta(int idCuenta, String correoElectronico, String contrasena, Date fechaRegistro) {
         this.idCuenta = idCuenta;
         this.correoElectronico = correoElectronico;
         this.contrasena = contrasena;
@@ -60,12 +62,12 @@ public class Cuenta {
         return true;
     }
 
-    public String getFechaRegistro() {
+    public Date getFechaRegistro() {
         return fechaRegistro;
     }
 
-    public boolean setFechaRegistro(String fechaRegistro) {
-        if (fechaRegistro == null || fechaRegistro.equals("")) {
+    public boolean setFechaRegistro(Date fechaRegistro) {
+        if (fechaRegistro == null) {
             return false;
         }
         this.fechaRegistro = fechaRegistro;

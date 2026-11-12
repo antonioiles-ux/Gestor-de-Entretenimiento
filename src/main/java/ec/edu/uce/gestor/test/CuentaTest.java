@@ -11,12 +11,12 @@ public class CuentaTest {
 
     // objeto de prueba
     private Cuenta cuenta;
-    private Date fechaRegistro;
+    private Date fechaR;
 
     // prepara el object de prueba antes de cada test
     @BeforeEach
     public void setUp() {
-        Date fechaR = new Date();
+        fechaR = new Date();
         cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", fechaR);
     }
 
