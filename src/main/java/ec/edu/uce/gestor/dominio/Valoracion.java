@@ -56,4 +56,13 @@ public class Valoracion {
 
         return true;
     }
+
+    @Override
+    public String toString() {
+        return "Valoracion {" +
+                "idValoracion=" + idValoracion +
+                ", calificacion=" + calificacion +
+                ", fechaValoracion='" + fechaValoracion + '\'' +
+                '}';
+    }
 }
