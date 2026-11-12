@@ -23,28 +23,44 @@ public class Opinion {
     public int getIdOpinion(){
         return idOpinion;
     }
-    public void setIdOpinion(int idOpinion){
+    public boolean setIdOpinion(int idOpinion){
+        if (idOpinion <= 0){
+            return false;
+        }
         this.idOpinion = idOpinion;
+        return true;
     }
 
     public String getComentario(){
         return comentario;
     }
-    public void setComentario(String comentario){
+    public boolean setComentario(String comentario){
+        if (comentario == ""){
+            return false;
+        }
         this.comentario = comentario;
+        return true;
     }
 
     public String getFechaRegistro(){
         return fechaRegistro;
     }
-    public void setFechaRegistro(String fechaRegistro){
+    public boolean setFechaRegistro(String fechaRegistro){
+        if (fechaRegistro == ""){
+            return false;
+        }
         this.fechaRegistro = fechaRegistro;
+        return true;
     }
 
     public String getFechaEdicion(){
         return fechaEdicion;
     }
-    public void setFechaEdicion(String fechaEdicion){
+    public boolean setFechaEdicion(String fechaEdicion){
+        if (fechaEdicion == ""){
+            return false;
+        }
         this.fechaEdicion = fechaEdicion;
+        return true;
     }
 }
