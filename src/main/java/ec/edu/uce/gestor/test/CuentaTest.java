@@ -5,10 +5,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CuentaTest {
-
+public class CuentaTest{
     // objeto de prueba
     private Cuenta cuenta;
     private Date fechaR;
@@ -17,20 +20,18 @@ public class CuentaTest {
     @BeforeEach
     public void setUp() {
         fechaR = new Date();
-        cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", fechaR);
+        cuenta = new Cuenta(1, "juanpablo@gmail.com", "clave123", fechaR);
     }
 
     // Constructores
 
     @Test
     void cuentaDatosValidos() {
-        Date fechaR = new Date();
-        Cuenta c = new Cuenta(1, "ana33@gmail.com", "ana12345", fechaR);
 
-        assertEquals(1, c.getIdCuenta());
-        assertEquals("ana33@gmail.com", c.getCorreoElectronico());
-        assertEquals("ana12345", c.getContrasena());
-        assertEquals(fechaR, c.getFechaRegistro());
+        assertEquals(1, cuenta.getIdCuenta());
+        assertEquals("juanpablo@gmail.com", cuenta.getCorreoElectronico());
+        assertEquals("clave123", cuenta.getContrasena());
+        assertEquals(fechaR, cuenta.getFechaRegistro());
     }
 
     @Test
@@ -52,7 +53,7 @@ public class CuentaTest {
 
     @Test
     public void testGetIdCuenta() {
-        assertEquals(2, cuenta.getIdCuenta());
+        assertEquals(1, cuenta.getIdCuenta());
     }
 
     @Test
@@ -67,7 +68,6 @@ public class CuentaTest {
 
     @Test
     public void testGetFechaRegistro() {
-        Date fechaR = new Date();
         assertEquals(fechaR, cuenta.getFechaRegistro());
     }
 

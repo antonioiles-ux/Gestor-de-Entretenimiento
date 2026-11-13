@@ -2,8 +2,7 @@ package ec.edu.uce.gestor.dominio;
 
 import java.util.Date;
 
-public class Cuenta {
-
+public class Cuenta{
     private int idCuenta;
     private String correoElectronico;
     private String contrasena;
@@ -80,5 +79,6 @@ public class Cuenta {
         return "Id Cuenta: " + this.getIdCuenta() + ", Correo: " + this.getCorreoElectronico() + ", Contraseña: " + this.getContrasena() +
                 ", Fecha de registro: " + this.getFechaRegistro();
     }
+
 }
 
