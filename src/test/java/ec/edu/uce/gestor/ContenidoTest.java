@@ -28,7 +28,7 @@ public class ContenidoTest {
         assertEquals("sin titulo", contenido.getTitulo());
         assertEquals("sin autor", contenido.getAutor());
         assertEquals("sin genero", contenido.getGenero());
-        assertEquals(null,contenido.getFechaPublicacion());
+        assertEquals(null, contenido.getFechaPublicacion());
     }
 
     @Test
