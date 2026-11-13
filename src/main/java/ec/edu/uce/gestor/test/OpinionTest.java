@@ -23,7 +23,7 @@ public class OpinionTest {
 
         assertEquals(0, opinion.getIdOpinion());
         assertEquals("sin comentario", opinion.getComentario());
-        assertEquals("sin fecha de registro", opinion.getFechaRegistro());
+        assertEquals("sin fecha de registro", opinion.getFechaRegistroOp());
         assertEquals("sin fecha de edicion", opinion.getFechaEdicion());
     }
 
@@ -32,7 +32,7 @@ public class OpinionTest {
 
         assertEquals(1, opinion.getIdOpinion());
         assertEquals("Contenido actualizado y mejorado.", opinion.getComentario());
-        assertEquals("08/11/2026", opinion.getFechaRegistro());
+        assertEquals("08/11/2026", opinion.getFechaRegistroOp());
         assertEquals("09/11/2026",opinion.getFechaEdicion());
     }
 
@@ -53,7 +53,7 @@ public class OpinionTest {
 
     @Test
     public void testGetFechaRegistro(){
-        assertEquals("08/11/2026", opinion.getFechaRegistro());
+        assertEquals("08/11/2026", opinion.getFechaRegistroOp());
     }
 
     @Test
@@ -83,10 +83,10 @@ public class OpinionTest {
 
     @Test
     public void fechaRegistroNoValida(){
-        String fechaRegistroAntes = opinion.getFechaRegistro();
+        String fechaRegistroAntes = opinion.getFechaRegistroOp();
 
         assertFalse(opinion.setFechaRegistro(""));
-        assertEquals(fechaRegistroAntes, opinion.getFechaRegistro());
+        assertEquals(fechaRegistroAntes, opinion.getFechaRegistroOp());
     }
 
     @Test

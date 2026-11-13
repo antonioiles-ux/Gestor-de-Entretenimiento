@@ -3,20 +3,20 @@ package ec.edu.uce.gestor.dominio;
 public class Opinion {
     private int idOpinion;
     private String comentario;
-    private String fechaRegistro;
+    private String fechaRegistroOp;
     private String fechaEdicion;
 
     public Opinion() {
         this.idOpinion = 0;
         this.comentario = "sin comentario";
-        this.fechaRegistro = "sin fecha de registro";
+        this.fechaRegistroOp = "sin fecha de registro";
         this.fechaEdicion = "sin fecha de edicion";
     }
 
-    public Opinion(int idOpinion, String comentario, String fechaRegistro, String fechaEdicion){
+    public Opinion(int idOpinion, String comentario, String fechaRegistroOp, String fechaEdicion){
         this.idOpinion = idOpinion;
         this.comentario = comentario;
-        this.fechaRegistro = fechaRegistro;
+        this.fechaRegistroOp = fechaRegistroOp;
         this.fechaEdicion = fechaEdicion;
     }
 
@@ -42,14 +42,14 @@ public class Opinion {
         return true;
     }
 
-    public String getFechaRegistro(){
-        return fechaRegistro;
+    public String getFechaRegistroOp(){
+        return fechaRegistroOp;
     }
-    public boolean setFechaRegistro(String fechaRegistro){
-        if (fechaRegistro == ""){
+    public boolean setFechaRegistro(String fechaRegistroOp){
+        if (fechaRegistroOp == ""){
             return false;
         }
-        this.fechaRegistro = fechaRegistro;
+        this.fechaRegistroOp = fechaRegistroOp;
         return true;
     }
 
@@ -66,6 +66,6 @@ public class Opinion {
 
     @Override
     public String toString(){
-        return "ID OPINION:" +this.getIdOpinion()+"  Comentario:" +this.getComentario()+"  Fecha de Registro:" +this.getFechaRegistro()+"  Fecha de Edicion:" +this.getFechaEdicion();
+        return "ID OPINION:" +this.getIdOpinion()+"  Comentario:" +this.getComentario()+"  Fecha de Registro:" +this.getFechaRegistroOp()+"  Fecha de Edicion:" +this.getFechaEdicion();
     }
 }
