@@ -1,7 +1,7 @@
 package ec.edu.uce.gestor;
 
 import ec.edu.uce.gestor.dominio.Cuenta;
-
+import java.util.Date;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +15,7 @@ public class CuentaTest {
     // prepara el objeto de prueba antes de cada test
     @BeforeEach
     public void setUp() {
-        cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", "2025-01-15");
+        cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", new Date());
     }
 
     // Constructores
