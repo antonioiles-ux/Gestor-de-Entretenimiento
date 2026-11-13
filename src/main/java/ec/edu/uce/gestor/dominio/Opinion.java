@@ -63,4 +63,9 @@ public class Opinion {
         this.fechaEdicion = fechaEdicion;
         return true;
     }
+
+    @Override
+    public String toString(){
+        return "ID OPINION:" +this.getIdOpinion()+"  Comentario:" +this.getComentario()+"  Fecha de Registro:" +this.getFechaRegistro()+"  Fecha de Edicion:" +this.getFechaEdicion();
+    }
 }

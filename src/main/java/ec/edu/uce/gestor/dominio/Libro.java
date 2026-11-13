@@ -38,13 +38,11 @@ public class Libro extends Contenido {
         }
         return false;
     }
+
     @Override
     public String toString() {
-        return "Libro {" +
-                "Páginas=" + numeroPaginas +
-                ", Descripción='" + descripcion + '\'' +
-                ", Datos Generales=" + super.toString() +
-                '}';
+        return "Número de páginas: " + this.getNumeroPaginas() + ", Descripcion: " + this.getDescripcion() + ", " + super.toString();
+
     }
 
 }
