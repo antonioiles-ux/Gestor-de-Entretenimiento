@@ -1,37 +1,37 @@
 package ec.edu.uce.gestor.dominio;
 
+import java.util.Date;
+
 import ec.edu.uce.gestor.dominio.dominio.Cuenta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class CuentaTest{
+public class CuentaTest {
+
     // objeto de prueba
     private Cuenta cuenta;
-    private Date fechaR;
+    private Date fechaPrueba; // Creado para poder comparar la fecha exacta en los tests
 
-    // prepara el object de prueba antes de cada test
+    // prepara el objeto de prueba antes de cada test
     @BeforeEach
     public void setUp() {
-        fechaR = new Date();
-        cuenta = new Cuenta(1, "juanpablo@gmail.com", "clave123", fechaR);
+        fechaPrueba = new Date(); // Guardamos la fecha exacta de creación
+        cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", fechaPrueba);
     }
 
     // Constructores
 
     @Test
     void cuentaDatosValidos() {
+        Date fechaAux = new Date();
+        Cuenta c = new Cuenta(1, "ana33@gmail.com", "ana12345", fechaAux);
 
-        assertEquals(1, cuenta.getIdCuenta());
-        assertEquals("juanpablo@gmail.com", cuenta.getCorreoElectronico());
-        assertEquals("clave123", cuenta.getContrasena());
-        assertEquals(fechaR, cuenta.getFechaRegistro());
+        assertEquals(1, c.getIdCuenta());
+        assertEquals("ana33@gmail.com", c.getCorreoElectronico());
+        assertEquals("ana12345", c.getContrasena());
+        assertEquals(fechaAux, c.getFechaRegistro()); // Comparamos Date con Date
     }
 
     @Test
@@ -41,7 +41,7 @@ public class CuentaTest{
         assertEquals(0, c.getIdCuenta());
         assertEquals("sin correo", c.getCorreoElectronico());
         assertEquals("sin contrasena", c.getContrasena());
-        assertEquals(null, c.getFechaRegistro());
+        assertNull(c.getFechaRegistro()); // En un constructor vacío, los objetos como Date suelen iniciar en null
     }
 
     @Test
@@ -53,7 +53,7 @@ public class CuentaTest{
 
     @Test
     public void testGetIdCuenta() {
-        assertEquals(1, cuenta.getIdCuenta());
+        assertEquals(2, cuenta.getIdCuenta());
     }
 
     @Test
@@ -68,10 +68,12 @@ public class CuentaTest{
 
     @Test
     public void testGetFechaRegistro() {
-        assertEquals(fechaR, cuenta.getFechaRegistro());
+        // Usamos la fechaPrueba que guardamos en el setUp
+        assertEquals(fechaPrueba, cuenta.getFechaRegistro());
     }
 
     // Id cuenta
+
     @Test
     public void idCuentaValido() {
         assertTrue(cuenta.setIdCuenta(10));
@@ -126,9 +128,17 @@ public class CuentaTest{
     // Fecha registro
 
     @Test
-    public void fechaRegistroInvalida() {
-        Date fechaAntes = cuenta.getFechaRegistro();
+    public void fechaRegistroValida() {
+        Date nuevaFecha = new Date();
+        assertTrue(cuenta.setFechaRegistro(nuevaFecha));
+        assertEquals(nuevaFecha, cuenta.getFechaRegistro());
+    }
 
+    @Test
+    public void fechaRegistroInvalida() {
+        Date fechaAntes = cuenta.getFechaRegistro(); // Ahora sí guardamos el Date en una variable Date
+
+        // Se elimina la prueba con "" porque Java no permite compilar un String en un Date
         assertFalse(cuenta.setFechaRegistro(null));
         assertEquals(fechaAntes, cuenta.getFechaRegistro());
     }
