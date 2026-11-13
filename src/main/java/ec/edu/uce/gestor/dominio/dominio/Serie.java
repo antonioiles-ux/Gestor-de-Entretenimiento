@@ -19,8 +19,9 @@ public class Serie extends Contenido {
         this.numeroEpisodios = numeroEpisodios;
     }
 
-    // Getters y Setters de Serie...
+    // Getters y Setters
     public int getNumeroTemporadas() {
+
         return numeroTemporadas;
     }
 
@@ -46,7 +47,7 @@ public class Serie extends Contenido {
 
     @Override
     public String toString() {
-        return "Temporadas: " + this.getNumeroTemporadas() + ", Episodios: " + this.getNumeroEpisodios() + ", " + super.toString();
+        return super.toString() + "Temporadas: " + this.getNumeroTemporadas() + ", Episodios: " + this.getNumeroEpisodios() + ", ";
     }
 
 }
