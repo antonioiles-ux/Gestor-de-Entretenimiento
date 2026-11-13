@@ -4,6 +4,8 @@ public class GestorContenido extends Usuario {
     private int idGestor;
 
     public GestorContenido() {
+        super();
+        this.idGestor = 0;
     }
 
     public GestorContenido(String nombreCompleto, int idUsuario, int idGestor) {
@@ -15,8 +17,18 @@ public class GestorContenido extends Usuario {
         return idGestor;
     }
 
-    public void setIdGestor(int idGestor) {
+    public boolean setIdGestor(int idGestor) {
+        if (idGestor <= 0) {
+            return false;
+        }
         this.idGestor = idGestor;
+
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Id gestor: " + this.getIdGestor() + ", " + super.toString();
     }
 
     @Override
