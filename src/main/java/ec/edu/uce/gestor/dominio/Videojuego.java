@@ -5,6 +5,7 @@ public class Videojuego extends Contenido {
     private String clasificacionEdad;
 
     public Videojuego() {
+
     }
 
     public Videojuego(String plataforma, String clasificacionEdad){
