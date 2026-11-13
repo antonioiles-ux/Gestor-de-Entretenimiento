@@ -13,8 +13,8 @@ public class Serie extends Contenido {
     }
 
     // 2. Constructor completo de 7 parámetros
-    public Serie(int idContenido, String titulo, String autor, String descripcion, Date fechaLanzamiento, int numeroTemporadas, int numeroEpisodios) {
-        super(idContenido, titulo, autor, descripcion, fechaLanzamiento); // Pasa los datos al padre
+    public Serie(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion, int numeroTemporadas, int numeroEpisodios) {
+        super(idContenido, titulo, autor, genero, fechaPublicacion); // Pasa los datos al padre
         this.numeroTemporadas = numeroTemporadas;
         this.numeroEpisodios = numeroEpisodios;
     }
