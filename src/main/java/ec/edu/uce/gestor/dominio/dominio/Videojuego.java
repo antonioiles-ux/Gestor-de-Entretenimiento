@@ -20,7 +20,7 @@ public class Videojuego extends Contenido {
     }
     public boolean setPlataforma(String plataforma) {
         if (plataforma == null) {
-            return false;
+            return false ;
         }
         this.plataforma = plataforma;
         return true;
