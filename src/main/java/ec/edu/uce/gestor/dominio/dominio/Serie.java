@@ -46,10 +46,7 @@ public class Serie extends Contenido {
 
     @Override
     public String toString() {
-        return "Serie {" +
-                "Temporadas=" + numeroTemporadas +
-                ", Episodios=" + numeroEpisodios +
-               ", Detalles Generales=" + super.toString()+"}";
-                }
+        return "Temporadas: " + this.getNumeroTemporadas() + ", Episodios: " + this.getNumeroEpisodios() + ", " + super.toString();
+    }
 
 }
