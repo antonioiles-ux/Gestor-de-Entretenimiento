@@ -30,9 +30,4 @@ public class GestorContenido extends Usuario {
     public String toString() {
         return "Id gestor: " + this.getIdGestor() + ", " + super.toString();
     }
-
-    @Override
-    public String toString(){
-        return "IdGestor: "+ this.getIdGestor()+", "+super.toString();
-    }
 }
