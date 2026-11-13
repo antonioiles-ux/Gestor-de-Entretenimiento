@@ -1,10 +1,11 @@
 package ec.edu.uce.gestor;
-import ec.edu.uce.gestor.Valoracion;
+import ec.edu.uce.gestor.dominio.Valoracion;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public class ValoracionTest {
 
