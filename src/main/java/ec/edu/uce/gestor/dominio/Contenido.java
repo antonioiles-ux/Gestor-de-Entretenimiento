@@ -1,5 +1,4 @@
 package ec.edu.uce.gestor.dominio;
-
 import java.util.Date;
 
 public class Contenido {
@@ -24,21 +23,30 @@ public class Contenido {
         this.genero = genero;
         this.fechaPublicacion = fechaPublicacion;
     }
-
+    //GET
     public int getIdContenido(){
         return idContenido;
     }
+    public String getTitulo(){
+        return titulo;
+    }
+    public String getAutor(){
+        return autor;
+    }
+    public String getGenero(){
+        return genero;
+    }
+    public Date getFechaPublicacion(){
+        return fechaPublicacion;
+    }
 
+    //SET
     public boolean setIdContenido(int idContenido){
         if (idContenido <= 0){
             return false;
         }
         this.idContenido = idContenido;
         return true;
-    }
-
-    public String getTitulo(){
-        return titulo;
     }
 
     public boolean setTitulo(String titulo){
@@ -49,10 +57,6 @@ public class Contenido {
         return true;
     }
 
-    public String getAutor(){
-        return autor;
-    }
-
     public boolean setAutor(String autor){
         if (autor == "") {
             return false;
@@ -61,20 +65,12 @@ public class Contenido {
         return true;
     }
 
-    public String getGenero(){
-        return genero;
-    }
-
     public boolean setGenero(String genero){
         if (genero == "") {
             return false;
         }
         this.genero = genero;
         return true;
-    }
-
-    public Date getFechaPublicacion(){
-        return fechaPublicacion;
     }
 
     public boolean setFechaPublicacion(Date fechaPublicacion){
@@ -87,7 +83,10 @@ public class Contenido {
 
     @Override
     public String toString(){
-        return "ID CONTENIDO:" +this.getIdContenido()+"  Titulo:" +this.getTitulo()+"  Autor:" +this.getAutor()+"  Genero:" +this.getGenero()+"  Fecha Publicacion:" +this.getFechaPublicacion();
+        return "ID CONTENIDO:" +this.getIdContenido()+
+                "  Titulo:" +this.getTitulo()+"  Autor:" +this.getAutor()+
+                "  Genero:" +this.getGenero()+"  Fecha Publicacion:" +
+                this.getFechaPublicacion();
     }
 
 }
