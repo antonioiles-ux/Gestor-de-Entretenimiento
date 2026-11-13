@@ -59,7 +59,7 @@ public class Valoracion {
 
     @Override
     public String toString() {
-        return "Valoracion {" +  "idValoracion=" + this.getIdValoracion() + ", calificacion=" + this.getCalificacion() + ", fechaValoracion='"
-                + this.getFechaValoracion() + '\'' + '}';
+        return "Id valoracion: " + this.getIdValoracion() + ", Calificacion: " + this.getCalificacion() +
+                ", Fecha de valoracion: " + this.getFechaValoracion();
     }
 }
