@@ -1,7 +1,8 @@
-package ec.edu.uce.gestor;
+package ec.edu.uce.gestor.dominio;
 
-import ec.edu.uce.gestor.dominio.Cuenta;
 import java.util.Date;
+
+import ec.edu.uce.gestor.dominio.dominio.Cuenta;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,23 +12,26 @@ public class CuentaTest {
 
     // objeto de prueba
     private Cuenta cuenta;
+    private Date fechaPrueba; // Creado para poder comparar la fecha exacta en los tests
 
     // prepara el objeto de prueba antes de cada test
     @BeforeEach
     public void setUp() {
-        cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", new Date());
+        fechaPrueba = new Date(); // Guardamos la fecha exacta de creación
+        cuenta = new Cuenta(2, "juanpablo@gmail.com", "clave123", fechaPrueba);
     }
 
     // Constructores
 
     @Test
     void cuentaDatosValidos() {
-        Cuenta c = new Cuenta(1, "ana33@gmail.com", "ana12345", "2025-02-20");
+        Date fechaAux = new Date();
+        Cuenta c = new Cuenta(1, "ana33@gmail.com", "ana12345", fechaAux);
 
         assertEquals(1, c.getIdCuenta());
         assertEquals("ana33@gmail.com", c.getCorreoElectronico());
         assertEquals("ana12345", c.getContrasena());
-        assertEquals("2025-02-20", c.getFechaRegistro());
+        assertEquals(fechaAux, c.getFechaRegistro()); // Comparamos Date con Date
     }
 
     @Test
@@ -37,7 +41,7 @@ public class CuentaTest {
         assertEquals(0, c.getIdCuenta());
         assertEquals("sin correo", c.getCorreoElectronico());
         assertEquals("sin contrasena", c.getContrasena());
-        assertEquals("sin fecha", c.getFechaRegistro());
+        assertNull(c.getFechaRegistro()); // En un constructor vacío, los objetos como Date suelen iniciar en null
     }
 
     @Test
@@ -64,7 +68,8 @@ public class CuentaTest {
 
     @Test
     public void testGetFechaRegistro() {
-        assertEquals("2025-01-15", cuenta.getFechaRegistro());
+        // Usamos la fechaPrueba que guardamos en el setUp
+        assertEquals(fechaPrueba, cuenta.getFechaRegistro());
     }
 
     // Id cuenta
@@ -124,15 +129,16 @@ public class CuentaTest {
 
     @Test
     public void fechaRegistroValida() {
-        assertTrue(cuenta.setFechaRegistro("2025-03-10"));
-        assertEquals("2025-03-10", cuenta.getFechaRegistro());
+        Date nuevaFecha = new Date();
+        assertTrue(cuenta.setFechaRegistro(nuevaFecha));
+        assertEquals(nuevaFecha, cuenta.getFechaRegistro());
     }
 
     @Test
     public void fechaRegistroInvalida() {
-        String fechaAntes = cuenta.getFechaRegistro();
+        Date fechaAntes = cuenta.getFechaRegistro(); // Ahora sí guardamos el Date en una variable Date
 
-        assertFalse(cuenta.setFechaRegistro(""));
+        // Se elimina la prueba con "" porque Java no permite compilar un String en un Date
         assertFalse(cuenta.setFechaRegistro(null));
         assertEquals(fechaAntes, cuenta.getFechaRegistro());
     }
