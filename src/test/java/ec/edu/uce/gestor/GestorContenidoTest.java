@@ -1,6 +1,6 @@
 package ec.edu.uce.gestor;
 
-import ec.edu.uce.gestor.dominio.dominio.GestorContenido;
+import ec.edu.uce.gestor.dominio.GestorContenido;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
