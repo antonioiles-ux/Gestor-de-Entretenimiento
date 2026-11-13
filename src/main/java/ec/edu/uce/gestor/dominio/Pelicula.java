@@ -1,47 +1,42 @@
 package ec.edu.uce.gestor.dominio;
 
-public class Pelicula extends Contenido {
+import java.util.Date;
 
+public class Pelicula extends Contenido {
     private int duracion;
     private String clasificacion;
 
     public Pelicula() {
-        //por defecto
-        this.duracion = 90;
-        this.clasificacion = "General";
+        super();
+        this.duracion = 0;
+        this.clasificacion = "sin clasificacion";
     }
 
-    public Pelicula(int duracion, String clasificacion) {
+    public Pelicula(int idContenido, String titulo, String autor, String descripcion, Date fechaLanzamiento, int duracion, String clasificacion) {
+        super(idContenido, titulo, autor, descripcion, fechaLanzamiento);
         this.duracion = duracion;
         this.clasificacion = clasificacion;
     }
 
-    public int getDuracion() {
+    public int getDuracion(){
         return duracion;
     }
-
-    public Boolean setDuracion(int duracion) {
-        if (duracion > 0) {
-            this.duracion = duracion;
-            return true;
+    public boolean setDuracion(int duracion){
+        if (duracion <= 0){
+            return false;
         }
-        return false;
+        this.duracion = duracion;
+        return true;
     }
 
-    public String getClasificacion() {
+    public String getClasificacion(){
         return clasificacion;
     }
-
-    public boolean setClasificacion(String clasificacion) {
-        if (clasificacion != null && !clasificacion.trim().isEmpty()) {
-            this.clasificacion = clasificacion;
-            return true;
+    public boolean setClasificacion(String clasificacion){
+        if (clasificacion == ""){
+            return false;
         }
-        return false;
-    }
-
-    @Override
-    public String toString() {
-        return "Duracion: " + this.getDuracion() + " min, Clasificacion: " + this.getClasificacion() + ", " + super.toString();
+        this.clasificacion = clasificacion;
+        return true;
     }
 }
