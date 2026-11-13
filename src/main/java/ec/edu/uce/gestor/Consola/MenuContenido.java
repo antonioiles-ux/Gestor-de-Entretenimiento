@@ -11,7 +11,7 @@ public class MenuContenido {
 
         do {
 
-            System.out.println("\n=== GESTIONAR CONTENIDO DE ENTRETENIMIENTO ===");
+            System.out.println("\n===(H2)GESTIONAR CONTENIDO DE ENTRETENIMIENTO ===");
             System.out.println("1. Registrar Contenido");
             System.out.println("2. Eliminar Contenido Erróneo");
             System.out.println("3. Consultar Catálogo");

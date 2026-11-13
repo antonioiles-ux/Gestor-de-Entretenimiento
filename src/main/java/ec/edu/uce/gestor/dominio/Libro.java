@@ -8,6 +8,9 @@ public class Libro extends Contenido {
     private String descripcion;
 
     public Libro() {
+        super();
+        this.numeroPaginas = 0;
+        this.descripcion = "Sin descripcion";
     }
 
     public Libro(int numeroPaginas, String descripcion) {

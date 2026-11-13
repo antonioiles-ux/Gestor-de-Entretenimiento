@@ -11,7 +11,7 @@ public class MenuSolicitud {
 
         do {
 
-            System.out.println("\n=== GESTIONAR SOLICITUD DE CONSUMO ===");
+            System.out.println("\n===(H3)GESTIONAR SOLICITUD DE CONSUMO ===");
             System.out.println("1. Crear Solicitud");
             System.out.println("2. Consultar Solicitud");
             System.out.println("3. Eliminar Solicitud");

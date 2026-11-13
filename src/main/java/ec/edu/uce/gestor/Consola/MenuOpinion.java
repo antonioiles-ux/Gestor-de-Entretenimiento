@@ -11,7 +11,7 @@ public class MenuOpinion {
 
         do {
 
-            System.out.println("\n=== GESTIONAR OPINIONES ===");
+            System.out.println("\n===(H5)GESTIONAR OPINIONES ===");
             System.out.println("1. Consultar Opiniones");
             System.out.println("2. Escribir Opinión");
             System.out.println("3. Editar Opinión");
@@ -26,27 +26,21 @@ public class MenuOpinion {
                 case 1:
                     System.out.println("Mostrando opiniones...");
                     break;
-
                 case 2:
                     System.out.println("Opinión registrada.");
                     break;
-
                 case 3:
                     System.out.println("Opinión editada.");
                     break;
-
                 case 4:
                     System.out.println("Opinión eliminada.");
                     break;
-
                 case 0:
                     System.out.println("Regresando...");
                     break;
-
                 default:
                     System.out.println("Opción inválida.");
             }
-
         } while (opcion != 0);
     }
 }
