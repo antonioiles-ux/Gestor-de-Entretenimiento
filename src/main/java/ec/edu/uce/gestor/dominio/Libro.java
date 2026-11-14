@@ -2,6 +2,8 @@ package ec.edu.uce.gestor.dominio;
 
 import ec.edu.uce.gestor.Util.Validaciones;
 
+import java.util.Date;
+
 public class Libro extends Contenido {
 
     private int numeroPaginas;
@@ -13,7 +15,8 @@ public class Libro extends Contenido {
         this.descripcion = "Sin descripcion";
     }
 
-    public Libro(int numeroPaginas, String descripcion) {
+    public Libro(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion, int numeroPaginas, String descripcion) {
+        super(idContenido, titulo, autor, genero, fechaPublicacion);
         this.numeroPaginas = numeroPaginas;
         this.descripcion = descripcion;
     }

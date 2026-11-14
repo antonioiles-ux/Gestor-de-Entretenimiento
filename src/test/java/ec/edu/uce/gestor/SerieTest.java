@@ -10,40 +10,44 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SerieTest {
 
     private Serie serie;
-    private Date fechaPrueba;
+    private Date fechaContenido;
 
     @BeforeEach
     public void setUp() {
-        fechaPrueba = new Date();
+        fechaContenido = new Date();
         // Usamos el constructor completo
-        serie = new Serie(1, "Breaking Bad", "Vince Gilligan", "Drama", fechaPrueba, 5, 62);
+        serie = new Serie(1, "Breaking Bad", "Vince Gilligan", "Drama", fechaContenido, 5, 62);
     }
 
     @Test
     void serieDatosValidos() {
-        Date nuevaFecha = new Date();
-        Serie s = new Serie(2, "Stranger Things", "Duffer Brothers", "Ciencia Ficción", nuevaFecha, 4, 34);
 
         // Verificamos datos del padre
-        assertEquals(2, s.getIdContenido());
-        assertEquals("Stranger Things", s.getTitulo());
+        assertEquals(1, serie.getIdContenido());
+        assertEquals("Breaking Bad", serie.getTitulo());
+        assertEquals("Vince Gilligan",serie.getAutor());
+        assertEquals("Drama",serie.getGenero());
+        assertEquals(fechaContenido, serie.getFechaPublicacion());
 
         // Verificamos datos propios del hijo
-        assertEquals(4, s.getNumeroTemporadas());
-        assertEquals(34, s.getNumeroEpisodios());
+        assertEquals(5, serie.getNumeroTemporadas());
+        assertEquals(62, serie.getNumeroEpisodios());
     }
 
     @Test
     void serieDefecto() {
-        Serie s = new Serie();
+        Serie serie = new Serie();
 
         // Valores por defecto del padre
-        assertEquals(0, s.getIdContenido());
-        assertEquals("sin titulo", s.getTitulo());
+        assertEquals(0, serie.getIdContenido());
+        assertEquals("sin titulo", serie.getTitulo());
+        assertEquals("sin autor",serie.getAutor());
+        assertEquals("sin genero",serie.getGenero());
+        assertEquals(null,serie.getFechaPublicacion());
 
         // Valores por defecto del hijo
-        assertEquals(0, s.getNumeroTemporadas());
-        assertEquals(0, s.getNumeroEpisodios());
+        assertEquals(0, serie.getNumeroTemporadas());
+        assertEquals(0, serie.getNumeroEpisodios());
     }
 
     @Test

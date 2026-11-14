@@ -13,8 +13,7 @@ public class Videojuego extends Contenido {
         this.clasificacionEdad = "Sin Clasificacion";
     }
 
-    public Videojuego(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion,
-                      String plataforma, String clasificacionEdad){
+    public Videojuego(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion, String plataforma, String clasificacionEdad){
         super(idContenido, titulo, autor, genero, fechaPublicacion);
         this.plataforma = plataforma;
         this.clasificacionEdad = clasificacionEdad;
