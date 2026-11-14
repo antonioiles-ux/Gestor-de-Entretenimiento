@@ -44,8 +44,9 @@ public class Libro extends Contenido {
 
     @Override
     public String toString() {
-        return "Número de páginas: " + this.getNumeroPaginas() + ", Descripcion: " + this.getDescripcion() + ", " + super.toString();
+        return super.toString() + "Número de páginas: " + this.getNumeroPaginas() + ", Descripcion: " +
+                this.getDescripcion() + ", ";
 
     }
-
 }
+

@@ -12,8 +12,8 @@ public class Pelicula extends Contenido {
         this.clasificacion = "sin clasificacion";
     }
 
-    public Pelicula(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion, int duracion, String clasificacion) {
-        super(idContenido, titulo, autor, genero, fechaPublicacion);
+    public Pelicula(int idContenido, String titulo, String autor, String descripcion, Date fechaLanzamiento, int duracion, String clasificacion) {
+        super(idContenido, titulo, autor, descripcion, fechaLanzamiento);
         this.duracion = duracion;
         this.clasificacion = clasificacion;
     }
@@ -39,9 +39,4 @@ public class Pelicula extends Contenido {
         this.clasificacion = clasificacion;
         return true;
     }
-    @Override
-    public String toString() {
-        return super.toString()+ "Pelicula{" + "duracion=" + this.getDuracion() + ", clasificacion='" + this.getClasificacion() + '\'' + "} ";
-    }
-
 }
