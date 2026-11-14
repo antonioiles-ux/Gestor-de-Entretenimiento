@@ -3,8 +3,6 @@ package ec.edu.uce.gestor.Consola;
 import ec.edu.uce.gestor.Util.Validaciones;
 import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Opinion;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Scanner;
 
 public class MenuOpinion {
@@ -74,18 +72,17 @@ public class MenuOpinion {
             }
         } while (!valido);
 
-        Opinion nueva = new Opinion();
-
+        // Primero se valida el comentario; la opinión se crea después
+        String comentario;
         do {
             System.out.print("Ingrese su comentario sobre '" + tituloSeleccionado + "': ");
-            valido = nueva.setComentario(sc.nextLine());
+            comentario = sc.nextLine();
+            valido = comentario != null && !comentario.trim().isEmpty();
             if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
         } while (!valido);
 
-        nueva.setIdOpinion(contadorIdOpinion++);
-        nueva.setFechaRegistro(obtenerFechaActual());
-
-        opinionRegistrada = nueva;
+        // La fecha de registro se asigna sola en este constructor
+        opinionRegistrada = new Opinion(contadorIdOpinion++, comentario);
         contenidoOpinadoInfo = tituloSeleccionado;
 
         System.out.println("\n[OPINIÓN REGISTRADA]: Sobre -> " + contenidoOpinadoInfo);
@@ -107,7 +104,6 @@ public class MenuOpinion {
             return;
         }
 
-        // Mostramos la opinión con su ID para que el usuario no tenga que adivinarlo
         System.out.println("\n--- OPINIÓN DISPONIBLE ---");
         System.out.println(" [ID: " + opinionRegistrada.getIdOpinion() + "] " + contenidoOpinadoInfo
                 + " | Comentario actual: \"" + opinionRegistrada.getComentario() + "\"");
@@ -127,13 +123,13 @@ public class MenuOpinion {
             return;
         }
 
+        // setComentario actualiza la fecha de edición automáticamente
         do {
             System.out.print("Ingrese nuevo comentario: ");
             valido = opinionRegistrada.setComentario(sc.nextLine());
             if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
         } while (!valido);
 
-        opinionRegistrada.setFechaEdicion(obtenerFechaActual());
         System.out.println("\n[EDICIÓN EXITOSA]: " + opinionRegistrada.toString());
     }
 
@@ -164,9 +160,5 @@ public class MenuOpinion {
         } else {
             System.out.println("[ERROR]: El ID ingresado no coincide con la opinión mostrada.");
         }
-    }
-
-    private static String obtenerFechaActual() {
-        return new SimpleDateFormat("dd/MM/yyyy").format(new Date());
     }
 }
