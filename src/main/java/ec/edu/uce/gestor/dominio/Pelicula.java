@@ -40,6 +40,7 @@ public class Pelicula extends Contenido {
         return true;
     }
 
+
     @Override
     public String toString() {
         return super.toString() + ", Duracion: " + this.getDuracion() + " min, Clasificacion: " + this.getClasificacion();
