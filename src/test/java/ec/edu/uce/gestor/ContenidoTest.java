@@ -17,7 +17,7 @@ public class ContenidoTest {
     @BeforeEach
     public void setUp(){
         fechaContenido = new Date();
-        contenido = new Contenido(1, "StarWars", "George Lucas", "Ciencia Ficcion", fechaContenido);
+        contenido = new Contenido(1, "NEED FOR SPEED", "Electronic Arts", "Videojuego de Carreras", fechaContenido);
     }
 
     @Test
@@ -35,9 +35,9 @@ public class ContenidoTest {
     public void contenidoValido() {
 
         assertEquals(1, contenido.getIdContenido());
-        assertEquals("StarWars", contenido.getTitulo());
-        assertEquals("George Lucas", contenido.getAutor());
-        assertEquals("Ciencia Ficcion", contenido.getGenero());
+        assertEquals("NEED FOR SPEED", contenido.getTitulo());
+        assertEquals("Electronic Arts", contenido.getAutor());
+        assertEquals("Videojuego de Carreras", contenido.getGenero());
         assertEquals(fechaContenido, contenido.getFechaPublicacion());
 
     }
@@ -55,17 +55,17 @@ public class ContenidoTest {
 
     @Test
     public void testGetTitulo(){
-        assertEquals("StarWars",contenido.getTitulo());
+        assertEquals("NEED FOR SPEED",contenido.getTitulo());
     }
 
     @Test
     public void testGetAutor(){
-        assertEquals("George Lucas", contenido.getAutor());
+        assertEquals("Electronic Arts", contenido.getAutor());
     }
 
     @Test
     public void testGetGenero(){
-        assertEquals("Ciencia Ficcion", contenido.getGenero());
+        assertEquals("Videojuego de Carreras", contenido.getGenero());
     }
 
     @Test

@@ -30,6 +30,9 @@ public class PeliculaTest {
         // Valores por defecto del padre
         assertEquals(0, pelicula.getIdContenido());
         assertEquals("sin titulo", pelicula.getTitulo());
+        assertEquals("sin autor",pelicula.getAutor());
+        assertEquals("sin genero",pelicula.getGenero());
+        assertEquals(null,pelicula.getFechaPublicacion());
 
         // Valores por defecto del hijo
         assertEquals(0, pelicula.getDuracion());
@@ -41,6 +44,9 @@ public class PeliculaTest {
 
         assertEquals(1, pelicula.getIdContenido());
         assertEquals("StarWars", pelicula.getTitulo());
+        assertEquals("George Lucas", pelicula.getAutor());
+        assertEquals("Ciencia Ficcion", pelicula.getGenero());
+        assertEquals(fechaContenido, pelicula.getFechaPublicacion());
 
         assertEquals(120, pelicula.getDuracion());
         assertEquals("+18",pelicula.getClasificacion());

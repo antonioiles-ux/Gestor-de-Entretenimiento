@@ -1,34 +1,53 @@
 package ec.edu.uce.gestor;
 
 import ec.edu.uce.gestor.dominio.Libro;
+import ec.edu.uce.gestor.dominio.Pelicula;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LibroTest {
     // Objeto de prueba
     private Libro libro;
+    private Date fechaContenido;
 
     // Preparar el objeto de prueba antes de cada test
     @BeforeEach
     public void setUp() {
-        libro = new Libro(300, "Novela clásica de ciencia ficción");
+        fechaContenido = new Date();
+        libro = new Libro(1, "Cien años de soledad", "Gabriel Garcia Marquez", "Novela", fechaContenido,300, "Novela clásica de ciencia ficción");
     }
 
     // Constructores
 
     @Test
     public void libroDefecto() {
-        Libro libroVacio = new Libro();
+        Libro libro = new Libro();
+
+        // Valores por defecto del padre
+        assertEquals(0, libro.getIdContenido());
+        assertEquals("sin titulo", libro.getTitulo());
+        assertEquals("sin autor", libro.getAutor());
+        assertEquals("sin genero",libro.getGenero());
+        assertEquals(null,libro.getFechaPublicacion());
 
         // En un constructor vacío, los int inician en 0 y los String en null por defecto
-        assertEquals(0, libroVacio.getNumeroPaginas());
-        assertNull(libroVacio.getDescripcion());
+        assertEquals(0, libro.getNumeroPaginas());
+        assertEquals("Sin descripcion", libro.getDescripcion());
     }
 
     @Test
     public void libroValido() {
+
+        assertEquals(1, libro.getIdContenido());
+        assertEquals("Cien años de soledad", libro.getTitulo());
+        assertEquals("Gabriel Garcia Marquez", libro.getAutor());
+        assertEquals("Novela", libro.getGenero());
+        assertEquals(fechaContenido, libro.getFechaPublicacion());
+
         assertEquals(300, libro.getNumeroPaginas());
         assertEquals("Novela clásica de ciencia ficción", libro.getDescripcion());
     }
