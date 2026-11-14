@@ -9,7 +9,7 @@ public class SolicitudConsumo {
     private Date fechaSolicitud;
     private String tipoContenido;
 
-    // Constructor por defecto (¡Aquí estaba el error de null!)
+    // Constructor por defecto
     public SolicitudConsumo() {
         this.idSolicitud = 0;
         this.estado = "Pendiente";
