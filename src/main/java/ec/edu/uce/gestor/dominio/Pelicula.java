@@ -39,4 +39,10 @@ public class Pelicula extends Contenido {
         this.clasificacion = clasificacion;
         return true;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", Duracion: " + this.getDuracion() + " min, Clasificacion: " + this.getClasificacion();
+    }
+
 }
