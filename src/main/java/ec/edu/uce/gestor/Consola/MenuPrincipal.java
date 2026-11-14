@@ -6,16 +6,19 @@ import java.util.Scanner;
 public class MenuPrincipal {
 
     public static boolean sesionIniciada = false;
+    public static boolean esAdmin = false;
     private Scanner sn = new Scanner(System.in);
 
     public void mostrarMenuPrincipal() {
         int opcion = -1;
 
         do {
+            String rolActual = !sesionIniciada ? "[VISITANTE]" : (esAdmin ? "[ADMINISTRADOR]" : "[USUARIO REGISTRADO]");
+
             System.out.println("\n================================================");
             System.out.println("      GESTOR DE CONTENIDO Y VALORACIONES        ");
             System.out.println("             MENÚ PRINCIPAL - NIVEL 0           ");
-            System.out.println(" Estado actual: " + (sesionIniciada ? "[SESIÓN INICIADA]" : "[VISITANTE - Sin sesión]"));
+            System.out.println(" Rol / Estado: " + rolActual);
             System.out.println("================================================");
 
             System.out.println("1. [Módulo H1] Gestionar Cuenta");
@@ -42,13 +45,14 @@ public class MenuPrincipal {
                     break;
 
                 case 2:
-                    // Visitante puede entrar a consultar catálogo; registrar/eliminar se controla adentro
                     MenuContenido.mostrarMenu();
                     break;
 
                 case 3:
                     if (!sesionIniciada) {
                         System.out.println("\n[ACCESO RESTRINGIDO]: Debe iniciar sesión para acceder a este módulo.");
+                    } else if (esAdmin) {
+                        System.out.println("\n[AVISO DE ROL]: El Administrador no gestiona solicitudes personales de consumo (H3).");
                     } else {
                         MenuSolicitud.mostrarMenu();
                     }
@@ -57,6 +61,8 @@ public class MenuPrincipal {
                 case 4:
                     if (!sesionIniciada) {
                         System.out.println("\n[ACCESO RESTRINGIDO]: Debe iniciar sesión para acceder a este módulo.");
+                    } else if (esAdmin) {
+                        System.out.println("\n[AVISO DE ROL]: El Administrador no califica contenidos (H4).");
                     } else {
                         MenuValoracion.mostrarMenu();
                     }
@@ -73,7 +79,8 @@ public class MenuPrincipal {
                 case 6:
                     if (sesionIniciada) {
                         sesionIniciada = false;
-                        System.out.println("\n[SISTEMA]: Sesión cerrada. Los módulos H3, H4 y H5 han sido bloqueados nuevamente.");
+                        esAdmin = false;
+                        System.out.println("\n[SISTEMA]: Sesión cerrada. Volviendo a modo Visitante.");
                     } else {
                         System.out.println("\n[ERROR]: Opción no válida.");
                     }

@@ -2,7 +2,10 @@ package ec.edu.uce.gestor.Consola;
 
 import ec.edu.uce.gestor.Util.Validaciones;
 import ec.edu.uce.gestor.dominio.Contenido;
+import ec.edu.uce.gestor.dominio.GestorContenido;
 import ec.edu.uce.gestor.dominio.Opinion;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 public class MenuOpinion {
@@ -33,19 +36,42 @@ public class MenuOpinion {
             opcion = Integer.parseInt(entrada);
 
             switch (opcion) {
-                case 1: consultarOpinion(); break;
-                case 2: escribirOpinion(sc); break;
-                case 3: editarOpinion(sc); break;
-                case 4: eliminarOpinion(sc); break;
-                case 0: System.out.println("Regresando al menú principal..."); break;
-                default: System.out.println("[ERROR]: Opción inválida.");
+                case 1:
+                    consultarOpinion();
+                    break;
+
+                case 2:
+                    if (MenuPrincipal.esAdmin) {
+                        System.out.println("\n[AVISO DE ROL]: El Administrador solo consulta o elimina opiniones (moderación).");
+                    } else {
+                        escribirOpinion(sc);
+                    }
+                    break;
+
+                case 3:
+                    if (MenuPrincipal.esAdmin) {
+                        System.out.println("\n[AVISO DE ROL]: El Administrador no edita reseñas de usuarios; solo puede eliminarlas si son inapropiadas.");
+                    } else {
+                        editarOpinion(sc);
+                    }
+                    break;
+
+                case 4:
+                    eliminarOpinion(sc);
+                    break;
+
+                case 0:
+                    System.out.println("Regresando al menú principal...");
+                    break;
+
+                default:
+                    System.out.println("[ERROR]: Opción inválida.");
             }
 
         } while (opcion != 0);
     }
 
     private static void escribirOpinion(Scanner sc) {
-        // Restricción: debe existir al menos un contenido registrado
         if (!MenuContenido.hayContenidoRegistrado()) {
             System.out.println("\n[RESTRICCIÓN]: No existen contenidos registrados. Registre primero un contenido en el Módulo H2.");
             return;
@@ -72,17 +98,18 @@ public class MenuOpinion {
             }
         } while (!valido);
 
-        // Primero se valida el comentario; la opinión se crea después
-        String comentario;
+        Opinion nueva = new Opinion();
+
         do {
             System.out.print("Ingrese su comentario sobre '" + tituloSeleccionado + "': ");
-            comentario = sc.nextLine();
-            valido = comentario != null && !comentario.trim().isEmpty();
+            valido = nueva.setComentario(sc.nextLine());
             if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
         } while (!valido);
 
-        // La fecha de registro se asigna sola en este constructor
-        opinionRegistrada = new Opinion(contadorIdOpinion++, comentario);
+        nueva.setIdOpinion(contadorIdOpinion++);
+        nueva.setFechaRegistro(obtenerFechaActual());
+
+        opinionRegistrada = nueva;
         contenidoOpinadoInfo = tituloSeleccionado;
 
         System.out.println("\n[OPINIÓN REGISTRADA]: Sobre -> " + contenidoOpinadoInfo);
@@ -123,13 +150,13 @@ public class MenuOpinion {
             return;
         }
 
-        // setComentario actualiza la fecha de edición automáticamente
         do {
             System.out.print("Ingrese nuevo comentario: ");
             valido = opinionRegistrada.setComentario(sc.nextLine());
             if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
         } while (!valido);
 
+        opinionRegistrada.setFechaEdicion(obtenerFechaActual());
         System.out.println("\n[EDICIÓN EXITOSA]: " + opinionRegistrada.toString());
     }
 
@@ -154,11 +181,19 @@ public class MenuOpinion {
         } while (!valido);
 
         if (opinionRegistrada.getIdOpinion() == temp.getIdOpinion()) {
+            if (MenuPrincipal.esAdmin) {
+                GestorContenido gestor = new GestorContenido();
+                gestor.eliminarOpinion();
+            }
             opinionRegistrada = null;
             contenidoOpinadoInfo = "";
             System.out.println("[SISTEMA]: Opinión eliminada correctamente.");
         } else {
             System.out.println("[ERROR]: El ID ingresado no coincide con la opinión mostrada.");
         }
+    }
+
+    private static String obtenerFechaActual() {
+        return new SimpleDateFormat("dd/MM/yyyy").format(new Date());
     }
 }

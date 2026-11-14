@@ -4,50 +4,50 @@ import ec.edu.uce.gestor.dominio.Videojuego;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class VideojuegoTest {
-    // Objeto de prueba
     private Videojuego videojuego;
-    private Date fechaContenido;
+    private Date fechaPublicacion;
 
-    // Preparar el objeto de prueba antes de cada test
-    @BeforeEach
-    public void setUp() {
-        fechaContenido = new Date();
-        videojuego = new Videojuego(1, "GOD OF WAR", "David Jaffe", "Videojuego de Accion y Aventura", fechaContenido, "PSP Y PS", "Mayores +18");
+    private Date crearFecha(int dia, int mes, int anio) {
+        Calendar cal = Calendar.getInstance();
+        cal.clear();
+        cal.set(anio, mes - 1, dia);
+        return cal.getTime();
     }
 
-    // Constructores
+    @BeforeEach
+    public void setUp() {
+        fechaPublicacion = crearFecha(20, 4, 2018);
+        videojuego = new Videojuego(1, "God of War", "Santa Monica", "Accion", fechaPublicacion, "PSP y PS", "+18");
+    }
 
     @Test
     public void videojuegoDefecto() {
-        Videojuego videojuegoVacio = new Videojuego();
+        Videojuego vacio = new Videojuego();
 
-        // Valores por defecto del padre
-        assertEquals(0, videojuego.getIdContenido());
-        assertEquals("sin titulo", videojuego.getTitulo());
-        assertEquals("sin autor",videojuego.getAutor());
-        assertEquals("sin genero",videojuego.getGenero());
-        assertEquals(null,videojuego.getFechaPublicacion());
-        // Valores por defecto de la hija
-        assertEquals("Sin plataforma", videojuegoVacio.getPlataforma());
-        assertEquals("Sin Clasificacion", videojuegoVacio.getClasificacionEdad());
+        assertEquals(0, vacio.getIdContenido());
+        assertEquals("sin titulo", vacio.getTitulo());
+        assertEquals("sin autor", vacio.getAutor());
+        assertEquals("sin genero", vacio.getGenero());
+        assertNull(vacio.getFechaPublicacion());
+        assertEquals("Sin plataforma", vacio.getPlataforma());
+        assertEquals("Sin Clasificacion", vacio.getClasificacionEdad());
     }
 
     @Test
     public void videojuegoValido() {
-
         assertEquals(1, videojuego.getIdContenido());
-        assertEquals("GOD OF WAR", videojuego.getTitulo());
-        assertEquals("David Jaffe", videojuego.getAutor());
-        assertEquals("Videojuego de Accion y Aventura", videojuego.getGenero());
-        assertEquals(fechaContenido, videojuego.getFechaPublicacion());
-
+        assertEquals("God of War", videojuego.getTitulo());
+        assertEquals("Santa Monica", videojuego.getAutor());
+        assertEquals("Accion", videojuego.getGenero());
+        assertEquals(fechaPublicacion, videojuego.getFechaPublicacion());
         assertEquals("PSP y PS", videojuego.getPlataforma());
-        assertEquals("Mayores +18", videojuego.getClasificacionEdad());
+        assertEquals("+18", videojuego.getClasificacionEdad());
     }
 
     @Test
@@ -56,7 +56,6 @@ public class VideojuegoTest {
     }
 
     // Getters
-
     @Test
     public void testGetPlataforma() {
         assertEquals("PSP y PS", videojuego.getPlataforma());
@@ -64,30 +63,35 @@ public class VideojuegoTest {
 
     @Test
     public void testGetClasificacionEdad() {
-        assertEquals("Mayores +18", videojuego.getClasificacionEdad());
+        assertEquals("+18", videojuego.getClasificacionEdad());
     }
 
-    // Setters Válidos
-
+    // Setters válidos
     @Test
     public void testSetPlataforma() {
-        assertTrue(videojuego.setPlataforma("PlayStation 5"));
-        assertEquals("PlayStation 5", videojuego.getPlataforma());
+        assertTrue(videojuego.setPlataforma("PC y PS5"));
+        assertEquals("PC y PS5", videojuego.getPlataforma());
     }
 
     @Test
     public void testSetClasificacionEdad() {
-        assertTrue(videojuego.setClasificacionEdad("Toda edad"));
-        assertEquals("Toda edad", videojuego.getClasificacionEdad());
+        assertTrue(videojuego.setClasificacionEdad("T"));
+        assertEquals("T", videojuego.getClasificacionEdad());
     }
 
-    // Setters Inválidos
-
+    // Setters inválidos (Validaciones)
     @Test
     public void plataformaInvalida() {
         String plataformaAntes = videojuego.getPlataforma();
 
-        // Probando valor null según la validación del setter en Videojuego
+        assertFalse(videojuego.setPlataforma(""));
+        assertEquals(plataformaAntes, videojuego.getPlataforma());
+    }
+
+    @Test
+    public void plataformaNulaInvalida() {
+        String plataformaAntes = videojuego.getPlataforma();
+
         assertFalse(videojuego.setPlataforma(null));
         assertEquals(plataformaAntes, videojuego.getPlataforma());
     }
@@ -96,8 +100,33 @@ public class VideojuegoTest {
     public void clasificacionEdadInvalida() {
         String clasificacionAntes = videojuego.getClasificacionEdad();
 
-        // Probando valor null según la validación del setter en Videojuego
+        assertFalse(videojuego.setClasificacionEdad(""));
+        assertEquals(clasificacionAntes, videojuego.getClasificacionEdad());
+    }
+
+    @Test
+    public void clasificacionEdadNulaInvalida() {
+        String clasificacionAntes = videojuego.getClasificacionEdad();
+
         assertFalse(videojuego.setClasificacionEdad(null));
         assertEquals(clasificacionAntes, videojuego.getClasificacionEdad());
+    }
+
+    // toString
+    @Test
+    public void testToString() {
+        String esperado = "ID CONTENIDO:1  Titulo:God of War  Autor:Santa Monica  Genero:Accion  Fecha Publicacion:"
+                + fechaPublicacion + "Plataforma: PSP y PS, clasificacionEdad: +18, ";
+
+        assertEquals(esperado, videojuego.toString());
+    }
+
+    @Test
+    public void testToStringPorDefecto() {
+        Videojuego vacio = new Videojuego();
+        String esperado = "ID CONTENIDO:0  Titulo:sin titulo  Autor:sin autor  Genero:sin genero  Fecha Publicacion:null"
+                + "Plataforma: Sin plataforma, clasificacionEdad: Sin Clasificacion, ";
+
+        assertEquals(esperado, vacio.toString());
     }
 }

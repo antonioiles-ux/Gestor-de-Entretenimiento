@@ -1,42 +1,33 @@
 package ec.edu.uce.gestor.dominio;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import ec.edu.uce.gestor.Util.Validaciones;
 
 public class Opinion {
     private int idOpinion;
     private String comentario;
-    private Date fechaRegistro;
-    private Date fechaEdicion;
+    private String fechaRegistroOp;
+    private String fechaEdicion;
 
     public Opinion() {
         this.idOpinion = 0;
         this.comentario = "sin comentario";
-        this.fechaRegistro = null;
-        this.fechaEdicion = null;
+        this.fechaRegistroOp = "sin fecha de registro";
+        this.fechaEdicion = "sin fecha de edicion";
     }
 
-    // Opinión nueva: la fecha de registro es automática
-    public Opinion(int idOpinion, String comentario) {
+    public Opinion(int idOpinion, String comentario, String fechaRegistroOp, String fechaEdicion) {
         this.idOpinion = idOpinion;
         this.comentario = comentario;
-        this.fechaRegistro = new Date();
-        this.fechaEdicion = null;
-    }
-
-    // Opinión ya guardada (carga de datos y pruebas con fechas fijas)
-    public Opinion(int idOpinion, String comentario, Date fechaRegistro, Date fechaEdicion) {
-        this.idOpinion = idOpinion;
-        this.comentario = comentario;
-        this.fechaRegistro = fechaRegistro;
+        this.fechaRegistroOp = fechaRegistroOp;
         this.fechaEdicion = fechaEdicion;
     }
 
     public int getIdOpinion() {
         return idOpinion;
     }
+
     public boolean setIdOpinion(int idOpinion) {
-        if (idOpinion <= 0) {
+        if (idOpinion <= 0 || !Validaciones.validarNumeros(String.valueOf(idOpinion))) {
             return false;
         }
         this.idOpinion = idOpinion;
@@ -46,35 +37,42 @@ public class Opinion {
     public String getComentario() {
         return comentario;
     }
+
     public boolean setComentario(String comentario) {
-        if (comentario == null || comentario.isEmpty()) {
+        if (comentario == null || comentario.trim().isEmpty()) {
             return false;
         }
         this.comentario = comentario;
-        this.fechaEdicion = new Date();   // automática al editar
         return true;
     }
 
-    public Date getFechaRegistro() {
-        return fechaRegistro;
+    public String getFechaRegistroOp() {
+        return fechaRegistroOp;
     }
 
-    public Date getFechaEdicion() {
+    public boolean setFechaRegistro(String fechaRegistroOp) {
+        if (!Validaciones.validarFecha(fechaRegistroOp)) {
+            return false;
+        }
+        this.fechaRegistroOp = fechaRegistroOp;
+        return true;
+    }
+
+    public String getFechaEdicion() {
         return fechaEdicion;
     }
 
-    private String formatear(Date fecha, String textoPorDefecto) {
-        if (fecha == null) {
-            return textoPorDefecto;
+    public boolean setFechaEdicion(String fechaEdicion) {
+        if (!Validaciones.validarFecha(fechaEdicion)) {
+            return false;
         }
-        return new SimpleDateFormat("dd/MM/yyyy").format(fecha);
+        this.fechaEdicion = fechaEdicion;
+        return true;
     }
 
     @Override
     public String toString() {
-        return "Id opinion:" + this.getIdOpinion()
-                + "  Comentario:" + this.getComentario()
-                + "  Fecha de Registro:" + formatear(this.getFechaRegistro(), "sin fecha de registro")
-                + "  Fecha de Edicion:" + formatear(this.getFechaEdicion(), "sin fecha de edicion");
+        return "ID OPINION:" + this.getIdOpinion() + "  Comentario:" + this.getComentario()
+                + "  Fecha de Registro:" + this.getFechaRegistroOp() + "  Fecha de Edicion:" + this.getFechaEdicion();
     }
 }

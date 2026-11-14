@@ -4,27 +4,17 @@ import ec.edu.uce.gestor.dominio.Opinion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Calendar;
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class OpinionTest {
     private Opinion opinion;
-    private Date fechaRegistro;
-    private Date fechaEdicion;
-
-    private Date crearFecha(int dia, int mes, int anio) {
-        Calendar cal = Calendar.getInstance();
-        cal.clear();
-        cal.set(anio, mes - 1, dia);
-        return cal.getTime();
-    }
+    private String fechaRegistro;
+    private String fechaEdicion;
 
     @BeforeEach
     public void setUp() {
-        fechaRegistro = crearFecha(8, 11, 2026);
-        fechaEdicion = crearFecha(9, 11, 2026);
+        fechaRegistro = "08/11/2026";
+        fechaEdicion = "09/11/2026";
         opinion = new Opinion(1, "Contenido actualizado y mejorado.", fechaRegistro, fechaEdicion);
     }
 
@@ -34,15 +24,15 @@ public class OpinionTest {
 
         assertEquals(0, vacia.getIdOpinion());
         assertEquals("sin comentario", vacia.getComentario());
-        assertNull(vacia.getFechaRegistro());
-        assertNull(vacia.getFechaEdicion());
+        assertEquals("sin fecha de registro", vacia.getFechaRegistroOp());
+        assertEquals("sin fecha de edicion", vacia.getFechaEdicion());
     }
 
     @Test
     public void opinionValida() {
         assertEquals(1, opinion.getIdOpinion());
         assertEquals("Contenido actualizado y mejorado.", opinion.getComentario());
-        assertEquals(fechaRegistro, opinion.getFechaRegistro());
+        assertEquals(fechaRegistro, opinion.getFechaRegistroOp());
         assertEquals(fechaEdicion, opinion.getFechaEdicion());
     }
 
@@ -64,7 +54,7 @@ public class OpinionTest {
 
     @Test
     public void testGetFechaRegistro() {
-        assertEquals(fechaRegistro, opinion.getFechaRegistro());
+        assertEquals(fechaRegistro, opinion.getFechaRegistroOp());
     }
 
     @Test
@@ -72,7 +62,7 @@ public class OpinionTest {
         assertEquals(fechaEdicion, opinion.getFechaEdicion());
     }
 
-    // Setters
+    // Setters válidos
     @Test
     public void testSetIdOp() {
         assertTrue(opinion.setIdOpinion(5));
@@ -85,6 +75,19 @@ public class OpinionTest {
         assertEquals("Excelente libro, muy recomendado.", opinion.getComentario());
     }
 
+    @Test
+    public void testSetFechaRegistroValida() {
+        assertTrue(opinion.setFechaRegistro("13/11/2026"));
+        assertEquals("13/11/2026", opinion.getFechaRegistroOp());
+    }
+
+    @Test
+    public void testSetFechaEdicionValida() {
+        assertTrue(opinion.setFechaEdicion("14/11/2026"));
+        assertEquals("14/11/2026", opinion.getFechaEdicion());
+    }
+
+    // Setters inválidos (Validaciones)
     @Test
     public void comentarioInvalido() {
         String comentarioAntes = opinion.getComentario();
@@ -110,48 +113,24 @@ public class OpinionTest {
     }
 
     @Test
-    public void fechaRegistroAutomatica() {
-        Date antes = new Date();
-        Opinion nueva = new Opinion(2, "Muy buena");
-        Date despues = new Date();
+    public void fechaRegistroInvalida() {
+        String fechaAntes = opinion.getFechaRegistroOp();
 
-        assertNotNull(nueva.getFechaRegistro());
-        assertFalse(nueva.getFechaRegistro().before(antes));
-        assertFalse(nueva.getFechaRegistro().after(despues));
+        assertFalse(opinion.setFechaRegistro("2026-11-13"));
+        assertEquals(fechaAntes, opinion.getFechaRegistroOp());
     }
 
     @Test
-    public void fechaEdicionVaciaAlCrear() {
-        Opinion nueva = new Opinion(2, "Muy buena");
+    public void fechaEdicionInvalida() {
+        String fechaAntes = opinion.getFechaEdicion();
 
-        assertNull(nueva.getFechaEdicion());
+        assertFalse(opinion.setFechaEdicion("fecha-mala"));
+        assertEquals(fechaAntes, opinion.getFechaEdicion());
     }
-
-    @Test
-    public void fechaEdicionSeActualizaAlEditar() {
-        Opinion nueva = new Opinion(2, "Muy buena");
-
-        Date antes = new Date();
-        assertTrue(nueva.setComentario("Cambié de opinión"));
-        Date despues = new Date();
-
-        assertNotNull(nueva.getFechaEdicion());
-        assertFalse(nueva.getFechaEdicion().before(antes));
-        assertFalse(nueva.getFechaEdicion().after(despues));
-    }
-
-    @Test
-    public void fechaEdicionNoCambiaConComentarioInvalido() {
-        Opinion nueva = new Opinion(2, "Muy buena");
-
-        assertFalse(nueva.setComentario(""));
-        assertNull(nueva.getFechaEdicion());
-    }
-
 
     @Test
     public void testToString() {
-        String esperado = "Id opinion:1  Comentario:Contenido actualizado y mejorado."
+        String esperado = "ID OPINION:1  Comentario:Contenido actualizado y mejorado."
                 + "  Fecha de Registro:08/11/2026  Fecha de Edicion:09/11/2026";
 
         assertEquals(esperado, opinion.toString());
@@ -160,7 +139,7 @@ public class OpinionTest {
     @Test
     public void testToStringPorDefecto() {
         Opinion vacia = new Opinion();
-        String esperado = "Id opinion:0  Comentario:sin comentario"
+        String esperado = "ID OPINION:0  Comentario:sin comentario"
                 + "  Fecha de Registro:sin fecha de registro  Fecha de Edicion:sin fecha de edicion";
 
         assertEquals(esperado, vacia.toString());

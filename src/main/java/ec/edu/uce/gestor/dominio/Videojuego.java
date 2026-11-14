@@ -24,8 +24,8 @@ public class Videojuego extends Contenido {
     }
 
     public boolean setPlataforma(String plataforma) {
-        if (plataforma == null) {
-            return false ;
+        if (plataforma == null || plataforma.trim().isEmpty()) {
+            return false;
         }
         this.plataforma = plataforma;
         return true;
@@ -35,7 +35,7 @@ public class Videojuego extends Contenido {
         return clasificacionEdad;
     }
     public boolean setClasificacionEdad(String clasificacionEdad) {
-        if (clasificacionEdad == null) {
+        if (clasificacionEdad == null || clasificacionEdad.trim().isEmpty()) {
             return false;
         }
         this.clasificacionEdad = clasificacionEdad;
