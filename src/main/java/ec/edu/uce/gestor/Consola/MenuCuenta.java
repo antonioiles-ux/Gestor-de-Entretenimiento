@@ -18,7 +18,7 @@ public class MenuCuenta {
 
     // Credenciales institucionales predefinidas del Administrador (GestorContenido)
     private static GestorContenido adminSistema = new GestorContenido("Administrador UCE", 99, 1);
-    private static Cuenta cuentaAdmin = new Cuenta(99, "admin@uce.edu.ec", "admin123", new Date());
+    private static Cuenta cuentaAdmin = new Cuenta(99, "adminJose@uce.edu.ec", "admin123", new Date());
 
     public static void mostrarMenu() {
 
@@ -31,12 +31,14 @@ public class MenuCuenta {
             System.out.println("2. Registrar Usuario");
             System.out.println("3. Iniciar Sesión como Administrador");
             System.out.println("4. Consultar Datos de Cuenta Generada");
+
             if (MenuPrincipal.esAdmin) {
                 System.out.println("5. [ADMIN] Administrar Cuenta de Usuario (Suspender / Reactivar / Eliminar)");
             }
             if (MenuPrincipal.sesionIniciada) {
                 System.out.println("6. Cerrar Sesión");
             }
+
             System.out.println("0. Regresar");
             System.out.print("Seleccione una opción: ");
 
@@ -105,7 +107,7 @@ public class MenuCuenta {
         Cuenta nuevaCuenta = new Cuenta();
         boolean valido;
 
-        System.out.println("\n--- REGISTRO DE USUARIO (H1.2) ---");
+        System.out.println("\n--- REGISTRO DE USUARIO ---");
 
         do {
             System.out.print("Ingrese nombre completo (solo letras): ");
@@ -139,6 +141,7 @@ public class MenuCuenta {
     }
 
     private static void iniciarSesionUsuario(Scanner sc) {
+
         if (cuentaRegistrada == null) {
             System.out.println("\n[AVISO]: No existe un usuario registrado todavía. Primero regístrese en la opción 2.");
             return;
@@ -147,7 +150,7 @@ public class MenuCuenta {
         Cuenta cuentaTemp = new Cuenta();
         boolean valido;
 
-        System.out.println("\n--- INICIAR SESIÓN USUARIO (H1.1) ---");
+        System.out.println("\n--- INICIAR SESIÓN USUARIO ---");
 
         do {
             System.out.print("Correo electrónico: ");
@@ -182,7 +185,7 @@ public class MenuCuenta {
         boolean valido;
 
         System.out.println("\n--- INICIAR SESIÓN ADMINISTRADOR ---");
-        System.out.println("(Credenciales demo: admin@uce.edu.ec / admin123)");
+        System.out.println("(Credenciales demo: adminJose@uce.edu.ec / admin123)");
 
         do {
             System.out.print("Correo Administrador: ");

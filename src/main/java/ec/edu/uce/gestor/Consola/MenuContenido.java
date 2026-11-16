@@ -1,13 +1,16 @@
 package ec.edu.uce.gestor.Consola;
 
 import ec.edu.uce.gestor.Util.Validaciones;
+
 import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Libro;
 import ec.edu.uce.gestor.dominio.Pelicula;
 import ec.edu.uce.gestor.dominio.Serie;
 import ec.edu.uce.gestor.dominio.Videojuego;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
 import java.util.Date;
 import java.util.Scanner;
 
@@ -22,8 +25,7 @@ public class MenuContenido {
 
     // Métodos auxiliares públicos para que MenuValoracion y MenuOpinion verifiquen contenidos existentes
     public static boolean hayContenidoRegistrado() {
-        return libroRegistrado != null || peliculaRegistrada != null
-                || serieRegistrada != null || videojuegoRegistrado != null;
+        return libroRegistrado != null || peliculaRegistrada != null || serieRegistrada != null || videojuegoRegistrado != null;
     }
 
     public static void mostrarResumenContenidos() {
@@ -147,36 +149,37 @@ public class MenuContenido {
         } while (!valido);
 
         do {
-            System.out.print("Ingrese autor / director / desarrollador (solo letras): ");
+            System.out.print("Ingrese autor / director / desarrollador: ");
             valido = contenido.setAutor(sc.nextLine());
             if (!valido) System.out.println("[ERROR]: Autor inválido (use solo letras y espacios).");
         } while (!valido);
 
         do {
-            System.out.print("Ingrese género (solo letras): ");
+            System.out.print("Ingrese género: ");
             valido = contenido.setGenero(sc.nextLine());
             if (!valido) System.out.println("[ERROR]: Género inválido (use solo letras y espacios).");
         } while (!valido);
 
         do {
-            System.out.print("Ingrese fecha de publicación (formato dd/MM/yyyy): ");
+            System.out.print("Ingrese fecha de publicación (dd/MM/yyyy): ");
             String fechaTxt = sc.nextLine();
             valido = Validaciones.validarFecha(fechaTxt) && contenido.setFechaPublicacion(convertirFecha(fechaTxt));
             if (!valido) System.out.println("[ERROR]: Fecha inválida. Use el formato dd/MM/yyyy.");
         } while (!valido);
     }
 
+
     private static void registrarLibro(Scanner sc) {
         Libro libro = new Libro();
-        System.out.println("\n--- NUEVO LIBRO (H2.1.2) ---");
+        System.out.println("\n--- NUEVO LIBRO ---");
         cargarDatosComunes(sc, libro);
         boolean valido;
 
         do {
-            System.out.print("Ingrese número de páginas (números > 0): ");
+            System.out.print("Ingrese número de páginas: ");
             String pagTxt = sc.nextLine();
             valido = Validaciones.validarNumeros(pagTxt) && libro.setNumeroPaginas(Integer.parseInt(pagTxt));
-            if (!valido) System.out.println("[ERROR]: Número de páginas inválido.");
+            if (!valido) System.out.println("[ERROR]: Número de páginas inválido, solo números positivos.");
         } while (!valido);
 
         do {
@@ -191,15 +194,15 @@ public class MenuContenido {
 
     private static void registrarPelicula(Scanner sc) {
         Pelicula pelicula = new Pelicula();
-        System.out.println("\n--- NUEVA PELÍCULA (H2.1.1) ---");
+        System.out.println("\n--- NUEVA PELÍCULA ---");
         cargarDatosComunes(sc, pelicula);
         boolean valido;
 
         do {
-            System.out.print("Ingrese duración en minutos (números > 0): ");
+            System.out.print("Ingrese duración en minutos: ");
             String durTxt = sc.nextLine();
             valido = Validaciones.validarNumeros(durTxt) && pelicula.setDuracion(Integer.parseInt(durTxt));
-            if (!valido) System.out.println("[ERROR]: Duración inválida.");
+            if (!valido) System.out.println("[ERROR]: Duración inválida, solo numeros positivos");
         } while (!valido);
 
         do {
@@ -214,22 +217,22 @@ public class MenuContenido {
 
     private static void registrarSerie(Scanner sc) {
         Serie serie = new Serie();
-        System.out.println("\n--- NUEVA SERIE (H2.1.3) ---");
+        System.out.println("\n--- NUEVA SERIE ---");
         cargarDatosComunes(sc, serie);
         boolean valido;
 
         do {
-            System.out.print("Ingrese número de temporadas (números > 0): ");
+            System.out.print("Ingrese número de temporadas: ");
             String tempTxt = sc.nextLine();
             valido = Validaciones.validarNumeros(tempTxt) && serie.setNumeroTemporadas(Integer.parseInt(tempTxt));
-            if (!valido) System.out.println("[ERROR]: Número de temporadas inválido.");
+            if (!valido) System.out.println("[ERROR]: Número de temporadas inválido, solo números positivos.");
         } while (!valido);
 
         do {
-            System.out.print("Ingrese número de episodios (números > 0): ");
+            System.out.print("Ingrese número de episodios: ");
             String epTxt = sc.nextLine();
             valido = Validaciones.validarNumeros(epTxt) && serie.setNumeroEpisodios(Integer.parseInt(epTxt));
-            if (!valido) System.out.println("[ERROR]: Número de episodios inválido.");
+            if (!valido) System.out.println("[ERROR]: Número de episodios inválido, solo números positivos.");
         } while (!valido);
 
         serieRegistrada = serie;
@@ -238,7 +241,7 @@ public class MenuContenido {
 
     private static void registrarVideojuego(Scanner sc) {
         Videojuego videojuego = new Videojuego();
-        System.out.println("\n--- NUEVO VIDEOJUEGO (H2.1.4) ---");
+        System.out.println("\n--- NUEVO VIDEOJUEGO ---");
         cargarDatosComunes(sc, videojuego);
         boolean valido;
 
@@ -249,7 +252,7 @@ public class MenuContenido {
         } while (!valido);
 
         do {
-            System.out.print("Ingrese clasificación de edad (ej. E, T, M): ");
+            System.out.print("Ingrese clasificación de edad (ej. +18): ");
             valido = videojuego.setClasificacionEdad(sc.nextLine());
             if (!valido) System.out.println("[ERROR]: La clasificación de edad no puede estar vacía.");
         } while (!valido);
@@ -266,6 +269,7 @@ public class MenuContenido {
         }
 
         // Mostramos los IDs disponibles para que el usuario no tenga que memorizarlos
+
         mostrarResumenContenidos();
 
         Contenido temp = new Contenido();
@@ -279,6 +283,7 @@ public class MenuContenido {
         } while (!valido);
 
         int idBuscar = temp.getIdContenido();
+
         if (libroRegistrado != null && libroRegistrado.getIdContenido() == idBuscar) {
             libroRegistrado = null;
             System.out.println("[SISTEMA]: Libro eliminado correctamente.");
@@ -301,7 +306,7 @@ public class MenuContenido {
         int opcion = -1;
 
         do {
-            System.out.println("\n=== CONSULTAR CATÁLOGO (H2.3) ===");
+            System.out.println("\n=== CONSULTAR CATÁLOGO ===");
             System.out.println("1. Visualizar Series");
             System.out.println("2. Visualizar Libros");
             System.out.println("3. Visualizar Películas");
@@ -348,7 +353,7 @@ public class MenuContenido {
         Contenido busqueda = new Contenido();
 
         do {
-            System.out.println("\n=== BUSCAR CONTENIDO (H2.3.5) ===");
+            System.out.println("\n=== BUSCAR CONTENIDO ===");
             System.out.println("1. Buscar por Título");
             System.out.println("2. Buscar por Género");
             System.out.println("3. Buscar por Autor");

@@ -20,7 +20,7 @@ public class MenuOpinion {
         int opcion = -1;
 
         do {
-            System.out.println("\n===(H5). GESTIONAR OPINIONES ===");
+            System.out.println("\n=== GESTIONAR OPINIONES ===");
             System.out.println("1. Consultar Opiniones");
             System.out.println("2. Escribir Opinión");
             System.out.println("3. Editar Opinión");
@@ -121,7 +121,7 @@ public class MenuOpinion {
             System.out.println("\n[RESTRICCIÓN]: No existen opiniones registradas todavía.");
             return;
         }
-        System.out.println("\n--- OPINIÓN REGISTRADA (H5.1) ---");
+        System.out.println("\n--- OPINIÓN REGISTRADA ---");
         System.out.println(" Contenido: " + contenidoOpinadoInfo + " | " + opinionRegistrada.toString());
     }
 
