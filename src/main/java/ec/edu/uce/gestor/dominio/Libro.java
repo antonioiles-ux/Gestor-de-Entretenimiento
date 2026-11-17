@@ -2,6 +2,7 @@ package ec.edu.uce.gestor.dominio;
 
 import ec.edu.uce.gestor.Util.Validaciones;
 
+
 import java.util.Date;
 
 public class Libro extends Contenido {
@@ -38,11 +39,11 @@ public class Libro extends Contenido {
     }
 
     public boolean setDescripcion(String descripcion) {
-        if (descripcion != null && !descripcion.trim().isEmpty()) {
-            this.descripcion = descripcion;
-            return true;
+        if (!Validaciones.validarTextoConLetras(descripcion)) {
+            return false;
         }
-        return false;
+        this.descripcion = descripcion.trim();
+        return true;
     }
 
     @Override
