@@ -35,7 +35,7 @@ public class Pelicula extends Contenido {
     }
 
     public boolean setClasificacion(String clasificacion) {
-        if (!Validaciones.validarTextoConLetras(clasificacion)) {
+        if (!Validaciones.validarClasificacionEdad(clasificacion)) {
             return false;
         }
         this.clasificacion = clasificacion.trim();

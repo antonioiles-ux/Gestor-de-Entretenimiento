@@ -18,6 +18,15 @@ public class Validaciones {
     private static final Pattern FECHA = Pattern.compile("^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$");
     private static final Pattern CALIFICACION = Pattern.compile("^[1-5]$");
     private static final Pattern TEXTO_CON_LETRAS = Pattern.compile("^(?=.*[A-Za-zñÑáéíóúÁÉÍÓÚ]).+$");
+    private static final Pattern CLASIFICACION_EDAD = Pattern.compile("^(?=.*[A-Za-zñÑáéíóúÁÉÍÓÚ+]).+$");
+
+
+    public static boolean validarClasificacionEdad(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return false;
+        }
+        return coincide(CLASIFICACION_EDAD, texto.trim());
+    }
 
     private static boolean coincide(Pattern pattern, String texto) {
         if (texto == null) {

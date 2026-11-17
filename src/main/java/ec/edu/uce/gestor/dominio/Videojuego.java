@@ -41,7 +41,7 @@ public class Videojuego extends Contenido {
     }
 
     public boolean setClasificacionEdad(String clasificacionEdad) {
-        if (!Validaciones.validarTextoConLetras(clasificacionEdad)) {
+        if (!Validaciones.validarClasificacionEdad(clasificacionEdad)) {
             return false;
         }
         this.clasificacionEdad = clasificacionEdad.trim();
