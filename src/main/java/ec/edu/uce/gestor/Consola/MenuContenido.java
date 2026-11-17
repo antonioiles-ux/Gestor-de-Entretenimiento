@@ -248,7 +248,7 @@ public class MenuContenido {
         do {
             System.out.print("Ingrese plataforma (ej. PC, PS5, Xbox): ");
             valido = videojuego.setPlataforma(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: Plataforma inválida. Debe incluir texto (no solo números ni vacío).");
+            if (!valido) System.out.println("[ERROR]: Plataforma inválida. Debe incluir texto (no solo names ni vacío).");
         } while (!valido);
 
         do {
