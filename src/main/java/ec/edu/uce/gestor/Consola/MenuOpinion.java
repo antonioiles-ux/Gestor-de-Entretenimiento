@@ -73,7 +73,7 @@ public class MenuOpinion {
 
     private static void escribirOpinion(Scanner sc) {
         if (!MenuContenido.hayContenidoRegistrado()) {
-            System.out.println("\n[RESTRICCIÓN]: No existen contenidos registrados. Registre primero un contenido en el Módulo H2.");
+            System.out.println("\n[RESTRICCIÓN]: No existen contenidos registrados. Registre primero un contenido.");
             return;
         }
 
@@ -102,8 +102,15 @@ public class MenuOpinion {
 
         do {
             System.out.print("Ingrese su comentario sobre '" + tituloSeleccionado + "': ");
-            valido = nueva.setComentario(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
+            String comentarioTxt = sc.nextLine();
+
+            if (!comentarioTxt.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s]+")) {
+                System.out.println("[ERROR]: El comentario solo puede contener letras (sin números ni símbolos).");
+                valido = false;
+            } else {
+                valido = nueva.setComentario(comentarioTxt);
+                if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
+            }
         } while (!valido);
 
         nueva.setIdOpinion(contadorIdOpinion++);
