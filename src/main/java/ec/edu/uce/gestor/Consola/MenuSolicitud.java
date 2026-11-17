@@ -47,7 +47,7 @@ public class MenuSolicitud {
         SolicitudConsumo nueva = new SolicitudConsumo();
         boolean valido;
 
-        System.out.println("\n--- CREAR SOLICITUD (H3.4) ---");
+        System.out.println("\n--- CREAR SOLICITUD ---");
 
         do {
             System.out.print("Ingrese tipo de contenido (solo letras, ej. Pelicula, Libro): ");
@@ -88,7 +88,7 @@ public class MenuSolicitud {
         } while (!valido);
 
         if (solicitudRegistrada.getTipoContenido().equalsIgnoreCase(temp.getTipoContenido().trim())) {
-            System.out.println("\n--- SOLICITUD ENCONTRADA (H3.2) ---");
+            System.out.println("\n--- SOLICITUD ENCONTRADA ---");
             System.out.println(" -> ID: " + solicitudRegistrada.getIdSolicitud()
                     + " | Tipo: " + solicitudRegistrada.getTipoContenido()
                     + " | Estado: " + solicitudRegistrada.getEstado()

@@ -20,7 +20,7 @@ public class MenuOpinion {
         int opcion = -1;
 
         do {
-            System.out.println("\n===(H5). GESTIONAR OPINIONES ===");
+            System.out.println("\n=== GESTIONAR OPINIONES ===");
             System.out.println("1. Consultar Opiniones");
             System.out.println("2. Escribir Opinión");
             System.out.println("3. Editar Opinión");
@@ -73,7 +73,7 @@ public class MenuOpinion {
 
     private static void escribirOpinion(Scanner sc) {
         if (!MenuContenido.hayContenidoRegistrado()) {
-            System.out.println("\n[RESTRICCIÓN]: No existen contenidos registrados. Registre primero un contenido en el Módulo H2.");
+            System.out.println("\n[RESTRICCIÓN]: No existen contenidos registrados. Registre primero un contenido.");
             return;
         }
 
@@ -102,8 +102,15 @@ public class MenuOpinion {
 
         do {
             System.out.print("Ingrese su comentario sobre '" + tituloSeleccionado + "': ");
-            valido = nueva.setComentario(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
+            String comentarioTxt = sc.nextLine();
+
+            if (!comentarioTxt.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s]+")) {
+                System.out.println("[ERROR]: El comentario solo puede contener letras (sin números ni símbolos).");
+                valido = false;
+            } else {
+                valido = nueva.setComentario(comentarioTxt);
+                if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
+            }
         } while (!valido);
 
         nueva.setIdOpinion(contadorIdOpinion++);
@@ -121,7 +128,7 @@ public class MenuOpinion {
             System.out.println("\n[RESTRICCIÓN]: No existen opiniones registradas todavía.");
             return;
         }
-        System.out.println("\n--- OPINIÓN REGISTRADA (H5.1) ---");
+        System.out.println("\n--- OPINIÓN REGISTRADA ---");
         System.out.println(" Contenido: " + contenidoOpinadoInfo + " | " + opinionRegistrada.toString());
     }
 

@@ -1,6 +1,7 @@
 package ec.edu.uce.gestor.dominio;
 
 import java.util.Date;
+import ec.edu.uce.gestor.Util.Validaciones;
 
 public class Pelicula extends Contenido {
     private int duracion;
@@ -32,11 +33,12 @@ public class Pelicula extends Contenido {
     public String getClasificacion(){
         return clasificacion;
     }
-    public boolean setClasificacion(String clasificacion){
-        if (clasificacion == ""){
+
+    public boolean setClasificacion(String clasificacion) {
+        if (!Validaciones.validarClasificacionEdad(clasificacion)) {
             return false;
         }
-        this.clasificacion = clasificacion;
+        this.clasificacion = clasificacion.trim();
         return true;
     }
 

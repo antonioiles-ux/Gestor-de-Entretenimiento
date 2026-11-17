@@ -1,6 +1,7 @@
 package ec.edu.uce.gestor.dominio;
 
 import java.util.Date;
+import ec.edu.uce.gestor.Util.Validaciones;
 
 public class Videojuego extends Contenido {
     private String plataforma;
@@ -13,32 +14,37 @@ public class Videojuego extends Contenido {
         this.clasificacionEdad = "Sin Clasificacion";
     }
 
-    public Videojuego(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion, String plataforma, String clasificacionEdad){
+    public Videojuego(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion, String plataforma, String clasificacionEdad) {
         super(idContenido, titulo, autor, genero, fechaPublicacion);
-        this.plataforma = plataforma;
-        this.clasificacionEdad = clasificacionEdad;
+        if (!setPlataforma(plataforma)) {
+            this.plataforma = "Sin plataforma";
+        }
+        if (!setClasificacionEdad(clasificacionEdad)) {
+            this.clasificacionEdad = "Sin Clasificacion";
+        }
     }
-
+    //gett
     public String getPlataforma(){
         return plataforma;
     }
-
-    public boolean setPlataforma(String plataforma) {
-        if (plataforma == null || plataforma.trim().isEmpty()) {
-            return false;
-        }
-        this.plataforma = plataforma;
-        return true;
-    }
-
     public String getClasificacionEdad(){
         return clasificacionEdad;
     }
-    public boolean setClasificacionEdad(String clasificacionEdad) {
-        if (clasificacionEdad == null || clasificacionEdad.trim().isEmpty()) {
+
+    //set
+    public boolean setPlataforma(String plataforma) {
+        if (!Validaciones.validarTextoConLetras(plataforma)) {
             return false;
         }
-        this.clasificacionEdad = clasificacionEdad;
+        this.plataforma = plataforma.trim();
+        return true;
+    }
+
+    public boolean setClasificacionEdad(String clasificacionEdad) {
+        if (!Validaciones.validarClasificacionEdad(clasificacionEdad)) {
+            return false;
+        }
+        this.clasificacionEdad = clasificacionEdad.trim();
         return true;
     }
 

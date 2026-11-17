@@ -99,7 +99,7 @@ public class MenuValoracion {
             System.out.println("\n[RESTRICCIÓN]: No existen valoraciones registradas todavía.");
             return;
         }
-        System.out.println("\n--- VALORACIÓN REGISTRADA (H4.2) ---");
+        System.out.println("\n--- VALORACIÓN REGISTRADA ---");
         System.out.println(" Contenido: " + contenidoValoradoInfo + " | " + valoracionRegistrada.toString());
     }
 

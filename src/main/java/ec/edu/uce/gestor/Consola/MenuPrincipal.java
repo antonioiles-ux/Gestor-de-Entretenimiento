@@ -7,6 +7,7 @@ public class MenuPrincipal {
 
     public static boolean sesionIniciada = false;
     public static boolean esAdmin = false;
+
     private Scanner sn = new Scanner(System.in);
 
     public void mostrarMenuPrincipal() {
@@ -26,17 +27,21 @@ public class MenuPrincipal {
             System.out.println("3. [Módulo H3] Gestionar Solicitudes");
             System.out.println("4. [Módulo H4] Gestionar Valoraciones");
             System.out.println("5. [Módulo H5] Gestionar Opiniones");
+
             if (sesionIniciada) {
                 System.out.println("6. Cerrar Sesión");
             }
+
             System.out.println("0. Salir del Programa");
             System.out.print("Seleccione una opción de nivel 0: ");
 
             String entrada = sn.nextLine();
+
             if (!Validaciones.validarNumeros(entrada)) {
                 System.out.println("\n[ERROR]: Ingrese solo números.");
                 continue;
             }
+
             opcion = Integer.parseInt(entrada);
 
             switch (opcion) {
