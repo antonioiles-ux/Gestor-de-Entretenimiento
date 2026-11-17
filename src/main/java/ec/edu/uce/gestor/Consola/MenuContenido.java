@@ -341,7 +341,7 @@ public class MenuContenido {
 
         } while (opcion != 0);
     }
-
+//Correccion menuBuscarContenido
     private static void menuBuscarContenido(Scanner sc) {
 
         if (!hayContenidoRegistrado()) {
@@ -522,8 +522,6 @@ public class MenuContenido {
 
     } while (opcion != 0);
 }
-
-
 
     private static Date convertirFecha(String fechaTxt) {
         try {
