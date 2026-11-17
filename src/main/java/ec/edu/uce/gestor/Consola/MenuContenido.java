@@ -185,7 +185,7 @@ public class MenuContenido {
         do {
             System.out.print("Ingrese descripción: ");
             valido = libro.setDescripcion(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: La descripción no puede estar vacía.");
+            if (!valido) System.out.println("[ERROR]: Descripción inválida. Debe incluir texto (no solo números ni vacío).");
         } while (!valido);
 
         libroRegistrado = libro;
@@ -206,9 +206,9 @@ public class MenuContenido {
         } while (!valido);
 
         do {
-            System.out.print("Ingrese clasificación (ej. PG-13, +18): ");
+            System.out.print("Ingrese clasificación (ej. PG-13, R, B15): ");
             valido = pelicula.setClasificacion(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: La clasificación no puede estar vacía.");
+            if (!valido) System.out.println("[ERROR]: Clasificación inválida. Debe incluir letras (ej. PG-13, R), no solo números.");
         } while (!valido);
 
         peliculaRegistrada = pelicula;
