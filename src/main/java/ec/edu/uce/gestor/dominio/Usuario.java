@@ -1,5 +1,7 @@
 package ec.edu.uce.gestor.dominio;
 
+import ec.edu.uce.gestor.Util.Validaciones;
+
 public class Usuario {
 
     private String nombreCompleto;
@@ -11,8 +13,12 @@ public class Usuario {
     }
 
     public Usuario(String nombreCompleto, int idUsuario) {
-        this.nombreCompleto = nombreCompleto;
-        this.idUsuario = idUsuario;
+        if (!setNombreCompleto(nombreCompleto)) {
+            this.nombreCompleto = "sin nombre";
+        }
+        if (!setIdUsuario(idUsuario)) {
+            this.idUsuario = 0;
+        }
     }
 
     public String getNombreCompleto() {
@@ -20,11 +26,10 @@ public class Usuario {
     }
 
     public boolean setNombreCompleto(String nombreCompleto) {
-        if (nombreCompleto == null || nombreCompleto.equals("")) {
+        if (!Validaciones.validarLetras(nombreCompleto)) {
             return false;
         }
-        this.nombreCompleto = nombreCompleto;
-
+        this.nombreCompleto = nombreCompleto.trim();
         return true;
     }
 
@@ -37,7 +42,6 @@ public class Usuario {
             return false;
         }
         this.idUsuario = idUsuario;
-
         return true;
     }
 
