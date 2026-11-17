@@ -145,7 +145,7 @@ public class MenuContenido {
         do {
             System.out.print("Ingrese título: ");
             valido = contenido.setTitulo(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: Titulo inválido (use solo letras y espacios)");
+            if (!valido) System.out.println("[ERROR]: Titulo inválido (use solo letras y espacios).");
         } while (!valido);
 
         do {

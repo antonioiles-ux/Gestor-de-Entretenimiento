@@ -42,7 +42,7 @@ public class Contenido {
         return fechaPublicacion;
     }
 
-    //SET
+    //SET VALIDACIONES
     public boolean setIdContenido(int idContenido){
         if (idContenido <= 0){
             return false;
