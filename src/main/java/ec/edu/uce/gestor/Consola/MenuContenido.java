@@ -248,13 +248,13 @@ public class MenuContenido {
         do {
             System.out.print("Ingrese plataforma (ej. PC, PS5, Xbox): ");
             valido = videojuego.setPlataforma(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: La plataforma no puede estar vacía.");
+            if (!valido) System.out.println("[ERROR]: Plataforma inválida. Debe incluir texto (no solo números ni vacío).");
         } while (!valido);
 
         do {
-            System.out.print("Ingrese clasificación de edad (ej. +18): ");
+            System.out.print("Ingrese clasificación de edad (ej. E10+, T, PEGI 18): ");
             valido = videojuego.setClasificacionEdad(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: La clasificación de edad no puede estar vacía.");
+            if (!valido) System.out.println("[ERROR]: Clasificación inválida. Debe incluir letras (ej. PEGI 18, T, M), no solo números.");
         } while (!valido);
 
         videojuegoRegistrado = videojuego;
