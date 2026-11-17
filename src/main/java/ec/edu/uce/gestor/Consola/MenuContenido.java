@@ -344,10 +344,15 @@ public class MenuContenido {
 
     private static void menuBuscarContenido(Scanner sc) {
 
+        if (!hayContenidoRegistrado()) {
+            System.out.println("\n[RESTRICCIÓN]: No existen contenidos registrados para realizar búsquedas.");
+            return;
+        }
+
         int opcion = -1;
-        Contenido busqueda = new Contenido();
 
         do {
+
             System.out.println("\n=== BUSCAR CONTENIDO (H2.3.5) ===");
             System.out.println("1. Buscar por Título");
             System.out.println("2. Buscar por Género");
@@ -356,50 +361,169 @@ public class MenuContenido {
             System.out.print("Seleccione una opción: ");
 
             String entrada = sc.nextLine();
+
             if (!Validaciones.validarNumeros(entrada)) {
                 System.out.println("[ERROR]: Ingrese solo números.");
                 continue;
             }
+
             opcion = Integer.parseInt(entrada);
 
-            boolean valido;
+            boolean encontrado = false;
+
             switch (opcion) {
+
                 case 1:
-                    do {
-                        System.out.print("Ingrese título a buscar: ");
-                        valido = busqueda.setTitulo(sc.nextLine());
-                        if (!valido) System.out.println("[ERROR]: El título no puede estar vacío.");
-                    } while (!valido);
-                    System.out.println("[VALIDACIÓN EXITOSA]: Criterio de búsqueda -> " + busqueda.getTitulo());
+
+                    System.out.print("Ingrese título a buscar: ");
+                    String tituloBuscar = sc.nextLine();
+
+                    System.out.println("\n=== RESULTADOS DE BÚSQUEDA ===");
+
+                    if (libroRegistrado != null &&
+                            libroRegistrado.getTitulo().toLowerCase()
+                                    .contains(tituloBuscar.toLowerCase())) {
+
+                        System.out.println("\n[LIBRO ENCONTRADO]");
+                        System.out.println(libroRegistrado);
+                        encontrado = true;
+                    }
+
+                    if (peliculaRegistrada != null &&
+                            peliculaRegistrada.getTitulo().toLowerCase()
+                                    .contains(tituloBuscar.toLowerCase())) {
+
+                        System.out.println("\n[PELÍCULA ENCONTRADA]");
+                        System.out.println(peliculaRegistrada);
+                        encontrado = true;
+                    }
+
+                    if (serieRegistrada != null &&
+                            serieRegistrada.getTitulo().toLowerCase()
+                                    .contains(tituloBuscar.toLowerCase())) {
+
+                        System.out.println("\n[SERIE ENCONTRADA]");
+                        System.out.println(serieRegistrada);
+                        encontrado = true;
+                    }
+
+                    if (videojuegoRegistrado != null &&
+                            videojuegoRegistrado.getTitulo().toLowerCase()
+                                    .contains(tituloBuscar.toLowerCase())) {
+
+                        System.out.println("\n[VIDEOJUEGO ENCONTRADO]");
+                        System.out.println(videojuegoRegistrado);
+                        encontrado = true;
+                    }
+
+                    if (!encontrado) {
+                        System.out.println("[INFO]: No se encontraron contenidos con ese título.");
+                    }
+
                     break;
 
                 case 2:
-                    do {
-                        System.out.print("Ingrese género a buscar (solo letras): ");
-                        valido = busqueda.setGenero(sc.nextLine());
-                        if (!valido) System.out.println("[ERROR]: Género inválido (solo letras).");
-                    } while (!valido);
-                    System.out.println("[VALIDACIÓN EXITOSA]: Criterio de búsqueda -> " + busqueda.getGenero());
+
+                    System.out.print("Ingrese género a buscar: ");
+                    String generoBuscar = sc.nextLine();
+
+                    System.out.println("\n=== RESULTADOS DE BÚSQUEDA ===");
+
+                    if (libroRegistrado != null &&
+                            libroRegistrado.getGenero().equalsIgnoreCase(generoBuscar)) {
+
+                        System.out.println("\n[LIBRO ENCONTRADO]");
+                        System.out.println(libroRegistrado);
+                        encontrado = true;
+                    }
+
+                    if (peliculaRegistrada != null &&
+                            peliculaRegistrada.getGenero().equalsIgnoreCase(generoBuscar)) {
+
+                        System.out.println("\n[PELÍCULA ENCONTRADA]");
+                        System.out.println(peliculaRegistrada);
+                        encontrado = true;
+                    }
+
+                    if (serieRegistrada != null &&
+                            serieRegistrada.getGenero().equalsIgnoreCase(generoBuscar)) {
+
+                        System.out.println("\n[SERIE ENCONTRADA]");
+                        System.out.println(serieRegistrada);
+                        encontrado = true;
+                    }
+
+                    if (videojuegoRegistrado != null &&
+                            videojuegoRegistrado.getGenero().equalsIgnoreCase(generoBuscar)) {
+
+                        System.out.println("\n[VIDEOJUEGO ENCONTRADO]");
+                        System.out.println(videojuegoRegistrado);
+                        encontrado = true;
+                    }
+
+                    if (!encontrado) {
+                        System.out.println("No se encontraron contenidos con ese género.");
+                    }
+
                     break;
 
-                case 3:
-                    do {
-                        System.out.print("Ingrese autor a buscar (solo letras): ");
-                        valido = busqueda.setAutor(sc.nextLine());
-                        if (!valido) System.out.println("[ERROR]: Autor inválido (solo letras).");
-                    } while (!valido);
-                    System.out.println("[VALIDACIÓN EXITOSA]: Criterio de búsqueda -> " + busqueda.getAutor());
-                    break;
+            case 3:
 
-                case 0:
-                    break;
+                System.out.print("Ingrese autor a buscar: ");
+                String autorBuscar = sc.nextLine();
 
-                default:
-                    System.out.println("[ERROR]: Opción inválida.");
-            }
+                System.out.println("\n=== RESULTADOS DE BÚSQUEDA ===");
 
-        } while (opcion != 0);
-    }
+                if (libroRegistrado != null &&
+                        libroRegistrado.getAutor().equalsIgnoreCase(autorBuscar)) {
+
+                    System.out.println("\n[LIBRO ENCONTRADO]");
+                    System.out.println(libroRegistrado);
+                    encontrado = true;
+                }
+
+                if (peliculaRegistrada != null &&
+                        peliculaRegistrada.getAutor().equalsIgnoreCase(autorBuscar)) {
+
+                    System.out.println("\n[PELÍCULA ENCONTRADA]");
+                    System.out.println(peliculaRegistrada);
+                    encontrado = true;
+                }
+
+                if (serieRegistrada != null &&
+                        serieRegistrada.getAutor().equalsIgnoreCase(autorBuscar)) {
+
+                    System.out.println("\n[SERIE ENCONTRADA]");
+                    System.out.println(serieRegistrada);
+                    encontrado = true;
+                }
+
+                if (videojuegoRegistrado != null &&
+                        videojuegoRegistrado.getAutor().equalsIgnoreCase(autorBuscar)) {
+
+                    System.out.println("\n[VIDEOJUEGO ENCONTRADO]");
+                    System.out.println(videojuegoRegistrado);
+                    encontrado = true;
+                }
+
+                if (!encontrado) {
+                    System.out.println("No se encontraron contenidos con ese autor.");
+                }
+
+                break;
+
+            case 0:
+                System.out.println("Regresando...");
+                break;
+
+            default:
+                System.out.println("Opción inválida.");
+        }
+
+    } while (opcion != 0);
+}
+
+
 
     private static Date convertirFecha(String fechaTxt) {
         try {
