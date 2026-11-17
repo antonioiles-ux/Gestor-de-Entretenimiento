@@ -1,4 +1,6 @@
 package ec.edu.uce.gestor.dominio;
+import ec.edu.uce.gestor.Util.Validaciones;
+
 import java.util.Date;
 
 public class Contenido {
@@ -50,26 +52,26 @@ public class Contenido {
     }
 
     public boolean setTitulo(String titulo){
-        if (titulo == "") {
+        if (!Validaciones.validarLetras(titulo)) {
             return false;
         }
-        this.titulo = titulo;
+        this.titulo = titulo.trim();
         return true;
     }
 
     public boolean setAutor(String autor){
-        if (autor == "") {
+        if (!Validaciones.validarLetras(autor)) {
             return false;
         }
-        this.autor = autor;
+        this.autor = autor.trim();
         return true;
     }
 
     public boolean setGenero(String genero){
-        if (genero == "") {
+        if (!Validaciones.validarLetras(genero)) {
             return false;
         }
-        this.genero = genero;
+        this.genero = genero.trim();
         return true;
     }
 
