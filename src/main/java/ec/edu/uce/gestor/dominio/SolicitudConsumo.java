@@ -1,6 +1,7 @@
 package ec.edu.uce.gestor.dominio;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class SolicitudConsumo {
 
@@ -78,4 +79,33 @@ public class SolicitudConsumo {
         public String toString() {
             return "id: "+this.getIdSolicitud()+"Estado: "+ this.getEstado()+"Fecha: "+ this.getFechaSolicitud()+"Tipo de contenido:"+ this.getTipoContenido()+ super.toString();
         }
+
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    public boolean actualizarEstado(String nuevoEstado) {
+        return setEstado(nuevoEstado);
+    }
+
+    public boolean actualizarEstado(String nuevoEstado, Date nuevaFecha) {
+        return setEstado(nuevoEstado) && setFechaSolicitud(nuevaFecha);
+    }
+
+    // --- EQUALS Y HASHCODE (Regla de negocio: mismo idSolicitud y tipoContenido) ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof SolicitudConsumo s)) {
+            return false;
+        }
+        return this.idSolicitud == s.idSolicitud
+                && Objects.equals(this.tipoContenido, s.tipoContenido);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idSolicitud, tipoContenido);
+    }
+
 }

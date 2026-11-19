@@ -1,5 +1,6 @@
 package ec.edu.uce.gestor;
 
+import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Videojuego;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -128,5 +129,42 @@ public class VideojuegoTest {
                 + "Plataforma: Sin plataforma, clasificacionEdad: Sin Clasificacion, ";
 
         assertEquals(esperado, vacio.toString());
+    }
+
+
+
+
+    // --- Nuevos tests: Polimorfismo, instanceof, Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testPolimorfismoYInstanceof() {
+        Contenido contPolimorfico = videojuego;
+
+        assertEquals(600, contPolimorfico.calcularTiempoConsumo());
+        assertTrue(contPolimorfico instanceof Videojuego);
+
+        if (contPolimorfico instanceof Videojuego v) {
+            assertEquals("PSP y PS", v.getPlataforma());
+        }
+    }
+
+    @Test
+    public void testSobrecargaCalcularTiempoConsumo() {
+        assertEquals(600, videojuego.calcularTiempoConsumo());
+        assertEquals(300, videojuego.calcularTiempoConsumo(5));
+        assertEquals(0, videojuego.calcularTiempoConsumo(0));
+        assertEquals(0, videojuego.calcularTiempoConsumo(-3));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Videojuego mismoJuego = new Videojuego(1, "Otro Juego", "Otro Estudio", "RPG", new Date(), "PSP y PS", "+18");
+        Videojuego distintoJuego = new Videojuego(4, "God of War", "Santa Monica", "Accion", fechaPublicacion, "PC", "T");
+
+        assertEquals(videojuego, videojuego);
+        assertEquals(videojuego, mismoJuego);
+        assertEquals(videojuego.hashCode(), mismoJuego.hashCode());
+        assertNotEquals(videojuego, distintoJuego);
+        assertFalse(videojuego.equals(null));
     }
 }

@@ -142,4 +142,28 @@ public class CuentaTest {
         assertFalse(cuenta.setFechaRegistro(null));
         assertEquals(fechaAntes, cuenta.getFechaRegistro());
     }
+
+
+
+    // --- Nuevos tests: Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testSobrecargaValidarCredenciales() {
+        assertTrue(cuenta.validarCredenciales("juanpablo@gmail.com", "clave123"));
+        assertFalse(cuenta.validarCredenciales("otro@gmail.com", "clave123"));
+        assertTrue(cuenta.validarCredenciales("clave123"));
+        assertFalse(cuenta.validarCredenciales("claveErronea"));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Cuenta mismaCuenta = new Cuenta(2, "juanpablo@gmail.com", "otraClave99", new Date());
+        Cuenta distintaCuenta = new Cuenta(10, "juanpablo@gmail.com", "clave123", new Date());
+
+        assertEquals(cuenta, cuenta);
+        assertEquals(cuenta, mismaCuenta);
+        assertEquals(cuenta.hashCode(), mismaCuenta.hashCode());
+        assertNotEquals(cuenta, distintaCuenta);
+        assertFalse(cuenta.equals(null));
+    }
 }

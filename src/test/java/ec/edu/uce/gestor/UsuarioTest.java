@@ -85,4 +85,28 @@ public class UsuarioTest {
         assertFalse(usuario.setIdUsuario(-5));
         assertEquals(idAntes, usuario.getIdUsuario());
     }
+
+
+
+    // --- Nuevos tests: Polimorfismo base, Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testObtenerRolYSobrecargaMostrarPerfil() {
+        assertEquals("Usuario Registrado", usuario.obtenerRol());
+        assertEquals("Id: 2, Nombre: Juan Perez", usuario.mostrarPerfil());
+        assertEquals("Id: 2, Nombre: Juan Perez, Rol: Usuario Registrado", usuario.mostrarPerfil(true));
+        assertEquals("Id: 2, Nombre: Juan Perez", usuario.mostrarPerfil(false));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Usuario mismoUsuario = new Usuario("Juan Perez", 2);
+        Usuario distintoUsuario = new Usuario("Maria Lopez", 3);
+
+        assertEquals(usuario, usuario);
+        assertEquals(usuario, mismoUsuario);
+        assertEquals(usuario.hashCode(), mismoUsuario.hashCode());
+        assertNotEquals(usuario, distintoUsuario);
+        assertFalse(usuario.equals(null));
+    }
 }

@@ -2,7 +2,7 @@ package ec.edu.uce.gestor.dominio;
 
 import ec.edu.uce.gestor.Util.Validaciones;
 
-
+import java.util.Objects;
 import java.util.Date;
 
 public class Libro extends Contenido {
@@ -51,6 +51,41 @@ public class Libro extends Contenido {
         return super.toString() + "Número de páginas: " + this.getNumeroPaginas() + ", Descripcion: " +
                 this.getDescripcion() + ", ";
 
+    }
+
+
+    // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Contenido) ---
+    // Estima el tiempo total de lectura en minutos (aprox. 2 min por página)
+    @Override
+    public int calcularTiempoConsumo() {
+        return this.numeroPaginas * 2;
+    }
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    // Permite calcular el tiempo indicando la velocidad de lectura en minutos por página
+
+    public int calcularTiempoConsumo(int minutosPorPagina) {
+        if (minutosPorPagina <= 0) {
+            return 0;
+        }
+        return this.numeroPaginas * minutosPorPagina;
+    }
+
+    // --- EQUALS Y HASHCODE ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof Libro l)) {
+            return false;
+        }
+        return this.numeroPaginas == l.numeroPaginas && super.equals(l);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), numeroPaginas);
     }
 }
 

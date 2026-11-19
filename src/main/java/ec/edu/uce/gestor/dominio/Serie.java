@@ -1,5 +1,5 @@
 package ec.edu.uce.gestor.dominio;
-
+import java.util.Objects;
 import java.util.Date;
 public class Serie extends Contenido {
     private int numeroTemporadas;
@@ -49,5 +49,44 @@ public class Serie extends Contenido {
     public String toString() {
         return super.toString() + "Temporadas: " + this.getNumeroTemporadas() + ", Episodios: " + this.getNumeroEpisodios() + ", ";
     }
+
+
+    // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Contenido) ---
+    // Estima el tiempo total en minutos asumiendo 45 minutos por episodio
+    @Override
+    public int calcularTiempoConsumo() {
+        return this.numeroEpisodios * 45;
+    }
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    // Calcula el tiempo total especificando la duración promedio por episodio
+    public int calcularTiempoConsumo(int minutosPorEpisodio) {
+        if (minutosPorEpisodio <= 0) {
+            return 0;
+        }
+        return this.numeroEpisodios * minutosPorEpisodio;
+    }
+
+    // --- EQUALS Y HASHCODE ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof Serie s)) {
+            return false;
+        }
+        return this.numeroTemporadas == s.numeroTemporadas
+                && this.numeroEpisodios == s.numeroEpisodios
+                && super.equals(s);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), numeroTemporadas, numeroEpisodios);
+    }
+
+
+
 
 }

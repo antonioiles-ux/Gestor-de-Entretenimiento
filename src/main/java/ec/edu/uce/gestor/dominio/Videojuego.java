@@ -2,6 +2,7 @@ package ec.edu.uce.gestor.dominio;
 
 import java.util.Date;
 import ec.edu.uce.gestor.Util.Validaciones;
+import java.util.Objects;
 
 public class Videojuego extends Contenido {
     private String plataforma;
@@ -52,5 +53,41 @@ public class Videojuego extends Contenido {
     public String toString(){
         return super.toString() + "Plataforma: " + this.getPlataforma() + ", clasificacionEdad: " +
                 this.getClasificacionEdad()+ ", ";
+    }
+
+
+    // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Contenido) ---
+    // Estima una campaña base de 10 horas (600 minutos)
+    @Override
+    public int calcularTiempoConsumo() {
+        return 600;
+    }
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    // Calcula el tiempo total en minutos según las horas jugadas ingresadas
+    public int calcularTiempoConsumo(int horasJugadas) {
+        if (horasJugadas <= 0) {
+            return 0;
+        }
+        return horasJugadas * 60;
+    }
+
+    // --- EQUALS Y HASHCODE ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof Videojuego v)) {
+            return false;
+        }
+        return Objects.equals(this.plataforma, v.plataforma)
+                && Objects.equals(this.clasificacionEdad, v.clasificacionEdad)
+                && super.equals(v);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), plataforma, clasificacionEdad);
     }
 }

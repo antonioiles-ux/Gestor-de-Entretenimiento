@@ -1,5 +1,6 @@
 package ec.edu.uce.gestor;
 
+import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Pelicula;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -84,5 +85,41 @@ public class PeliculaTest {
 
         // Comprobación de rechazo (vacio)
         assertFalse(pelicula.setClasificacion(""));
+    }
+
+
+
+    // --- Nuevos tests: Polimorfismo, instanceof, Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testPolimorfismoYInstanceof() {
+        Contenido contPolimorfico = pelicula;
+
+        assertEquals(120, contPolimorfico.calcularTiempoConsumo());
+        assertTrue(contPolimorfico instanceof Pelicula);
+
+        if (contPolimorfico instanceof Pelicula p) {
+            assertEquals("+18", p.getClasificacion());
+        }
+    }
+
+    @Test
+    public void testSobrecargaCalcularTiempoConsumo() {
+        assertEquals(120, pelicula.calcularTiempoConsumo());
+        assertEquals(240, pelicula.calcularTiempoConsumo(2));
+        assertEquals(0, pelicula.calcularTiempoConsumo(0));
+        assertEquals(0, pelicula.calcularTiempoConsumo(-1));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Pelicula mismaPelicula = new Pelicula(1, "Otra Peli", "Otro Dir", "Accion", new Date(), 120, "+18");
+        Pelicula distintaPelicula = new Pelicula(5, "StarWars", "George Lucas", "Ciencia Ficcion", fechaContenido, 150, "PG-13");
+
+        assertEquals(pelicula, pelicula);
+        assertEquals(pelicula, mismaPelicula);
+        assertEquals(pelicula.hashCode(), mismaPelicula.hashCode());
+        assertNotEquals(pelicula, distintaPelicula);
+        assertFalse(pelicula.equals(null));
     }
 }

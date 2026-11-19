@@ -1,4 +1,5 @@
 package ec.edu.uce.gestor.dominio;
+import java.util.Objects;
 
 public class GestorContenido extends Usuario {
     private int idGestor;
@@ -27,24 +28,54 @@ public class GestorContenido extends Usuario {
     }
 
     // Métodos del Diagrama de Clases
-    public void suspenderCuenta() {
-        System.out.println("[GESTOR]: Suspendiendo cuenta de usuario...");
+    public boolean suspenderCuenta() {
+        return this.idGestor > 0;
     }
 
-    public void reactivarCuenta() {
-        System.out.println("[GESTOR]: Reactivando cuenta de usuario...");
+    public boolean reactivarCuenta() {
+        return this.idGestor > 0;
     }
 
-    public void eliminarCuenta() {
-        System.out.println("[GESTOR]: Eliminando cuenta de usuario del sistema...");
+    public boolean eliminarCuenta() {
+        return this.idGestor > 0;
     }
 
-    public void eliminarOpinion() {
-        System.out.println("[GESTOR]: Moderando y eliminando opinión...");
+    public boolean eliminarOpinion() {
+        return this.idGestor > 0;
     }
 
     @Override
     public String toString() {
         return "Id gestor: " + this.getIdGestor() + ", " + super.toString();
     }
+
+
+    // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Usuario) ---
+    @Override
+    public String obtenerRol() {
+        return "Administrador / Gestor de Contenidos";
+    }
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    public boolean eliminarOpinion(String motivo) {
+        return this.idGestor > 0 && motivo != null && !motivo.trim().isEmpty();
+    }
+
+    // --- EQUALS Y HASHCODE ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof GestorContenido g)) {
+            return false;
+        }
+        return this.idGestor == g.idGestor && super.equals(g);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), idGestor);
+    }
+
 }

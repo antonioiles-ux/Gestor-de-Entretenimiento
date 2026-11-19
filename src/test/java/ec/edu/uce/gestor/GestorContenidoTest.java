@@ -1,6 +1,7 @@
 package ec.edu.uce.gestor;
 
 import ec.edu.uce.gestor.dominio.GestorContenido;
+import ec.edu.uce.gestor.dominio.Usuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -116,4 +117,41 @@ public class GestorContenidoTest {
     public void testToString() {
         assertEquals("Id gestor: 5, Id: 2, Nombre: Juan Perez", gestor.toString());
     }
+
+
+
+// --- Nuevos tests: Polimorfismo, instanceof, Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testPolimorfismoYInstanceof() {
+        Usuario usuarioPolimorfico = new GestorContenido("Juan Perez", 2, 5);
+
+        assertEquals("Administrador / Gestor de Contenidos", usuarioPolimorfico.obtenerRol());
+        assertTrue(usuarioPolimorfico instanceof GestorContenido);
+
+        if (usuarioPolimorfico instanceof GestorContenido g) {
+            assertEquals(5, g.getIdGestor());
+        }
+    }
+
+    @Test
+    public void testSobrecargaEliminarOpinion() {
+        assertTrue(gestor.eliminarOpinion());
+        assertTrue(gestor.eliminarOpinion("Comentario ofensivo"));
+        assertFalse(gestor.eliminarOpinion(""));
+        assertFalse(gestor.eliminarOpinion(null));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        GestorContenido mismoGestor = new GestorContenido("Juan Perez", 2, 5);
+        GestorContenido distintoGestor = new GestorContenido("Juan Perez", 2, 9);
+
+        assertEquals(gestor, gestor);
+        assertEquals(gestor, mismoGestor);
+        assertEquals(gestor.hashCode(), mismoGestor.hashCode());
+        assertNotEquals(gestor, distintoGestor);
+        assertFalse(gestor.equals(null));
+    }
 }
+

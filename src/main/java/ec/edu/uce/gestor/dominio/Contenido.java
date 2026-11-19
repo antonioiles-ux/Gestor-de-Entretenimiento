@@ -1,6 +1,7 @@
 package ec.edu.uce.gestor.dominio;
 import ec.edu.uce.gestor.Util.Validaciones;
 
+import java.util.Objects;
 import java.util.Date;
 
 public class Contenido {
@@ -89,6 +90,42 @@ public class Contenido {
                 "  Titulo:" +this.getTitulo()+"  Autor:" +this.getAutor()+
                 "  Genero:" +this.getGenero()+"  Fecha Publicacion:" +
                 this.getFechaPublicacion();
+    }
+
+
+
+    // --- POLIMORFISMO (Metodo base que sobreescribir---
+    public int calcularTiempoConsumo() {
+        return 0;
+    }
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    public String obtenerFicha() {
+        return "[" + this.idContenido + "] " + this.titulo + " (" + this.genero + ")";
+    }
+
+    public String obtenerFicha(boolean incluirAutor) {
+        if (incluirAutor) {
+            return obtenerFicha() + " - Autor: " + this.autor;
+        }
+        return obtenerFicha();
+    }
+
+    // --- EQUALS Y HASHCODE ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true; // mismo objeto en memoria
+        }
+        if (!(otro instanceof Contenido c)) {
+            return false; // null u otra clase
+        }
+        return this.idContenido == c.idContenido;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idContenido);
     }
 
 }

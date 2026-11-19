@@ -1,6 +1,7 @@
 package ec.edu.uce.gestor.dominio;
 
 import ec.edu.uce.gestor.Util.Validaciones;
+import java.util.Objects;
 
 public class Usuario {
 
@@ -49,4 +50,41 @@ public class Usuario {
     public String toString() {
         return "Id: " + this.getIdUsuario() + ", Nombre: " + this.getNombreCompleto();
     }
+
+
+    // --- POLIMORFISMO (Metodo base que sobreescribe GestorContenido) ---
+    public String obtenerRol() {
+        return "Usuario Registrado";
+    }
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    public String mostrarPerfil() {
+        return this.toString();
+    }
+
+    public String mostrarPerfil(boolean incluirRol) {
+        if (incluirRol) {
+            return this.toString() + ", Rol: " + obtenerRol();
+        }
+        return mostrarPerfil();
+    }
+
+    // --- EQUALS Y HASHCODE (Regla de negocio: mismo idUsuario y nombreCompleto) ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof Usuario u)) {
+            return false;
+        }
+        return this.idUsuario == u.idUsuario
+                && Objects.equals(this.nombreCompleto, u.nombreCompleto);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idUsuario, nombreCompleto);
+    }
+
 }

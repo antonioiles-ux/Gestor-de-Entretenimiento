@@ -2,6 +2,7 @@ package ec.edu.uce.gestor.dominio;
 
 import java.util.Date;
 import ec.edu.uce.gestor.Util.Validaciones;
+import java.util.Objects;
 
 public class Pelicula extends Contenido {
     private int duracion;
@@ -45,6 +46,43 @@ public class Pelicula extends Contenido {
     @Override
     public String toString() {
         return super.toString() + "Duracion: " + this.getDuracion() + ", Clasificacion: " + this.getClasificacion() + ", ";
+    }
+
+
+    // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Contenido) ---
+    // Retorna directamente la duración de la película en minutos
+    @Override
+    public int calcularTiempoConsumo() {
+        return this.duracion;
+    }
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    // Calcula el tiempo total si la película se ve varias veces
+
+    public int calcularTiempoConsumo(int repeticiones) {
+        if (repeticiones <= 0) {
+            return 0;
+        }
+        return this.duracion * repeticiones;
+    }
+
+    // --- EQUALS Y HASHCODE ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof Pelicula p)) {
+            return false;
+        }
+        return this.duracion == p.duracion
+                && Objects.equals(this.clasificacion, p.clasificacion)
+                && super.equals(p);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), duracion, clasificacion);
     }
 
 }

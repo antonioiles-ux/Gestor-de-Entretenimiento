@@ -1,5 +1,6 @@
 package ec.edu.uce.gestor.dominio;
 
+import java.util.Objects;
 import java.util.Date;
 
 public class Cuenta{
@@ -74,10 +75,39 @@ public class Cuenta{
         return true;
     }
 
+
     @Override
     public String toString() {
         return "Id Cuenta: " + this.getIdCuenta() + ", Correo: " + this.getCorreoElectronico() + ", Contraseña: " + this.getContrasena() +
                 ", Fecha de registro: " + this.getFechaRegistro();
+    }
+
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    public boolean validarCredenciales(String correo, String clave) {
+        return this.correoElectronico.equals(correo) && this.contrasena.equals(clave);
+    }
+
+    public boolean validarCredenciales(String clave) {
+        return this.contrasena.equals(clave);
+    }
+
+    // --- EQUALS Y HASHCODE ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof Cuenta c)) {
+            return false;
+        }
+        return this.idCuenta == c.idCuenta
+                && Objects.equals(this.correoElectronico, c.correoElectronico);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idCuenta, correoElectronico);
     }
 
 }

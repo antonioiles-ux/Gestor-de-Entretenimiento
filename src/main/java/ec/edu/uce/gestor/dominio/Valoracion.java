@@ -1,4 +1,5 @@
 package ec.edu.uce.gestor.dominio;
+import java.util.Objects;
 
 public class Valoracion {
 
@@ -62,4 +63,33 @@ public class Valoracion {
         return "Id valoracion: " + this.getIdValoracion() + ", Calificacion: " + this.getCalificacion() +
                 ", Fecha de valoracion: " + this.getFechaValoracion();
     }
+
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    public boolean actualizarValoracion(int nuevaCalificacion) {
+        return setCalificacion(nuevaCalificacion);
+    }
+
+    public boolean actualizarValoracion(int nuevaCalificacion, String nuevaFecha) {
+        return setCalificacion(nuevaCalificacion) && setFechaValoracion(nuevaFecha);
+    }
+
+    // --- EQUALS Y HASHCODE (Regla de negocio: mismo idValoracion y calificacion) ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof Valoracion v)) {
+            return false;
+        }
+        return this.idValoracion == v.idValoracion
+                && this.calificacion == v.calificacion;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idValoracion, calificacion);
+    }
+
 }

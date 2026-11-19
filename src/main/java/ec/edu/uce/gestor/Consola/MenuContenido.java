@@ -319,16 +319,16 @@ public class MenuContenido {
 
             switch (opcion) {
                 case 1:
-                    System.out.println(serieRegistrada != null ? serieRegistrada.toString() : "[INFO]: No hay series registradas aún.");
+                    mostrarDetallePolimorfico(serieRegistrada);
                     break;
                 case 2:
-                    System.out.println(libroRegistrado != null ? libroRegistrado.toString() : "[INFO]: No hay libros registrados aún.");
+                    mostrarDetallePolimorfico(libroRegistrado);
                     break;
                 case 3:
-                    System.out.println(peliculaRegistrada != null ? peliculaRegistrada.toString() : "[INFO]: No hay películas registradas aún.");
+                    mostrarDetallePolimorfico(peliculaRegistrada);
                     break;
                 case 4:
-                    System.out.println(videojuegoRegistrado != null ? videojuegoRegistrado.toString() : "[INFO]: No hay videojuegos registrados aún.");
+                    mostrarDetallePolimorfico(videojuegoRegistrado);
                     break;
                 case 5:
                     menuBuscarContenido(sc);
@@ -532,4 +532,30 @@ public class MenuContenido {
             return null;
         }
     }
+
+
+    // --- POLIMORFISMO + INSTANCEOF CON CASTING ---
+    private static void mostrarDetallePolimorfico(Contenido contenido) {
+        if (contenido == null) {
+            System.out.println("[INFO]: No hay contenido registrado en esta categoría aún.");
+            return;
+        }
+        // Ejecución polimórfica: llama al toString() y calcularTiempoConsumo() de la clase hija real
+        System.out.println(contenido.toString());
+        System.out.println(" -> Tiempo estimado de consumo: " + contenido.calcularTiempoConsumo() + " minutos.");
+
+        // Uso de instanceof + casting para acceder a atributos exclusivos de cada subclase
+        if (contenido instanceof Libro l) {
+            System.out.println(" -> Detalle específico (Libro): " + l.getNumeroPaginas() + " páginas.");
+        } else if (contenido instanceof Pelicula p) {
+            System.out.println(" -> Detalle específico (Película): Clasificación " + p.getClasificacion());
+        } else if (contenido instanceof Serie s) {
+            System.out.println(" -> Detalle específico (Serie): " + s.getNumeroTemporadas() + " temporadas.");
+        } else if (contenido instanceof Videojuego v) {
+            System.out.println(" -> Detalle específico (Videojuego): Plataforma " + v.getPlataforma());
+        }
+    }
+
+
+
 }

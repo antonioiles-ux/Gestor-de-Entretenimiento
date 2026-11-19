@@ -120,4 +120,32 @@ public class ValoracionTest {
         assertFalse(valoracion.setFechaValoracion(null));
         assertEquals(fechaAntes, valoracion.getFechaValoracion());
     }
+
+
+    // --- Nuevos tests: Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testSobrecargaActualizarValoracion() {
+        assertTrue(valoracion.actualizarValoracion(5));
+        assertEquals(5, valoracion.getCalificacion());
+
+        assertTrue(valoracion.actualizarValoracion(3, "18/11/2026"));
+        assertEquals(3, valoracion.getCalificacion());
+        assertEquals("18/11/2026", valoracion.getFechaValoracion());
+
+        assertFalse(valoracion.actualizarValoracion(10));
+        assertFalse(valoracion.actualizarValoracion(4, ""));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Valoracion mismaValoracion = new Valoracion(2, 4, "2026-11-18");
+        Valoracion distintaValoracion = new Valoracion(7, 2, "2025-01-15");
+
+        assertEquals(valoracion, valoracion);
+        assertEquals(valoracion, mismaValoracion);
+        assertEquals(valoracion.hashCode(), mismaValoracion.hashCode());
+        assertNotEquals(valoracion, distintaValoracion);
+        assertFalse(valoracion.equals(null));
+    }
 }

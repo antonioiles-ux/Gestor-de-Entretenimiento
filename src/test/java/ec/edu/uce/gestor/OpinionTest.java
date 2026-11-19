@@ -144,4 +144,34 @@ public class OpinionTest {
 
         assertEquals(esperado, vacia.toString());
     }
+
+
+
+    // --- Nuevos tests: Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testSobrecargaActualizarComentario() {
+        assertTrue(opinion.actualizarComentario("Muy buena historia"));
+        assertEquals("Muy buena historia", opinion.getComentario());
+
+        assertTrue(opinion.actualizarComentario("Excelente final", "18/11/2026"));
+        assertEquals("Excelente final", opinion.getComentario());
+        assertEquals("18/11/2026", opinion.getFechaEdicion());
+
+        assertFalse(opinion.actualizarComentario(""));
+        assertFalse(opinion.actualizarComentario("Valido", "fecha-invalida"));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Opinion mismaOpinion = new Opinion(1, "Contenido actualizado y mejorado.", "01/01/2026", "02/01/2026");
+        Opinion distintaOpinion = new Opinion(2, "Otro comentario", fechaRegistro, fechaEdicion);
+
+        assertEquals(opinion, opinion);
+        assertEquals(opinion, mismaOpinion);
+        assertEquals(opinion.hashCode(), mismaOpinion.hashCode());
+        assertNotEquals(opinion, distintaOpinion);
+        assertFalse(opinion.equals(null));
+    }
+
 }

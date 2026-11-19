@@ -1,6 +1,7 @@
 package ec.edu.uce.gestor.dominio;
 
 import ec.edu.uce.gestor.Util.Validaciones;
+import java.util.Objects;
 
 public class Opinion {
     private int idOpinion;
@@ -75,4 +76,32 @@ public class Opinion {
         return "ID OPINION:" + this.getIdOpinion() + "  Comentario:" + this.getComentario()
                 + "  Fecha de Registro:" + this.getFechaRegistroOp() + "  Fecha de Edicion:" + this.getFechaEdicion();
     }
+
+    // --- SOBRECARGA DE MÉTODOS ---
+    public boolean actualizarComentario(String nuevoComentario) {
+        return setComentario(nuevoComentario);
+    }
+
+    public boolean actualizarComentario(String nuevoComentario, String nuevaFechaEdicion) {
+        return setComentario(nuevoComentario) && setFechaEdicion(nuevaFechaEdicion);
+    }
+
+    // --- EQUALS Y HASHCODE (Regla de negocio: mismo idOpinion y comentario) ---
+    @Override
+    public boolean equals(Object otro) {
+        if (this == otro) {
+            return true;
+        }
+        if (!(otro instanceof Opinion o)) {
+            return false;
+        }
+        return this.idOpinion == o.idOpinion
+                && Objects.equals(this.comentario, o.comentario);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idOpinion, comentario);
+    }
+
 }

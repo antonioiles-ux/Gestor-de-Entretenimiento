@@ -116,5 +116,34 @@ public class SolicitudConsumoTest {
         assertFalse(solicitud.setTipoContenido("Libro@"));
         assertEquals("Libro", solicitud.getTipoContenido()); // Mantiene el original
     }
+
+
+
+    // --- Nuevos tests: Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testSobrecargaActualizarEstado() {
+        assertTrue(solicitud.actualizarEstado("Consumido"));
+        assertEquals("Consumido", solicitud.getEstado());
+
+        Date nuevaFecha = new Date(1750000000000L);
+        assertTrue(solicitud.actualizarEstado("Finalizada", nuevaFecha));
+        assertEquals("Finalizada", solicitud.getEstado());
+        assertEquals(nuevaFecha, solicitud.getFechaSolicitud());
+
+        assertFalse(solicitud.actualizarEstado("Estado123"));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        SolicitudConsumo mismaSolicitud = new SolicitudConsumo(1, "Pendiente", new Date(), "Libro");
+        SolicitudConsumo distintaSolicitud = new SolicitudConsumo(4, "Aprobada", fechaPrueba, "Serie");
+
+        assertEquals(solicitud, solicitud);
+        assertEquals(solicitud, mismaSolicitud);
+        assertEquals(solicitud.hashCode(), mismaSolicitud.hashCode());
+        assertNotEquals(solicitud, distintaSolicitud);
+        assertFalse(solicitud.equals(null));
+    }
 }
 

@@ -136,4 +136,34 @@ public class ContenidoTest {
         assertFalse(contenido.setIdContenido(-1));
         assertEquals(idContenidoAntes, contenido.getIdContenido());
     }
+
+
+    // --- Nuevos tests: Sobrecarga, Polimorfismo, equals y hashCode ---
+
+    @Test
+    public void testSobrecargaObtenerFicha() {
+        assertEquals("[1] NEED FOR SPEED (Videojuego de Carreras)", contenido.obtenerFicha());
+        assertEquals("[1] NEED FOR SPEED (Videojuego de Carreras) - Autor: Electronic Arts",
+                contenido.obtenerFicha(true));
+        assertEquals("[1] NEED FOR SPEED (Videojuego de Carreras)", contenido.obtenerFicha(false));
+    }
+
+    @Test
+    public void testCalcularTiempoConsumoBase() {
+        assertEquals(0, contenido.calcularTiempoConsumo());
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Contenido mismoId = new Contenido(1, "Otro Titulo", "Otro Autor", "Accion", new Date());
+        Contenido distintoId = new Contenido(99, "NEED FOR SPEED", "Electronic Arts", "Videojuego de Carreras", fechaContenido);
+
+        assertEquals(contenido, contenido);
+        assertEquals(contenido, mismoId);
+        assertEquals(contenido.hashCode(), mismoId.hashCode());
+        assertNotEquals(contenido, distintoId);
+        assertFalse(contenido.equals(null));
+        assertFalse(contenido.equals("Cadena cualquiera"));
+    }
+
 }

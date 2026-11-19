@@ -1,5 +1,6 @@
 package ec.edu.uce.gestor;
 
+import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Libro;
 import ec.edu.uce.gestor.dominio.Pelicula;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,5 +105,41 @@ public class LibroTest {
         assertFalse(libro.setDescripcion("    "));
         assertFalse(libro.setDescripcion(null));
         assertEquals(descripcionAntes, libro.getDescripcion());
+    }
+
+
+
+    // --- Nuevos tests: Polimorfismo, instanceof, Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testPolimorfismoYInstanceof() {
+        Contenido contPolimorfico = libro;
+
+        assertEquals(600, contPolimorfico.calcularTiempoConsumo());
+        assertTrue(contPolimorfico instanceof Libro);
+
+        if (contPolimorfico instanceof Libro l) {
+            assertEquals(300, l.getNumeroPaginas());
+        }
+    }
+
+    @Test
+    public void testSobrecargaCalcularTiempoConsumo() {
+        assertEquals(600, libro.calcularTiempoConsumo());
+        assertEquals(900, libro.calcularTiempoConsumo(3));
+        assertEquals(0, libro.calcularTiempoConsumo(0));
+        assertEquals(0, libro.calcularTiempoConsumo(-2));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Libro mismoLibro = new Libro(1, "Otro Titulo", "Otro Autor", "Drama", new Date(), 300, "Otra desc");
+        Libro distintoLibro = new Libro(2, "Cien años de soledad", "Gabriel Garcia Marquez", "Novela", fechaContenido, 450, "Novela clásica");
+
+        assertEquals(libro, libro);
+        assertEquals(libro, mismoLibro);
+        assertEquals(libro.hashCode(), mismoLibro.hashCode());
+        assertNotEquals(libro, distintoLibro);
+        assertFalse(libro.equals(null));
     }
 }

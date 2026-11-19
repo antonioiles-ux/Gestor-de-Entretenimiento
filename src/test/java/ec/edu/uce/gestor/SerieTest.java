@@ -1,5 +1,6 @@
 package ec.edu.uce.gestor;
 
+import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Serie;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -83,5 +84,40 @@ public class SerieTest {
         // Comprobación de rechazo (0 o negativo)
         assertFalse(serie.setNumeroEpisodios(0));
         assertFalse(serie.setNumeroEpisodios(-10));
+    }
+
+
+    // --- Nuevos tests: Polimorfismo, instanceof, Sobrecarga, equals y hashCode ---
+
+    @Test
+    public void testPolimorfismoYInstanceof() {
+        Contenido contPolimorfico = serie;
+
+        assertEquals(2790, contPolimorfico.calcularTiempoConsumo());
+        assertTrue(contPolimorfico instanceof Serie);
+
+        if (contPolimorfico instanceof Serie s) {
+            assertEquals(5, s.getNumeroTemporadas());
+        }
+    }
+
+    @Test
+    public void testSobrecargaCalcularTiempoConsumo() {
+        assertEquals(2790, serie.calcularTiempoConsumo());
+        assertEquals(1860, serie.calcularTiempoConsumo(30));
+        assertEquals(0, serie.calcularTiempoConsumo(0));
+        assertEquals(0, serie.calcularTiempoConsumo(-5));
+    }
+
+    @Test
+    public void testEqualsYHashCode() {
+        Serie mismaSerie = new Serie(1, "Otra Serie", "Otro Autor", "Comedia", new Date(), 5, 62);
+        Serie distintaSerie = new Serie(3, "Breaking Bad", "Vince Gilligan", "Drama", fechaContenido, 2, 20);
+
+        assertEquals(serie, serie);
+        assertEquals(serie, mismaSerie);
+        assertEquals(serie.hashCode(), mismaSerie.hashCode());
+        assertNotEquals(serie, distintaSerie);
+        assertFalse(serie.equals(null));
     }
 }
