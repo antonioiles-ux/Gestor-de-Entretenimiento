@@ -2,7 +2,6 @@ package ec.edu.uce.gestor;
 
 import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Libro;
-import ec.edu.uce.gestor.dominio.Pelicula;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
