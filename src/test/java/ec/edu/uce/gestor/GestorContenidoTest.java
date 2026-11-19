@@ -115,9 +115,8 @@ public class GestorContenidoTest {
 
     @Test
     public void testToString() {
-        assertEquals("Id gestor: 5, Id: 2, Nombre: Juan Perez", gestor.toString());
+        assertEquals("Id: 2, Nombre: Juan Perez, Id gestor: 5", gestor.toString());
     }
-
 
 
 // --- Nuevos tests: Polimorfismo, instanceof, Sobrecarga, equals y hashCode ---

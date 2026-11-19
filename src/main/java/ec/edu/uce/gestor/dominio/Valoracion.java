@@ -1,4 +1,5 @@
 package ec.edu.uce.gestor.dominio;
+
 import java.util.Objects;
 
 public class Valoracion {
@@ -8,9 +9,7 @@ public class Valoracion {
     private String fechaValoracion;
 
     public Valoracion() {
-        this.idValoracion = 0;
-        this.calificacion = 1;
-        this.fechaValoracion = "sin fecha";
+        this(0, 1, "sin fecha");
     }
 
     public Valoracion(int idValoracion, int calificacion, String fechaValoracion) {
@@ -28,7 +27,6 @@ public class Valoracion {
             return false;
         }
         this.idValoracion = idValoracion;
-
         return true;
     }
 
@@ -41,7 +39,6 @@ public class Valoracion {
             return false;
         }
         this.calificacion = calificacion;
-
         return true;
     }
 
@@ -54,7 +51,6 @@ public class Valoracion {
             return false;
         }
         this.fechaValoracion = fechaValoracion;
-
         return true;
     }
 
@@ -64,8 +60,7 @@ public class Valoracion {
                 ", Fecha de valoracion: " + this.getFechaValoracion();
     }
 
-
-    // --- SOBRECARGA DE MÉTODOS ---
+    // --- SOBRECARGA DE MÉTODOS (incluye referencia de objeto) ---
     public boolean actualizarValoracion(int nuevaCalificacion) {
         return setCalificacion(nuevaCalificacion);
     }
@@ -74,7 +69,14 @@ public class Valoracion {
         return setCalificacion(nuevaCalificacion) && setFechaValoracion(nuevaFecha);
     }
 
-    // --- EQUALS Y HASHCODE (Regla de negocio: mismo idValoracion y calificacion) ---
+    public boolean esMejorQue(Valoracion otraValoracion) {
+        if (otraValoracion == null) {
+            return false;
+        }
+        return this.calificacion > otraValoracion.calificacion;
+    }
+
+    // --- EQUALS Y HASHCODE ---
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {
@@ -91,5 +93,4 @@ public class Valoracion {
     public int hashCode() {
         return Objects.hash(idValoracion, calificacion);
     }
-
 }

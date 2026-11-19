@@ -10,10 +10,7 @@ public class Cuenta{
     private Date fechaRegistro;
 
     public Cuenta() {
-        this.idCuenta = 0;
-        this.correoElectronico = "sin correo";
-        this.contrasena = "sin contrasena";
-        this.fechaRegistro = null;
+        this(0, "sin correo", "sin contrasena", null);
     }
 
     public Cuenta(int idCuenta, String correoElectronico, String contrasena, Date fechaRegistro) {
@@ -32,7 +29,6 @@ public class Cuenta{
             return false;
         }
         this.idCuenta = idCuenta;
-
         return true;
     }
 
@@ -45,7 +41,6 @@ public class Cuenta{
             return false;
         }
         this.correoElectronico = correoElectronico;
-
         return true;
     }
 
@@ -58,7 +53,6 @@ public class Cuenta{
             return false;
         }
         this.contrasena = contrasena;
-
         return true;
     }
 
@@ -71,17 +65,14 @@ public class Cuenta{
             return false;
         }
         this.fechaRegistro = fechaRegistro;
-
         return true;
     }
-
 
     @Override
     public String toString() {
         return "Id Cuenta: " + this.getIdCuenta() + ", Correo: " + this.getCorreoElectronico() + ", Contraseña: " + this.getContrasena() +
                 ", Fecha de registro: " + this.getFechaRegistro();
     }
-
 
     // --- SOBRECARGA DE MÉTODOS ---
     public boolean validarCredenciales(String correo, String clave) {
@@ -90,6 +81,15 @@ public class Cuenta{
 
     public boolean validarCredenciales(String clave) {
         return this.contrasena.equals(clave);
+    }
+
+    // Sobrecarga con referencia de objeto
+    public boolean validarCredenciales(Cuenta otraCuenta) {
+        if (otraCuenta == null) {
+            return false;
+        }
+        return this.correoElectronico.equals(otraCuenta.correoElectronico)
+                && this.contrasena.equals(otraCuenta.contrasena);
     }
 
     // --- EQUALS Y HASHCODE ---
@@ -101,14 +101,12 @@ public class Cuenta{
         if (!(otro instanceof Cuenta c)) {
             return false;
         }
-        return this.idCuenta == c.idCuenta
-                && Objects.equals(this.correoElectronico, c.correoElectronico);
+        return this.idCuenta == c.idCuenta && Objects.equals(this.correoElectronico, c.correoElectronico);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(idCuenta, correoElectronico);
     }
-
 }
 

@@ -9,9 +9,7 @@ public class Pelicula extends Contenido {
     private String clasificacion;
 
     public Pelicula() {
-        super();
-        this.duracion = 0;
-        this.clasificacion = "sin clasificacion";
+        this(0, "sin titulo", "sin autor", "sin genero", null, 0, "sin clasificacion");
     }
 
     public Pelicula(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion, int duracion, String clasificacion) {
@@ -23,6 +21,7 @@ public class Pelicula extends Contenido {
     public int getDuracion(){
         return duracion;
     }
+
     public boolean setDuracion(int duracion){
         if (duracion <= 0){
             return false;
@@ -48,22 +47,25 @@ public class Pelicula extends Contenido {
         return super.toString() + "Duracion: " + this.getDuracion() + ", Clasificacion: " + this.getClasificacion() + ", ";
     }
 
-
     // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Contenido) ---
-    // Retorna directamente la duración de la película en minutos
     @Override
     public int calcularTiempoConsumo() {
         return this.duracion;
     }
 
-    // --- SOBRECARGA DE MÉTODOS ---
-    // Calcula el tiempo total si la película se ve varias veces
-
+    // --- SOBRECARGA DE MÉTODOS (incluye referencia de objeto) ---
     public int calcularTiempoConsumo(int repeticiones) {
         if (repeticiones <= 0) {
             return 0;
         }
         return this.duracion * repeticiones;
+    }
+
+    public boolean tieneMismaClasificacion(Pelicula otraPelicula) {
+        if (otraPelicula == null || this.clasificacion == null) {
+            return false;
+        }
+        return this.clasificacion.equalsIgnoreCase(otraPelicula.clasificacion);
     }
 
     // --- EQUALS Y HASHCODE ---
@@ -84,5 +86,4 @@ public class Pelicula extends Contenido {
     public int hashCode() {
         return Objects.hash(super.hashCode(), duracion, clasificacion);
     }
-
 }

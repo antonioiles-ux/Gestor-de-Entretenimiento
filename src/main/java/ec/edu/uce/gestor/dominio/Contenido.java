@@ -12,11 +12,7 @@ public class Contenido {
     private Date fechaPublicacion;
 
     public Contenido(){
-        this.idContenido = 0;
-        this.titulo = "sin titulo";
-        this.autor = "sin autor";
-        this.genero = "sin genero";
-        this.fechaPublicacion = null;
+        this(0, "sin titulo", "sin autor", "sin genero", null);
     }
 
     public Contenido(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion){
@@ -26,6 +22,7 @@ public class Contenido {
         this.genero = genero;
         this.fechaPublicacion = fechaPublicacion;
     }
+
     //GET
     public int getIdContenido(){
         return idContenido;
@@ -92,9 +89,7 @@ public class Contenido {
                 this.getFechaPublicacion();
     }
 
-
-
-    // --- POLIMORFISMO (Metodo base que sobreescribir---
+    // --- POLIMORFISMO (Metodo base que sobreescribir) ---
     public int calcularTiempoConsumo() {
         return 0;
     }
@@ -111,14 +106,22 @@ public class Contenido {
         return obtenerFicha();
     }
 
+    // Sobrecarga con referencia de objeto
+    public boolean tieneMismoGenero(Contenido otro) {
+        if (otro == null || this.genero == null) {
+            return false;
+        }
+        return this.genero.equalsIgnoreCase(otro.genero);
+    }
+
     // --- EQUALS Y HASHCODE ---
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {
-            return true; // mismo objeto en memoria
+            return true;
         }
         if (!(otro instanceof Contenido c)) {
-            return false; // null u otra clase
+            return false;
         }
         return this.idContenido == c.idContenido;
     }
@@ -127,5 +130,4 @@ public class Contenido {
     public int hashCode() {
         return Objects.hash(idContenido);
     }
-
 }

@@ -10,10 +10,7 @@ public class Opinion {
     private String fechaEdicion;
 
     public Opinion() {
-        this.idOpinion = 0;
-        this.comentario = "sin comentario";
-        this.fechaRegistroOp = "sin fecha de registro";
-        this.fechaEdicion = "sin fecha de edicion";
+        this(0, "sin comentario", "sin fecha de registro", "sin fecha de edicion");
     }
 
     public Opinion(int idOpinion, String comentario, String fechaRegistroOp, String fechaEdicion) {
@@ -28,7 +25,7 @@ public class Opinion {
     }
 
     public boolean setIdOpinion(int idOpinion) {
-        if (idOpinion <= 0 || !Validaciones.validarNumeros(String.valueOf(idOpinion))) {
+        if (idOpinion <= 0) {
             return false;
         }
         this.idOpinion = idOpinion;
@@ -77,7 +74,7 @@ public class Opinion {
                 + "  Fecha de Registro:" + this.getFechaRegistroOp() + "  Fecha de Edicion:" + this.getFechaEdicion();
     }
 
-    // --- SOBRECARGA DE MÉTODOS ---
+    // --- SOBRECARGA DE MÉTODOS (incluye referencia de objeto) ---
     public boolean actualizarComentario(String nuevoComentario) {
         return setComentario(nuevoComentario);
     }
@@ -86,7 +83,14 @@ public class Opinion {
         return setComentario(nuevoComentario) && setFechaEdicion(nuevaFechaEdicion);
     }
 
-    // --- EQUALS Y HASHCODE (Regla de negocio: mismo idOpinion y comentario) ---
+    public boolean copiarDesde(Opinion otraOpinion) {
+        if (otraOpinion == null) {
+            return false;
+        }
+        return setComentario(otraOpinion.comentario);
+    }
+
+    // --- EQUALS Y HASHCODE ---
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {
@@ -103,5 +107,4 @@ public class Opinion {
     public int hashCode() {
         return Objects.hash(idOpinion, comentario);
     }
-
 }

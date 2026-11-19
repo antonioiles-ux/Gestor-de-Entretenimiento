@@ -14,12 +14,9 @@ public class Usuario {
     }
 
     public Usuario(String nombreCompleto, int idUsuario) {
-        if (!setNombreCompleto(nombreCompleto)) {
-            this.nombreCompleto = "sin nombre";
-        }
-        if (!setIdUsuario(idUsuario)) {
-            this.idUsuario = 0;
-        }
+        this();
+        setNombreCompleto(nombreCompleto);
+        setIdUsuario(idUsuario);
     }
 
     public String getNombreCompleto() {
@@ -51,13 +48,12 @@ public class Usuario {
         return "Id: " + this.getIdUsuario() + ", Nombre: " + this.getNombreCompleto();
     }
 
-
     // --- POLIMORFISMO (Metodo base que sobreescribe GestorContenido) ---
     public String obtenerRol() {
         return "Usuario Registrado";
     }
 
-    // --- SOBRECARGA DE MÉTODOS ---
+    // --- SOBRECARGA DE MÉTODOS (incluye referencia de objeto) ---
     public String mostrarPerfil() {
         return this.toString();
     }
@@ -69,7 +65,14 @@ public class Usuario {
         return mostrarPerfil();
     }
 
-    // --- EQUALS Y HASHCODE (Regla de negocio: mismo idUsuario y nombreCompleto) ---
+    public boolean esMismoUsuario(Usuario otroUsuario) {
+        if (otroUsuario == null) {
+            return false;
+        }
+        return this.idUsuario == otroUsuario.idUsuario;
+    }
+
+    // --- EQUALS Y HASHCODE ---
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {
@@ -86,5 +89,4 @@ public class Usuario {
     public int hashCode() {
         return Objects.hash(idUsuario, nombreCompleto);
     }
-
 }

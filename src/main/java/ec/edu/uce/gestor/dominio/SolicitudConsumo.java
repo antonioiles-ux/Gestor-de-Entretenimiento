@@ -10,12 +10,8 @@ public class SolicitudConsumo {
     private Date fechaSolicitud;
     private String tipoContenido;
 
-    // Constructor por defecto
     public SolicitudConsumo() {
-        this.idSolicitud = 0;
-        this.estado = "Pendiente";
-        this.fechaSolicitud = new Date();
-        this.tipoContenido = "Sin asignar";
+        this(0, "Pendiente", new Date(), "Sin asignar");
     }
 
     public SolicitudConsumo(int idSolicitud, String estado, Date fechaSolicitud, String tipoContenido) {
@@ -29,13 +25,12 @@ public class SolicitudConsumo {
         return idSolicitud;
     }
 
-    // Setters cambiados a boolean
     public boolean setIdSolicitud(int idSolicitud) {
-        if (idSolicitud > 0) { // Solo acepta valores mayores a 0
+        if (idSolicitud > 0) {
             this.idSolicitud = idSolicitud;
             return true;
         }
-        return false; // Retorna false si es negativo o cero (rechaza el cambio)
+        return false;
     }
 
     public String getEstado() {
@@ -43,11 +38,9 @@ public class SolicitudConsumo {
     }
 
     public boolean setEstado(String estado) {
-        // Si el estado es nulo, vacío, o contiene números, rechazarlo
         if (estado == null || estado.matches(".*\\d.*")) {
-            return false; // Retorna false (lo que hará que el assertFalse de la prueba pase)
+            return false;
         }
-
         this.estado = estado;
         return true;
     }
@@ -66,8 +59,6 @@ public class SolicitudConsumo {
     }
 
     public boolean setTipoContenido(String tipoContenido) {
-        // Si contiene símbolos o caracteres especiales (ej. '@'), rechazarlo
-        // Puedes usar una expresión regular que solo permita letras y espacios
         if (tipoContenido == null || !tipoContenido.matches("[a-zA-ZáéíóÁÉÍÓúñÑ ]+")) {
             return false;
         }
@@ -75,13 +66,12 @@ public class SolicitudConsumo {
         return true;
     }
 
-        @Override
-        public String toString() {
-            return "id: "+this.getIdSolicitud()+"Estado: "+ this.getEstado()+"Fecha: "+ this.getFechaSolicitud()+"Tipo de contenido:"+ this.getTipoContenido()+ super.toString();
-        }
+    @Override
+    public String toString() {
+        return "id: " + this.getIdSolicitud() + "Estado: " + this.getEstado() + "Fecha: " + this.getFechaSolicitud() + "Tipo de contenido:" + this.getTipoContenido();
+    }
 
-
-    // --- SOBRECARGA DE MÉTODOS ---
+    // --- SOBRECARGA DE MÉTODOS (incluye referencia de objeto) ---
     public boolean actualizarEstado(String nuevoEstado) {
         return setEstado(nuevoEstado);
     }
@@ -90,7 +80,14 @@ public class SolicitudConsumo {
         return setEstado(nuevoEstado) && setFechaSolicitud(nuevaFecha);
     }
 
-    // --- EQUALS Y HASHCODE (Regla de negocio: mismo idSolicitud y tipoContenido) ---
+    public boolean tieneMismoTipoContenido(SolicitudConsumo otraSolicitud) {
+        if (otraSolicitud == null || this.tipoContenido == null) {
+            return false;
+        }
+        return this.tipoContenido.equalsIgnoreCase(otraSolicitud.tipoContenido);
+    }
+
+    // --- EQUALS Y HASHCODE ---
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {
@@ -107,5 +104,4 @@ public class SolicitudConsumo {
     public int hashCode() {
         return Objects.hash(idSolicitud, tipoContenido);
     }
-
 }

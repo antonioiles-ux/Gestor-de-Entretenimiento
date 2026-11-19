@@ -11,9 +11,7 @@ public class Libro extends Contenido {
     private String descripcion;
 
     public Libro() {
-        super();
-        this.numeroPaginas = 0;
-        this.descripcion = "Sin descripcion";
+        this(0, "sin titulo", "sin autor", "sin genero", null, 0, "Sin descripcion");
     }
 
     public Libro(int idContenido, String titulo, String autor, String genero, Date fechaPublicacion, int numeroPaginas, String descripcion) {
@@ -27,11 +25,11 @@ public class Libro extends Contenido {
     }
 
     public boolean setNumeroPaginas(int numeroPaginas) {
-        if (numeroPaginas > 0 && Validaciones.validarNumeros(String.valueOf(numeroPaginas))) {
-            this.numeroPaginas = numeroPaginas;
-            return true;
+        if (numeroPaginas <= 0) {
+            return false;
         }
-        return false;
+        this.numeroPaginas = numeroPaginas;
+        return true;
     }
 
     public String getDescripcion() {
@@ -50,25 +48,27 @@ public class Libro extends Contenido {
     public String toString() {
         return super.toString() + "Número de páginas: " + this.getNumeroPaginas() + ", Descripcion: " +
                 this.getDescripcion() + ", ";
-
     }
 
-
     // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Contenido) ---
-    // Estima el tiempo total de lectura en minutos (aprox. 2 min por página)
     @Override
     public int calcularTiempoConsumo() {
         return this.numeroPaginas * 2;
     }
 
-    // --- SOBRECARGA DE MÉTODOS ---
-    // Permite calcular el tiempo indicando la velocidad de lectura en minutos por página
-
+    // --- SOBRECARGA DE MÉTODOS (incluye referencia de objeto) ---
     public int calcularTiempoConsumo(int minutosPorPagina) {
         if (minutosPorPagina <= 0) {
             return 0;
         }
         return this.numeroPaginas * minutosPorPagina;
+    }
+
+    public boolean esMasExtensoQue(Libro otroLibro) {
+        if (otroLibro == null) {
+            return false;
+        }
+        return this.numeroPaginas > otroLibro.numeroPaginas;
     }
 
     // --- EQUALS Y HASHCODE ---
@@ -88,4 +88,3 @@ public class Libro extends Contenido {
         return Objects.hash(super.hashCode(), numeroPaginas);
     }
 }
-

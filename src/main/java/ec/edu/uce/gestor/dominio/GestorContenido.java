@@ -5,8 +5,7 @@ public class GestorContenido extends Usuario {
     private int idGestor;
 
     public GestorContenido() {
-        super();
-        this.idGestor = 0;
+        this("sin nombre", 0, 0);
     }
 
     public GestorContenido(String nombreCompleto, int idUsuario, int idGestor) {
@@ -23,7 +22,6 @@ public class GestorContenido extends Usuario {
             return false;
         }
         this.idGestor = idGestor;
-
         return true;
     }
 
@@ -46,9 +44,8 @@ public class GestorContenido extends Usuario {
 
     @Override
     public String toString() {
-        return "Id gestor: " + this.getIdGestor() + ", " + super.toString();
+        return super.toString() + ", Id gestor: " + this.getIdGestor();
     }
-
 
     // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Usuario) ---
     @Override
@@ -60,6 +57,13 @@ public class GestorContenido extends Usuario {
     public boolean eliminarOpinion(String motivo) {
         return this.idGestor > 0 && motivo != null && !motivo.trim().isEmpty();
     }
+
+    // Sobrecarga 2: con referencia de objeto Opinion + motivo (no genera ambigüedad con null)
+    public boolean eliminarOpinion(Opinion opinion, String motivo) {
+        return this.idGestor > 0 && opinion != null && opinion.getIdOpinion() > 0
+                && motivo != null && !motivo.trim().isEmpty();
+    }
+
 
     // --- EQUALS Y HASHCODE ---
     @Override
@@ -77,5 +81,4 @@ public class GestorContenido extends Usuario {
     public int hashCode() {
         return Objects.hash(super.hashCode(), idGestor);
     }
-
 }
