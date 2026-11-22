@@ -7,6 +7,8 @@ public class Valoracion {
     private int idValoracion;
     private int calificacion;
     private String fechaValoracion;
+    private Usuario autor;
+    private Contenido contenido;
 
     public Valoracion() {
         this(0, 1, "sin fecha");
@@ -17,6 +19,15 @@ public class Valoracion {
         this.calificacion = calificacion;
         this.fechaValoracion = fechaValoracion;
     }
+
+    // Constructor sobrecargado con Asociación
+    public Valoracion(int idValoracion, int calificacion, String fechaValoracion,
+                      Usuario autor, Contenido contenido) {
+        this(idValoracion, calificacion, fechaValoracion);
+        this.autor = autor;
+        this.contenido = contenido;
+    }
+
 
     public int getIdValoracion() {
         return idValoracion;
@@ -53,6 +64,23 @@ public class Valoracion {
         this.fechaValoracion = fechaValoracion;
         return true;
     }
+
+    public Usuario getAutor() {
+        return autor;
+    }
+
+    public void setAutor(Usuario autor) {
+        this.autor = autor;
+    }
+
+    public Contenido getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(Contenido contenido) {
+        this.contenido = contenido;
+    }
+
 
     @Override
     public String toString() {

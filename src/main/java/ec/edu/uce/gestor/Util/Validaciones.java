@@ -10,37 +10,21 @@ import java.util.regex.Pattern;
 public class Validaciones {
 
     // ---------- Patrones precompilados ----------
-    // Entero positivo de hasta 9 dígitos (evita NumberFormatException al usar Integer.parseInt)
     private static final Pattern NUMEROS = Pattern.compile("^\\d{1,9}$");
-    private static final Pattern LETRAS = Pattern.compile("^[A-Za-zñÑáéíóúÁÉÍÓÚ ]+$");
+    private static final Pattern LETRAS = Pattern.compile("^[A-Za-zñÑáéíóúÁÉÍÓÚüÜ ]+$");
     private static final Pattern CORREO = Pattern.compile("^[A-Za-z0-9._-]+@[A-Za-z0-9-]{3,}(\\.[A-Za-z]{2,})+$");
     private static final Pattern CONTRASENA = Pattern.compile("^\\S{6,}$");
     private static final Pattern FECHA = Pattern.compile("^(0[1-9]|[12]\\d|3[01])/(0[1-9]|1[0-2])/\\d{4}$");
     private static final Pattern CALIFICACION = Pattern.compile("^[1-5]$");
-    private static final Pattern TEXTO_CON_LETRAS = Pattern.compile("^(?=.*[A-Za-zñÑáéíóúÁÉÍÓÚ]).+$");
+    private static final Pattern TEXTO_CON_LETRAS = Pattern.compile("^(?=.*[A-Za-zñÑáéíóúÁÉÍÓÚüÜ]).+$");
     private static final Pattern CLASIFICACION_EDAD = Pattern.compile("^(?=.*[A-Za-zñÑáéíóúÁÉÍÓÚ+]).+$");
 
-
-    public static boolean validarClasificacionEdad(String texto) {
-        if (texto == null || texto.trim().isEmpty()) {
-            return false;
-        }
-        return coincide(CLASIFICACION_EDAD, texto.trim());
-    }
-
     private static boolean coincide(Pattern pattern, String texto) {
-        if (texto == null) {
-            return false;
-        }
-        Matcher matcher = pattern.matcher(texto);
-        return matcher.matches();
-    }
-
-    public static boolean validarTextoConLetras(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             return false;
         }
-        return coincide(TEXTO_CON_LETRAS, texto.trim());
+        Matcher matcher = pattern.matcher(texto.trim());
+        return matcher.matches();
     }
 
     // ---------- Validaciones ----------
@@ -49,10 +33,15 @@ public class Validaciones {
     }
 
     public static boolean validarLetras(String texto) {
-        if (texto == null || texto.trim().isEmpty()) {
-            return false;
-        }
         return coincide(LETRAS, texto);
+    }
+
+    public static boolean validarTextoConLetras(String texto) {
+        return coincide(TEXTO_CON_LETRAS, texto);
+    }
+
+    public static boolean validarClasificacionEdad(String texto) {
+        return coincide(CLASIFICACION_EDAD, texto);
     }
 
     public static boolean validarCorreo(String texto) {

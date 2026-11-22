@@ -8,6 +8,10 @@ public class Opinion {
     private String comentario;
     private String fechaRegistroOp;
     private String fechaEdicion;
+    // RELACIÓN: ASOCIACIÓN (Referencias a objetos existentes: autor y contenido opinado)
+    private Usuario autor;
+    private Contenido contenido;
+
 
     public Opinion() {
         this(0, "sin comentario", "sin fecha de registro", "sin fecha de edicion");
@@ -18,6 +22,14 @@ public class Opinion {
         this.comentario = comentario;
         this.fechaRegistroOp = fechaRegistroOp;
         this.fechaEdicion = fechaEdicion;
+    }
+
+    // Constructor sobrecargado con Asociación
+    public Opinion(int idOpinion, String comentario, String fechaRegistroOp, String fechaEdicion,
+                   Usuario autor, Contenido contenido) {
+        this(idOpinion, comentario, fechaRegistroOp, fechaEdicion);
+        this.autor = autor;
+        this.contenido = contenido;
     }
 
     public int getIdOpinion() {
@@ -67,6 +79,23 @@ public class Opinion {
         this.fechaEdicion = fechaEdicion;
         return true;
     }
+
+    public Usuario getAutor() {
+        return autor;
+    }
+
+    public void setAutor(Usuario autor) {
+        this.autor = autor;
+    }
+
+    public Contenido getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(Contenido contenido) {
+        this.contenido = contenido;
+    }
+
 
     @Override
     public String toString() {
