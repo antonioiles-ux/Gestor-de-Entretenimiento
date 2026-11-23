@@ -113,18 +113,36 @@ public class SolicitudConsumo {
         this.solicitante = solicitante;
     }
 
+    private boolean esContenidoDuplicado(Contenido contenido) {
+
+        for (int i = 0; i < cantidadContenidos; i++) {
+
+            if (contenidos[i].getIdContenido() == contenido.getIdContenido()) {
+                return true;
+            }
+
+            if (contenidos[i].getTitulo().equalsIgnoreCase(contenido.getTitulo()) && contenidos[i].getAutor().equalsIgnoreCase(contenido.getAutor())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // =========================================================================
     // AGREGACIÓN: GESTIÓN DE CONTENIDOS EN LA SOLICITUD (Contenido[])
     // =========================================================================
 
     // CREAR
     public boolean agregarContenido(Contenido contenido) {
-        if (contenido == null || cantidadContenidos == contenidos.length
-                || buscarContenido(contenido.getIdContenido()) != null) {
+
+        if (contenido == null
+                || cantidadContenidos == contenidos.length
+                || esContenidoDuplicado(contenido)) {
             return false;
         }
-        contenidos[cantidadContenidos] = contenido;
-        cantidadContenidos++;
+
+        contenidos[cantidadContenidos++] = contenido;
         return true;
     }
 
