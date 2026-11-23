@@ -126,6 +126,24 @@ public class Contenido {
         return this.genero.equalsIgnoreCase(otro.genero);
     }
 
+    //OPINION
+    //Duplicados Opinion
+    private boolean esOpinionDuplicada(Opinion opinion) {
+
+        for (int i = 0; i < cantidadOpiniones; i++) {
+
+            if (opiniones[i].getIdOpinion() == opinion.getIdOpinion()) {
+                return true;
+            }
+
+            if (opiniones[i].getComentario().equalsIgnoreCase(opinion.getComentario())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // =========================================================================
     // COMPOSICIÓN 1: GESTIÓN DE OPINIONES DEL CONTENIDO (Opinion[])
     // =========================================================================
@@ -133,7 +151,7 @@ public class Contenido {
     // CREAR
     public boolean agregarOpinion(Opinion opinion) {
         if (opinion == null || cantidadOpiniones == opiniones.length
-                || buscarOpinion(opinion.getIdOpinion()) != null) {
+                || esOpinionDuplicada(opinion)) {
             return false;
         }
         opinion.setContenido(this); // Vincula la referencia al contenido dueño
@@ -189,6 +207,24 @@ public class Contenido {
         return cantidadOpiniones;
     }
 
+    //VALORACION
+    //Duplicados Valoracion
+    private boolean esValoracionDuplicada(Valoracion valoracion) {
+
+        for (int i = 0; i < cantidadValoraciones; i++) {
+
+            if (valoraciones[i].getIdValoracion() == valoracion.getIdValoracion()) {
+                return true;
+            }
+
+            if (valoraciones[i].getAutor().equals(valoracion.getAutor())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // =========================================================================
     // COMPOSICIÓN 2: GESTIÓN DE VALORACIONES DEL CONTENIDO (Valoracion[])
     // =========================================================================
@@ -196,7 +232,7 @@ public class Contenido {
     // CREAR
     public boolean agregarValoracion(Valoracion valoracion) {
         if (valoracion == null || cantidadValoraciones == valoraciones.length
-                || buscarValoracion(valoracion.getIdValoracion()) != null) {
+                || esValoracionDuplicada(valoracion)) {
             return false;
         }
         valoracion.setContenido(this); // Vincula la referencia al contenido dueño
@@ -262,9 +298,6 @@ public class Contenido {
         }
         return (double) suma / cantidadValoraciones;
     }
-
-
-
 
     // --- EQUALS Y HASHCODE ---
     @Override

@@ -99,6 +99,23 @@ public class Usuario {
         return this.idUsuario == otroUsuario.idUsuario;
     }
 
+    // VALIDACIÓN DE DUPLICADOS: mismo ID, o mismo tipo de contenido mientras siga pendiente
+    private boolean esSolicitudDuplicada(SolicitudConsumo solicitud) {
+
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+
+            if (solicitudes[i].getIdSolicitud() == solicitud.getIdSolicitud()) {
+                return true;
+            }
+
+            if (solicitudes[i].getTipoContenido().equalsIgnoreCase(solicitud.getTipoContenido())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // =========================================================
     // CRUD DE SOLICITUDES (SolicitudConsumo[])
     // =========================================================
@@ -154,22 +171,6 @@ public class Usuario {
             copia[i] = solicitudes[i];
         }
         return copia;
-    }
-
-    // VALIDACIÓN DE DUPLICADOS: mismo ID, o mismo tipo de contenido mientras siga pendiente
-    private boolean esSolicitudDuplicada(SolicitudConsumo nueva) {
-        for (int i = 0; i < cantidadSolicitudes; i++) {
-            SolicitudConsumo s = solicitudes[i];
-            if (s.getIdSolicitud() == nueva.getIdSolicitud()) {
-                return true;
-            }
-            if (s.getTipoContenido().equalsIgnoreCase(nueva.getTipoContenido())
-                    && s.getEstado().equalsIgnoreCase("pendiente")
-                    && nueva.getEstado().equalsIgnoreCase("pendiente")) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // ---------- TOSTRING ----------
