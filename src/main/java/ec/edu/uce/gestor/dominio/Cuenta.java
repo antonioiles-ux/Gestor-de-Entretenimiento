@@ -8,6 +8,7 @@ public class Cuenta{
     private String correoElectronico;
     private String contrasena;
     private Date fechaRegistro;
+    private boolean activa;
 
     public Cuenta() {
         this(0, "sin correo", "sin contrasena", null);
@@ -18,6 +19,7 @@ public class Cuenta{
         this.correoElectronico = correoElectronico;
         this.contrasena = contrasena;
         this.fechaRegistro = fechaRegistro;
+        this.activa = true;
     }
 
     public int getIdCuenta() {
@@ -66,6 +68,14 @@ public class Cuenta{
         }
         this.fechaRegistro = fechaRegistro;
         return true;
+    }
+
+    public boolean isActiva() {
+        return activa;
+    }
+
+    public void setActiva(boolean activa) {
+        this.activa = activa;
     }
 
     @Override
