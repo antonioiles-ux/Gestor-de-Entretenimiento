@@ -241,6 +241,7 @@ public class Contenido {
         return true;
     }
 
+
     // BUSCAR
     public Valoracion buscarValoracion(int idValoracion) {
         for (int i = 0; i < cantidadValoraciones; i++) {

@@ -9,6 +9,7 @@ public class Valoracion {
     private String fechaValoracion;
     private Usuario autor;
     private Contenido contenido;
+    private SolicitudConsumo solicitudConsumo;
 
     public Valoracion() {
         this(0, 1, "sin fecha");
@@ -79,6 +80,14 @@ public class Valoracion {
 
     public void setContenido(Contenido contenido) {
         this.contenido = contenido;
+    }
+
+    public SolicitudConsumo getSolicitudConsumo() {
+        return solicitudConsumo;
+    }
+
+    public void setSolicitudConsumo(SolicitudConsumo solicitudConsumo) {
+        this.solicitudConsumo = solicitudConsumo;
     }
 
 

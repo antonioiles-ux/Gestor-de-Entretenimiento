@@ -1,6 +1,8 @@
 package ec.edu.uce.gestor;
 
 import ec.edu.uce.gestor.dominio.Contenido;
+import ec.edu.uce.gestor.dominio.Opinion;
+import ec.edu.uce.gestor.dominio.Valoracion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -165,5 +167,146 @@ public class ContenidoTest {
         assertFalse(contenido.equals(null));
         assertFalse(contenido.equals("Cadena cualquiera"));
     }
+    @Test
+    public void testTieneMismoGenero() {
+        Contenido mismoGenero = new Contenido(2, "FIFA", "EA Sports", "Videojuego de Carreras", new Date());
+        Contenido distintoGenero = new Contenido(3, "Harry Potter", "J.K. Rowling", "Fantasia", new Date());
+
+        assertTrue(contenido.tieneMismoGenero(mismoGenero));
+        assertFalse(contenido.tieneMismoGenero(distintoGenero));
+        assertFalse(contenido.tieneMismoGenero(null));
+    }
+
+    @Test
+    public void testPromedioSinValoraciones() {
+        assertEquals(0.0,
+                contenido.calcularPromedioValoraciones(),
+                0.001);
+    }
+
+    @Test
+    public void testToString() {
+        String cadena = contenido.toString();
+
+        assertTrue(cadena.contains("ID CONTENIDO:1"));
+        assertTrue(cadena.contains("Titulo:NEED FOR SPEED"));
+        assertTrue(cadena.contains("Autor:Electronic Arts"));
+    }
+
+    @Test
+    void agregarOpinion() {
+        Opinion op = new Opinion(1, "Excelente juego", "10/10/2026", "10/10/2026");
+
+        assertTrue(contenido.agregarOpinion(op));
+        assertEquals(1, contenido.getCantidadOpiniones());
+    }
+
+    @Test
+    void opinionDuplicada() {
+
+        Opinion op1 = new Opinion(1, "Excelente juego", "10/10/2026", "10/10/2026");
+        Opinion op2 = new Opinion(1, "Otro comentario", "11/10/2026", "11/10/2026");
+
+        contenido.agregarOpinion(op1);
+
+        assertFalse(contenido.agregarOpinion(op2));
+    }
+
+    @Test
+    void buscarOpinion() {
+        Opinion op = new Opinion(1, "Excelente juego", "10/10/2026", "10/10/2026");
+        contenido.agregarOpinion(op);
+
+        assertEquals(op, contenido.buscarOpinion(1));
+    }
+
+    @Test
+    void editarOpinion() {
+
+        Opinion op = new Opinion(1, "Comentario", "10/10/2026", "10/10/2026");
+        contenido.agregarOpinion(op);
+
+        assertTrue(contenido.editarOpinion(1, "Nuevo comentario", "11/10/2026"));
+        assertEquals("Nuevo comentario", contenido.buscarOpinion(1).getComentario());
+    }
+
+    @Test
+    void eliminarOpinion() {
+
+        Opinion op = new Opinion(1, "Comentario", "10/10/2026", "10/10/2026");
+        contenido.agregarOpinion(op);
+        assertTrue(contenido.eliminarOpinion(1));
+        assertNull(contenido.buscarOpinion(1));
+    }
+
+    @Test
+    void agregarValoracion() {
+
+        Valoracion v = new Valoracion(1, 5, "10/10/2026");
+        assertTrue(contenido.agregarValoracion(v));
+        assertEquals(1, contenido.getCantidadValoraciones());
+    }
+
+    @Test
+    void valoracionDuplicadaPorId() {
+
+        Valoracion v1 = new Valoracion(1, 5, "10/10/2026");
+        Valoracion v2 = new Valoracion(1, 4, "11/10/2026");
+        contenido.agregarValoracion(v1);
+
+        assertFalse(contenido.agregarValoracion(v2));
+    }
+
+    @Test
+    void buscarValoracion() {
+
+        Valoracion v = new Valoracion(1, 5, "10/10/2026");
+        contenido.agregarValoracion(v);
+        assertEquals(v, contenido.buscarValoracion(1));
+    }
+
+    @Test
+    void editarValoracion() {
+
+        Valoracion v = new Valoracion(1, 3, "10/10/2026");
+        contenido.agregarValoracion(v);
+        assertTrue(contenido.editarValoracion(1, 5, "11/10/2026"));
+        assertEquals(5, contenido.buscarValoracion(1).getCalificacion());
+    }
+
+    @Test
+    void eliminarValoracion() {
+
+        Valoracion v = new Valoracion(1, 5, "10/10/2026");
+
+        contenido.agregarValoracion(v);
+
+        assertTrue(contenido.eliminarValoracion(1));
+
+        assertNull(contenido.buscarValoracion(1));
+    }
+
+    @Test
+    void listarOpiniones() {
+
+        Opinion op = new Opinion(1, "Excelente juego", "10/10/2026", "10/10/2026");
+
+        contenido.agregarOpinion(op);
+        Opinion[] opiniones = contenido.listarOpiniones();
+
+        assertEquals(1, opiniones.length);
+        assertEquals(op, opiniones[0]);
+    }
+
+    @Test
+    void listarValoraciones() {
+
+        Valoracion v = new Valoracion(1, 5, "10/10/2026");
+        contenido.agregarValoracion(v);
+        Valoracion[] valoraciones = contenido.listarValoraciones();
+        assertEquals(1, valoraciones.length);
+        assertEquals(v, valoraciones[0]);
+    }
+
 
 }
