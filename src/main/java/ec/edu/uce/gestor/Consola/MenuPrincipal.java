@@ -2,11 +2,20 @@ package ec.edu.uce.gestor.Consola;
 
 import ec.edu.uce.gestor.Util.Validaciones;
 import java.util.Scanner;
+import ec.edu.uce.gestor.dominio.GestorContenido;
+import ec.edu.uce.gestor.dominio.Usuario;
+
 
 public class MenuPrincipal {
 
     public static boolean sesionIniciada = false;
     public static boolean esAdmin = false;
+
+    // Instancia centralizada que contiene los arreglos Contenido[] y Usuario[]
+    public static GestorContenido gestorGlobal = new GestorContenido("Administrador UCE", 99, 1);
+    // Referencia al usuario logueado para enlazar asociaciones
+    public static Usuario usuarioActivo = null;
+
 
     private Scanner sn = new Scanner(System.in);
 
@@ -14,7 +23,8 @@ public class MenuPrincipal {
         int opcion = -1;
 
         do {
-            String rolActual = !sesionIniciada ? "[VISITANTE]" : (esAdmin ? "[ADMINISTRADOR]" : "[USUARIO REGISTRADO]");
+            String rolActual = !sesionIniciada ? "[VISITANTE]"
+                    : (esAdmin ? "[ADMINISTRADOR]" : "[USUARIO: " + usuarioActivo.getNombreCompleto() + "]");
 
             System.out.println("\n================================================");
             System.out.println("      GESTOR DE CONTENIDO Y VALORACIONES        ");
@@ -85,6 +95,7 @@ public class MenuPrincipal {
                     if (sesionIniciada) {
                         sesionIniciada = false;
                         esAdmin = false;
+                        usuarioActivo = null;
                         System.out.println("\n[SISTEMA]: Sesión cerrada. Volviendo a modo Visitante.");
                     } else {
                         System.out.println("\n[ERROR]: Opción no válida.");

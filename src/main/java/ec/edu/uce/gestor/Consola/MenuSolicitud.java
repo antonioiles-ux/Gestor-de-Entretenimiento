@@ -4,11 +4,11 @@ import ec.edu.uce.gestor.Util.Validaciones;
 import ec.edu.uce.gestor.dominio.SolicitudConsumo;
 import java.util.Date;
 import java.util.Scanner;
+import ec.edu.uce.gestor.dominio.Contenido;
 
 public class MenuSolicitud {
 
     private static int contadorIdSolicitud = 1;
-    private static SolicitudConsumo solicitudRegistrada = null;
 
     public static void mostrarMenu() {
 
@@ -61,19 +61,37 @@ public class MenuSolicitud {
             if (!valido) System.out.println("[ERROR]: Estado inválido (solo letras y espacios).");
         } while (!valido);
 
-        nueva.setIdSolicitud(contadorIdSolicitud++);
+        // AGREGACIÓN: Asociar un contenido real del catálogo si existen registrados
+        if (MenuContenido.hayContenidoRegistrado()) {
+            MenuContenido.mostrarResumenContenidos();
+            System.out.print("Ingrese el ID de un contenido para adjuntar (o 0 para omitir): ");
+            String idContTxt = sc.nextLine();
+            if (Validaciones.validarNumeros(idContTxt) && Integer.parseInt(idContTxt) > 0) {
+                Contenido c = MenuContenido.obtenerContenidoPorId(Integer.parseInt(idContTxt));
+                if (c != null) {
+                    nueva.agregarContenido(c);
+                }
+            }
+        }
+
+        nueva.setIdSolicitud(contadorIdSolicitud);
         nueva.setFechaSolicitud(new Date());
 
-        solicitudRegistrada = nueva;
-        System.out.println("\n[SOLICITUD CREADA]:");
-        System.out.println(" -> ID: " + solicitudRegistrada.getIdSolicitud()
-                + " | Tipo: " + solicitudRegistrada.getTipoContenido()
-                + " | Estado: " + solicitudRegistrada.getEstado()
-                + " | Fecha: " + solicitudRegistrada.getFechaSolicitud());
+        if (MenuPrincipal.usuarioActivo.agregarSolicitud(nueva)) {
+            contadorIdSolicitud++;
+            System.out.println("\n[SOLICITUD CREADA]:");
+            System.out.println(" -> ID: " + nueva.getIdSolicitud()
+                    + " | Tipo: " + nueva.getTipoContenido()
+                    + " | Estado: " + nueva.getEstado()
+                    + " | Contenidos adjuntos: " + nueva.getCantidadContenidos());
+        } else {
+            System.out.println("\n[ERROR]: Ya tienes una solicitud Pendiente duplicada para ese contenido/tipo.");
+        }
     }
 
     private static void consultarSolicitud(Scanner sc) {
-        if (solicitudRegistrada == null) {
+        SolicitudConsumo[] lista = MenuPrincipal.usuarioActivo.listarSolicitudes();
+        if (lista.length == 0) {
             System.out.println("\n[RESTRICCIÓN]: No existen solicitudes registradas todavía.");
             return;
         }
@@ -87,77 +105,100 @@ public class MenuSolicitud {
             if (!valido) System.out.println("[ERROR]: Nombre inválido (solo letras y espacios).");
         } while (!valido);
 
-        if (solicitudRegistrada.getTipoContenido().equalsIgnoreCase(temp.getTipoContenido().trim())) {
-            System.out.println("\n--- SOLICITUD ENCONTRADA ---");
-            System.out.println(" -> ID: " + solicitudRegistrada.getIdSolicitud()
-                    + " | Tipo: " + solicitudRegistrada.getTipoContenido()
-                    + " | Estado: " + solicitudRegistrada.getEstado()
-                    + " | Fecha: " + solicitudRegistrada.getFechaSolicitud());
-        } else {
+        boolean encontrada = false;
+        System.out.println("\n--- SOLICITUDES ENCONTRADAS ---");
+        for (SolicitudConsumo s : lista) {
+            if (s.tieneMismoTipoContenido(temp)) {
+                System.out.println(" -> ID: " + s.getIdSolicitud()
+                        + " | Tipo: " + s.getTipoContenido()
+                        + " | Estado: " + s.getEstado()
+                        + " | Fecha: " + s.getFechaSolicitud());
+                for (Contenido c : s.listarContenidos()) {
+                    System.out.println("    * Contenido adjunto: " + c.getTitulo());
+                }
+                encontrada = true;
+            }
+        }
+        if (!encontrada) {
             System.out.println("[INFO]: No se encontró ninguna solicitud para '" + temp.getTipoContenido() + "'.");
         }
     }
 
     private static void actualizarSolicitud(Scanner sc) {
-        if (solicitudRegistrada == null) {
+        SolicitudConsumo[] lista = MenuPrincipal.usuarioActivo.listarSolicitudes();
+        if (lista.length == 0) {
             System.out.println("\n[RESTRICCIÓN]: No existen solicitudes registradas para actualizar.");
             return;
         }
 
-        // Mostramos la solicitud con su ID para facilitar la modificación
-        System.out.println("\n--- SOLICITUD DISPONIBLE ---");
-        System.out.println(" [ID: " + solicitudRegistrada.getIdSolicitud() + "] Tipo: "
-                + solicitudRegistrada.getTipoContenido() + " | Estado actual: " + solicitudRegistrada.getEstado());
+        System.out.println("\n--- MIS SOLICITUDES ---");
+        for (SolicitudConsumo s : lista) {
+            System.out.println(" [ID: " + s.getIdSolicitud() + "] Tipo: "
+                    + s.getTipoContenido() + " | Estado actual: " + s.getEstado());
+        }
 
-        SolicitudConsumo temp = new SolicitudConsumo();
+        int idBuscar = 0;
         boolean valido;
 
         do {
             System.out.print("Ingrese el ID de la solicitud a modificar: ");
             String idTxt = sc.nextLine();
-            valido = Validaciones.validarNumeros(idTxt) && temp.setIdSolicitud(Integer.parseInt(idTxt));
-            if (!valido) System.out.println("[ERROR]: ID inválido.");
+            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
+                idBuscar = Integer.parseInt(idTxt);
+                valido = true;
+            } else {
+                System.out.println("[ERROR]: ID inválido.");
+                valido = false;
+            }
         } while (!valido);
 
-        if (solicitudRegistrada.getIdSolicitud() != temp.getIdSolicitud()) {
-            System.out.println("[ERROR]: El ID ingresado no coincide con la solicitud mostrada.");
+        if (MenuPrincipal.usuarioActivo.buscarSolicitud(idBuscar) == null) {
+            System.out.println("[ERROR]: El ID ingresado no coincide con ninguna de tus solicitudes.");
             return;
         }
 
         do {
             System.out.print("Ingrese nuevo estado (solo letras, ej. Consumido, Aprobada): ");
-            valido = solicitudRegistrada.setEstado(sc.nextLine());
+            valido = MenuPrincipal.usuarioActivo.actualizarEstadoSolicitud(idBuscar, sc.nextLine());
             if (!valido) System.out.println("[ERROR]: Estado inválido (solo letras).");
         } while (!valido);
 
-        System.out.println("\n[ACTUALIZACIÓN EXITOSA]: Nuevo estado -> " + solicitudRegistrada.getEstado());
+        System.out.println("\n[ACTUALIZACIÓN EXITOSA]: Nuevo estado -> "
+                + MenuPrincipal.usuarioActivo.buscarSolicitud(idBuscar).getEstado());
     }
 
     private static void eliminarSolicitud(Scanner sc) {
-        if (solicitudRegistrada == null) {
+        SolicitudConsumo[] lista = MenuPrincipal.usuarioActivo.listarSolicitudes();
+        if (lista.length == 0) {
             System.out.println("\n[RESTRICCIÓN]: No existen solicitudes registradas para eliminar.");
             return;
         }
 
-        System.out.println("\n--- SOLICITUD DISPONIBLE ---");
-        System.out.println(" [ID: " + solicitudRegistrada.getIdSolicitud() + "] Tipo: "
-                + solicitudRegistrada.getTipoContenido() + " | Estado: " + solicitudRegistrada.getEstado());
+        System.out.println("\n--- MIS SOLICITUDES ---");
+        for (SolicitudConsumo s : lista) {
+            System.out.println(" [ID: " + s.getIdSolicitud() + "] Tipo: "
+                    + s.getTipoContenido() + " | Estado: " + s.getEstado());
+        }
 
-        SolicitudConsumo temp = new SolicitudConsumo();
+        int idBuscar = 0;
         boolean valido;
 
         do {
             System.out.print("Ingrese el ID de la solicitud a eliminar: ");
             String idTxt = sc.nextLine();
-            valido = Validaciones.validarNumeros(idTxt) && temp.setIdSolicitud(Integer.parseInt(idTxt));
-            if (!valido) System.out.println("[ERROR]: ID inválido.");
+            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
+                idBuscar = Integer.parseInt(idTxt);
+                valido = true;
+            } else {
+                System.out.println("[ERROR]: ID inválido.");
+                valido = false;
+            }
         } while (!valido);
 
-        if (solicitudRegistrada.getIdSolicitud() == temp.getIdSolicitud()) {
-            solicitudRegistrada = null;
+        if (MenuPrincipal.usuarioActivo.eliminarSolicitud(idBuscar)) {
             System.out.println("[SISTEMA]: Solicitud eliminada correctamente.");
         } else {
-            System.out.println("[ERROR]: El ID ingresado no coincide con la solicitud mostrada.");
+            System.out.println("[ERROR]: El ID ingresado no coincide con ninguna de tus solicitudes.");
         }
     }
 }

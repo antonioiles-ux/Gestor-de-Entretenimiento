@@ -11,8 +11,6 @@ import java.util.Scanner;
 public class MenuOpinion {
 
     private static int contadorIdOpinion = 1;
-    private static Opinion opinionRegistrada = null;
-    private static String contenidoOpinadoInfo = "";
 
     public static void mostrarMenu() {
 
@@ -79,125 +77,143 @@ public class MenuOpinion {
 
         MenuContenido.mostrarResumenContenidos();
 
-        Contenido tempContenido = new Contenido();
-        String tituloSeleccionado = null;
+        Contenido contenidoSeleccionado = null;
         boolean valido;
 
         do {
             System.out.print("Ingrese el ID del contenido sobre el que desea opinar: ");
             String idContTxt = sc.nextLine();
-            valido = Validaciones.validarNumeros(idContTxt) && tempContenido.setIdContenido(Integer.parseInt(idContTxt));
-            if (valido) {
-                tituloSeleccionado = MenuContenido.obtenerTituloPorId(tempContenido.getIdContenido());
-                if (tituloSeleccionado == null) {
+            if (Validaciones.validarNumeros(idContTxt) && Integer.parseInt(idContTxt) > 0) {
+                contenidoSeleccionado = MenuContenido.obtenerContenidoPorId(Integer.parseInt(idContTxt));
+                if (contenidoSeleccionado == null) {
                     System.out.println("[ERROR]: No existe ningún contenido con ese ID en la lista.");
                     valido = false;
+                } else {
+                    valido = true;
                 }
             } else {
                 System.out.println("[ERROR]: ID inválido.");
+                valido = false;
             }
         } while (!valido);
 
         Opinion nueva = new Opinion();
 
         do {
-            System.out.print("Ingrese su comentario sobre '" + tituloSeleccionado + "': ");
+            System.out.print("Ingrese su comentario sobre '" + contenidoSeleccionado.getTitulo() + "': ");
             String comentarioTxt = sc.nextLine();
-
-            if (!comentarioTxt.matches("[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\\s]+")) {
-                System.out.println("[ERROR]: El comentario solo puede contener letras (sin números ni símbolos).");
-                valido = false;
-            } else {
-                valido = nueva.setComentario(comentarioTxt);
-                if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
-            }
+            valido = Validaciones.validarLetras(comentarioTxt) && nueva.setComentario(comentarioTxt);
+            if (!valido) System.out.println("[ERROR]: El comentario solo puede contener letras y espacios.");
         } while (!valido);
 
-        nueva.setIdOpinion(contadorIdOpinion++);
+        nueva.setIdOpinion(contadorIdOpinion);
         nueva.setFechaRegistro(obtenerFechaActual());
+        nueva.setAutor(MenuPrincipal.usuarioActivo); // ASOCIACIÓN
 
-        opinionRegistrada = nueva;
-        contenidoOpinadoInfo = tituloSeleccionado;
-
-        System.out.println("\n[OPINIÓN REGISTRADA]: Sobre -> " + contenidoOpinadoInfo);
-        System.out.println(" -> " + opinionRegistrada.toString());
+        if (contenidoSeleccionado.agregarOpinion(nueva)) { // COMPOSICIÓN
+            contadorIdOpinion++;
+            System.out.println("\n[OPINIÓN REGISTRADA]: Sobre -> " + contenidoSeleccionado.getTitulo());
+            System.out.println(" -> " + nueva.toString());
+        } else {
+            System.out.println("\n[ERROR]: Ya publicaste exactamente ese mismo comentario en este contenido.");
+        }
     }
 
-    private static void consultarOpinion() {
-        if (opinionRegistrada == null) {
-            System.out.println("\n[RESTRICCIÓN]: No existen opiniones registradas todavía.");
-            return;
+    private static boolean consultarOpinion() {
+        boolean hayOpiniones = false;
+        System.out.println("\n--- OPINIONES REGISTRADAS ---");
+        for (Contenido c : MenuPrincipal.gestorGlobal.listarContenidos()) {
+            for (Opinion op : c.listarOpiniones()) {
+                String autor = (op.getAutor() != null) ? op.getAutor().getNombreCompleto() : "Anónimo";
+                System.out.println(" Contenido: " + c.getTitulo() + " | Autor: " + autor + " | " + op.toString());
+                hayOpiniones = true;
+            }
         }
-        System.out.println("\n--- OPINIÓN REGISTRADA ---");
-        System.out.println(" Contenido: " + contenidoOpinadoInfo + " | " + opinionRegistrada.toString());
+        if (!hayOpiniones) {
+            System.out.println("[RESTRICCIÓN]: No existen opiniones registradas todavía.");
+        }
+        return hayOpiniones;
     }
 
     private static void editarOpinion(Scanner sc) {
-        if (opinionRegistrada == null) {
-            System.out.println("\n[RESTRICCIÓN]: No existen opiniones registradas para editar.");
+        if (!consultarOpinion()) {
             return;
         }
 
-        System.out.println("\n--- OPINIÓN DISPONIBLE ---");
-        System.out.println(" [ID: " + opinionRegistrada.getIdOpinion() + "] " + contenidoOpinadoInfo
-                + " | Comentario actual: \"" + opinionRegistrada.getComentario() + "\"");
-
-        Opinion temp = new Opinion();
+        int idBuscar = 0;
         boolean valido;
 
         do {
             System.out.print("Ingrese el ID de la opinión a editar: ");
             String idTxt = sc.nextLine();
-            valido = Validaciones.validarNumeros(idTxt) && temp.setIdOpinion(Integer.parseInt(idTxt));
-            if (!valido) System.out.println("[ERROR]: ID inválido.");
+            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
+                idBuscar = Integer.parseInt(idTxt);
+                valido = true;
+            } else {
+                System.out.println("[ERROR]: ID inválido.");
+                valido = false;
+            }
         } while (!valido);
 
-        if (opinionRegistrada.getIdOpinion() != temp.getIdOpinion()) {
-            System.out.println("[ERROR]: El ID ingresado no coincide con la opinión mostrada.");
-            return;
+        for (Contenido c : MenuPrincipal.gestorGlobal.listarContenidos()) {
+            Opinion op = c.buscarOpinion(idBuscar);
+            if (op != null) {
+                if (op.getAutor() != null && !op.getAutor().equals(MenuPrincipal.usuarioActivo)) {
+                    System.out.println("[ACCESO DENEGADO]: Solo el autor puede editar esta opinión.");
+                    return;
+                }
+                do {
+                    System.out.print("Ingrese nuevo comentario: ");
+                    String nuevoComentario = sc.nextLine();
+                    valido = Validaciones.validarLetras(nuevoComentario)
+                            && c.editarOpinion(idBuscar, nuevoComentario, obtenerFechaActual());
+                    if (!valido) System.out.println("[ERROR]: El comentario solo puede contener letras y espacios.");
+                } while (!valido);
+
+                System.out.println("\n[EDICIÓN EXITOSA]: " + op.toString());
+                return;
+            }
         }
-
-        do {
-            System.out.print("Ingrese nuevo comentario: ");
-            valido = opinionRegistrada.setComentario(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: El comentario no puede estar vacío.");
-        } while (!valido);
-
-        opinionRegistrada.setFechaEdicion(obtenerFechaActual());
-        System.out.println("\n[EDICIÓN EXITOSA]: " + opinionRegistrada.toString());
+        System.out.println("[ERROR]: El ID ingresado no coincide con ninguna opinión.");
     }
 
     private static void eliminarOpinion(Scanner sc) {
-        if (opinionRegistrada == null) {
-            System.out.println("\n[RESTRICCIÓN]: No existen opiniones registradas para eliminar.");
+        if (!consultarOpinion()) {
             return;
         }
 
-        System.out.println("\n--- OPINIÓN DISPONIBLE ---");
-        System.out.println(" [ID: " + opinionRegistrada.getIdOpinion() + "] " + contenidoOpinadoInfo
-                + " | Comentario: \"" + opinionRegistrada.getComentario() + "\"");
-
-        Opinion temp = new Opinion();
+        int idBuscar = 0;
         boolean valido;
 
         do {
             System.out.print("Ingrese el ID de la opinión a eliminar: ");
             String idTxt = sc.nextLine();
-            valido = Validaciones.validarNumeros(idTxt) && temp.setIdOpinion(Integer.parseInt(idTxt));
-            if (!valido) System.out.println("[ERROR]: ID inválido.");
+            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
+                idBuscar = Integer.parseInt(idTxt);
+                valido = true;
+            } else {
+                System.out.println("[ERROR]: ID inválido.");
+                valido = false;
+            }
         } while (!valido);
 
-        if (opinionRegistrada.getIdOpinion() == temp.getIdOpinion()) {
-            if (MenuPrincipal.esAdmin) {
-                GestorContenido gestor = new GestorContenido();
-                gestor.eliminarOpinion();
+        for (Contenido c : MenuPrincipal.gestorGlobal.listarContenidos()) {
+            Opinion op = c.buscarOpinion(idBuscar);
+            if (op != null) {
+                if (!MenuPrincipal.esAdmin && op.getAutor() != null
+                        && !op.getAutor().equals(MenuPrincipal.usuarioActivo)) {
+                    System.out.println("[ACCESO DENEGADO]: No puedes eliminar opiniones de otro usuario.");
+                    return;
+                }
+                if (MenuPrincipal.esAdmin) {
+                    MenuPrincipal.gestorGlobal.eliminarOpinion(op, "Moderación administrativa");
+                }
+                c.eliminarOpinion(idBuscar);
+                System.out.println("[SISTEMA]: Opinión eliminada correctamente.");
+                return;
             }
-            opinionRegistrada = null;
-            contenidoOpinadoInfo = "";
-            System.out.println("[SISTEMA]: Opinión eliminada correctamente.");
-        } else {
-            System.out.println("[ERROR]: El ID ingresado no coincide con la opinión mostrada.");
         }
+        System.out.println("[ERROR]: El ID ingresado no coincide con ninguna opinión.");
     }
 
     private static String obtenerFechaActual() {

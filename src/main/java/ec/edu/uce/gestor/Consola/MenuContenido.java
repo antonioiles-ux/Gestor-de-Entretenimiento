@@ -15,39 +15,34 @@ public class MenuContenido {
 
     private static int contadorIdContenido = 1;
 
-    private static Libro libroRegistrado = null;
-    private static Pelicula peliculaRegistrada = null;
-    private static Serie serieRegistrada = null;
-    private static Videojuego videojuegoRegistrado = null;
+    // Obtiene una copia defensiva del arreglo polimórfico del gestor
+    private static Contenido[] obtenerContenidosActuales() {
+        return MenuPrincipal.gestorGlobal.listarContenidos();
+    }
 
-    // Métodos auxiliares públicos para que MenuValoracion y MenuOpinion verifiquen contenidos existentes
+    private static String obtenerEtiquetaTipo(Contenido c) {
+        if (c instanceof Libro) return "Libro";
+        if (c instanceof Pelicula) return "Película";
+        if (c instanceof Serie) return "Serie";
+        if (c instanceof Videojuego) return "Videojuego";
+        return "Contenido";
+    }
+
+    // Métodos puente para MenuOpinion, MenuValoracion y MenuSolicitud
     public static boolean hayContenidoRegistrado() {
-        return libroRegistrado != null || peliculaRegistrada != null
-                || serieRegistrada != null || videojuegoRegistrado != null;
+        return MenuPrincipal.gestorGlobal.getCantidadContenidos() > 0;
     }
 
     public static void mostrarResumenContenidos() {
         System.out.println("\n--- CONTENIDOS DISPONIBLES EN CATÁLOGO ---");
-        if (libroRegistrado != null) {
-            System.out.println(" [ID: " + libroRegistrado.getIdContenido() + "] Libro: " + libroRegistrado.getTitulo());
-        }
-        if (peliculaRegistrada != null) {
-            System.out.println(" [ID: " + peliculaRegistrada.getIdContenido() + "] Película: " + peliculaRegistrada.getTitulo());
-        }
-        if (serieRegistrada != null) {
-            System.out.println(" [ID: " + serieRegistrada.getIdContenido() + "] Serie: " + serieRegistrada.getTitulo());
-        }
-        if (videojuegoRegistrado != null) {
-            System.out.println(" [ID: " + videojuegoRegistrado.getIdContenido() + "] Videojuego: " + videojuegoRegistrado.getTitulo());
+        for (Contenido c : obtenerContenidosActuales()) {
+            System.out.println(" [ID: " + c.getIdContenido() + "] " + obtenerEtiquetaTipo(c)
+                    + ": " + c.getTitulo() + " (Autor: " + c.getAutor() + ")");
         }
     }
 
-    public static String obtenerTituloPorId(int id) {
-        if (libroRegistrado != null && libroRegistrado.getIdContenido() == id) return "Libro: " + libroRegistrado.getTitulo();
-        if (peliculaRegistrada != null && peliculaRegistrada.getIdContenido() == id) return "Película: " + peliculaRegistrada.getTitulo();
-        if (serieRegistrada != null && serieRegistrada.getIdContenido() == id) return "Serie: " + serieRegistrada.getTitulo();
-        if (videojuegoRegistrado != null && videojuegoRegistrado.getIdContenido() == id) return "Videojuego: " + videojuegoRegistrado.getTitulo();
-        return null;
+    public static Contenido obtenerContenidoPorId(int id) {
+        return MenuPrincipal.gestorGlobal.buscarContenido(id);
     }
 
     public static void mostrarMenu() {
@@ -58,8 +53,9 @@ public class MenuContenido {
         do {
             System.out.println("\n===(H2). GESTIONAR CONTENIDO DE ENTRETENIMIENTO ===");
             System.out.println("1. Registrar Contenido");
-            System.out.println("2. Eliminar Contenido Erróneo");
-            System.out.println("3. Consultar Catálogo");
+            System.out.println("2. Editar Título de Contenido");
+            System.out.println("3. Eliminar Contenido Erróneo");
+            System.out.println("4. Consultar Catálogo");
             System.out.println("0. Regresar");
             System.out.print("Seleccione una opción: ");
 
@@ -81,13 +77,21 @@ public class MenuContenido {
 
                 case 2:
                     if (!MenuPrincipal.sesionIniciada) {
+                        System.out.println("\n[ACCESO RESTRINGIDO]: Debe iniciar sesión para editar contenido.");
+                    } else {
+                        editarContenido(sc);
+                    }
+                    break;
+
+                case 3:
+                    if (!MenuPrincipal.sesionIniciada) {
                         System.out.println("\n[ACCESO RESTRINGIDO]: Debe iniciar sesión para eliminar contenido.");
                     } else {
                         eliminarContenido(sc);
                     }
                     break;
 
-                case 3:
+                case 4:
                     menuCatalogo(sc);
                     break;
 
@@ -137,13 +141,12 @@ public class MenuContenido {
     private static void cargarDatosComunes(Scanner sc, Contenido contenido) {
         boolean valido;
 
-        // ID automático, fecha de publicación ingresada manualmente por teclado
-        contenido.setIdContenido(contadorIdContenido++);
+        contenido.setIdContenido(contadorIdContenido);
 
         do {
             System.out.print("Ingrese título: ");
             valido = contenido.setTitulo(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: El título no puede estar vacío.");
+            if (!valido) System.out.println("[ERROR]: El título debe contener solo letras y espacios.");
         } while (!valido);
 
         do {
@@ -166,6 +169,18 @@ public class MenuContenido {
         } while (!valido);
     }
 
+    private static void guardarEnCatalogo(Contenido nuevo) {
+        if (MenuPrincipal.gestorGlobal.agregarContenido(nuevo)) {
+            contadorIdContenido++;
+            if (!MenuPrincipal.esAdmin && MenuPrincipal.usuarioActivo != null) {
+                MenuPrincipal.usuarioActivo.agregarContenido(nuevo);
+            }
+            System.out.println("\n[REGISTRO EXITOSO]: " + nuevo.toString());
+        } else {
+            System.out.println("\n[ERROR]: No se pudo registrar (contenido duplicado o catálogo lleno).");
+        }
+    }
+
     private static void registrarLibro(Scanner sc) {
         Libro libro = new Libro();
         System.out.println("\n--- NUEVO LIBRO (H2.1.2) ---");
@@ -185,8 +200,7 @@ public class MenuContenido {
             if (!valido) System.out.println("[ERROR]: La descripción no puede estar vacía.");
         } while (!valido);
 
-        libroRegistrado = libro;
-        System.out.println("\n[REGISTRO EXITOSO]: " + libroRegistrado.toString());
+        guardarEnCatalogo(libro);
     }
 
     private static void registrarPelicula(Scanner sc) {
@@ -205,11 +219,10 @@ public class MenuContenido {
         do {
             System.out.print("Ingrese clasificación (ej. PG-13, +18): ");
             valido = pelicula.setClasificacion(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: La clasificación no puede estar vacía.");
+            if (!valido) System.out.println("[ERROR]: Clasificación inválida.");
         } while (!valido);
 
-        peliculaRegistrada = pelicula;
-        System.out.println("\n[REGISTRO EXITOSO]: " + peliculaRegistrada.toString());
+        guardarEnCatalogo(pelicula);
     }
 
     private static void registrarSerie(Scanner sc) {
@@ -232,8 +245,7 @@ public class MenuContenido {
             if (!valido) System.out.println("[ERROR]: Número de episodios inválido.");
         } while (!valido);
 
-        serieRegistrada = serie;
-        System.out.println("\n[REGISTRO EXITOSO]: " + serieRegistrada.toString());
+        guardarEnCatalogo(serie);
     }
 
     private static void registrarVideojuego(Scanner sc) {
@@ -251,46 +263,77 @@ public class MenuContenido {
         do {
             System.out.print("Ingrese clasificación de edad (ej. E, T, M): ");
             valido = videojuego.setClasificacionEdad(sc.nextLine());
-            if (!valido) System.out.println("[ERROR]: La clasificación de edad no puede estar vacía.");
+            if (!valido) System.out.println("[ERROR]: Clasificación de edad inválida.");
         } while (!valido);
 
-        videojuegoRegistrado = videojuego;
-        System.out.println("\n[REGISTRO EXITOSO]: " + videojuegoRegistrado.toString());
+        guardarEnCatalogo(videojuego);
+    }
+
+    private static void editarContenido(Scanner sc) {
+        if (!hayContenidoRegistrado()) {
+            System.out.println("\n[RESTRICCIÓN]: No existen contenidos registrados para editar.");
+            return;
+        }
+
+        mostrarResumenContenidos();
+
+        int idBuscar = 0;
+        boolean valido;
+
+        do {
+            System.out.print("Ingrese el ID del contenido a editar: ");
+            String idTxt = sc.nextLine();
+            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
+                idBuscar = Integer.parseInt(idTxt);
+                valido = true;
+            } else {
+                System.out.println("[ERROR]: ID inválido.");
+                valido = false;
+            }
+        } while (!valido);
+
+        Contenido c = MenuPrincipal.gestorGlobal.buscarContenido(idBuscar);
+        if (c == null) {
+            System.out.println("[ERROR]: El ID ingresado no coincide con ningún contenido.");
+            return;
+        }
+
+        System.out.print("Ingrese nuevo título: ");
+        if (MenuPrincipal.gestorGlobal.editarContenido(idBuscar, sc.nextLine())) {
+            System.out.println("[EDICIÓN EXITOSA]: " + c.obtenerFicha(true));
+        } else {
+            System.out.println("[ERROR]: Título inválido (use solo letras y espacios).");
+        }
     }
 
     private static void eliminarContenido(Scanner sc) {
-        // Restricción inicial: si no existe nada registrado, no deja continuar
         if (!hayContenidoRegistrado()) {
             System.out.println("\n[RESTRICCIÓN]: No existen contenidos registrados para eliminar.");
             return;
         }
 
-        // Mostramos los IDs disponibles para que el usuario no tenga que memorizarlos
         mostrarResumenContenidos();
 
-        Contenido temp = new Contenido();
+        int idBuscar = 0;
         boolean valido;
 
         do {
             System.out.print("Ingrese el ID del contenido a eliminar: ");
             String idTxt = sc.nextLine();
-            valido = Validaciones.validarNumeros(idTxt) && temp.setIdContenido(Integer.parseInt(idTxt));
-            if (!valido) System.out.println("[ERROR]: ID inválido. Ingrese solo números mayores a 0.");
+            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
+                idBuscar = Integer.parseInt(idTxt);
+                valido = true;
+            } else {
+                System.out.println("[ERROR]: ID inválido. Ingrese solo números mayores a 0.");
+                valido = false;
+            }
         } while (!valido);
 
-        int idBuscar = temp.getIdContenido();
-        if (libroRegistrado != null && libroRegistrado.getIdContenido() == idBuscar) {
-            libroRegistrado = null;
-            System.out.println("[SISTEMA]: Libro eliminado correctamente.");
-        } else if (peliculaRegistrada != null && peliculaRegistrada.getIdContenido() == idBuscar) {
-            peliculaRegistrada = null;
-            System.out.println("[SISTEMA]: Película eliminada correctamente.");
-        } else if (serieRegistrada != null && serieRegistrada.getIdContenido() == idBuscar) {
-            serieRegistrada = null;
-            System.out.println("[SISTEMA]: Serie eliminada correctamente.");
-        } else if (videojuegoRegistrado != null && videojuegoRegistrado.getIdContenido() == idBuscar) {
-            videojuegoRegistrado = null;
-            System.out.println("[SISTEMA]: Videojuego eliminado correctamente.");
+        if (MenuPrincipal.gestorGlobal.eliminarContenido(idBuscar)) {
+            if (!MenuPrincipal.esAdmin && MenuPrincipal.usuarioActivo != null) {
+                MenuPrincipal.usuarioActivo.eliminarContenido(idBuscar);
+            }
+            System.out.println("[SISTEMA]: Contenido eliminado correctamente del catálogo.");
         } else {
             System.out.println("[ERROR]: El ID ingresado no coincide con ninguno de los contenidos mostrados.");
         }
@@ -319,29 +362,39 @@ public class MenuContenido {
 
             switch (opcion) {
                 case 1:
-                    mostrarDetallePolimorfico(serieRegistrada);
-                    break;
                 case 2:
-                    mostrarDetallePolimorfico(libroRegistrado);
-                    break;
                 case 3:
-                    mostrarDetallePolimorfico(peliculaRegistrada);
-                    break;
                 case 4:
-                    mostrarDetallePolimorfico(videojuegoRegistrado);
+                    boolean encontrado = false;
+                    for (Contenido c : obtenerContenidosActuales()) {
+                        if ((opcion == 1 && c instanceof Serie)
+                                || (opcion == 2 && c instanceof Libro)
+                                || (opcion == 3 && c instanceof Pelicula)
+                                || (opcion == 4 && c instanceof Videojuego)) {
+                            mostrarDetallePolimorfico(c);
+                            System.out.println("------------------------------------------------");
+                            encontrado = true;
+                        }
+                    }
+                    if (!encontrado) {
+                        System.out.println("[INFO]: No hay contenido registrado en esta categoría aún.");
+                    }
                     break;
+
                 case 5:
                     menuBuscarContenido(sc);
                     break;
+
                 case 0:
                     break;
+
                 default:
                     System.out.println("[ERROR]: Opción inválida.");
             }
 
         } while (opcion != 0);
     }
-//Correccion menuBuscarContenido
+
     private static void menuBuscarContenido(Scanner sc) {
 
         if (!hayContenidoRegistrado()) {
@@ -352,7 +405,6 @@ public class MenuContenido {
         int opcion = -1;
 
         do {
-
             System.out.println("\n=== BUSCAR CONTENIDO (H2.3.5) ===");
             System.out.println("1. Buscar por Título");
             System.out.println("2. Buscar por Género");
@@ -361,167 +413,46 @@ public class MenuContenido {
             System.out.print("Seleccione una opción: ");
 
             String entrada = sc.nextLine();
-
             if (!Validaciones.validarNumeros(entrada)) {
                 System.out.println("[ERROR]: Ingrese solo números.");
                 continue;
             }
-
             opcion = Integer.parseInt(entrada);
 
-            boolean encontrado = false;
-
-            switch (opcion) {
-
-                case 1:
-
-                    System.out.print("Ingrese título a buscar: ");
-                    String tituloBuscar = sc.nextLine();
-
-                    System.out.println("\n=== RESULTADOS DE BÚSQUEDA ===");
-
-                    if (libroRegistrado != null &&
-                            libroRegistrado.getTitulo().toLowerCase()
-                                    .contains(tituloBuscar.toLowerCase())) {
-
-                        System.out.println("\n[LIBRO ENCONTRADO]");
-                        System.out.println(libroRegistrado);
-                        encontrado = true;
-                    }
-
-                    if (peliculaRegistrada != null &&
-                            peliculaRegistrada.getTitulo().toLowerCase()
-                                    .contains(tituloBuscar.toLowerCase())) {
-
-                        System.out.println("\n[PELÍCULA ENCONTRADA]");
-                        System.out.println(peliculaRegistrada);
-                        encontrado = true;
-                    }
-
-                    if (serieRegistrada != null &&
-                            serieRegistrada.getTitulo().toLowerCase()
-                                    .contains(tituloBuscar.toLowerCase())) {
-
-                        System.out.println("\n[SERIE ENCONTRADA]");
-                        System.out.println(serieRegistrada);
-                        encontrado = true;
-                    }
-
-                    if (videojuegoRegistrado != null &&
-                            videojuegoRegistrado.getTitulo().toLowerCase()
-                                    .contains(tituloBuscar.toLowerCase())) {
-
-                        System.out.println("\n[VIDEOJUEGO ENCONTRADO]");
-                        System.out.println(videojuegoRegistrado);
-                        encontrado = true;
-                    }
-
-                    if (!encontrado) {
-                        System.out.println("[INFO]: No se encontraron contenidos con ese título.");
-                    }
-
-                    break;
-
-                case 2:
-
-                    System.out.print("Ingrese género a buscar: ");
-                    String generoBuscar = sc.nextLine();
-
-                    System.out.println("\n=== RESULTADOS DE BÚSQUEDA ===");
-
-                    if (libroRegistrado != null &&
-                            libroRegistrado.getGenero().equalsIgnoreCase(generoBuscar)) {
-
-                        System.out.println("\n[LIBRO ENCONTRADO]");
-                        System.out.println(libroRegistrado);
-                        encontrado = true;
-                    }
-
-                    if (peliculaRegistrada != null &&
-                            peliculaRegistrada.getGenero().equalsIgnoreCase(generoBuscar)) {
-
-                        System.out.println("\n[PELÍCULA ENCONTRADA]");
-                        System.out.println(peliculaRegistrada);
-                        encontrado = true;
-                    }
-
-                    if (serieRegistrada != null &&
-                            serieRegistrada.getGenero().equalsIgnoreCase(generoBuscar)) {
-
-                        System.out.println("\n[SERIE ENCONTRADA]");
-                        System.out.println(serieRegistrada);
-                        encontrado = true;
-                    }
-
-                    if (videojuegoRegistrado != null &&
-                            videojuegoRegistrado.getGenero().equalsIgnoreCase(generoBuscar)) {
-
-                        System.out.println("\n[VIDEOJUEGO ENCONTRADO]");
-                        System.out.println(videojuegoRegistrado);
-                        encontrado = true;
-                    }
-
-                    if (!encontrado) {
-                        System.out.println("No se encontraron contenidos con ese género.");
-                    }
-
-                    break;
-
-            case 3:
-
-                System.out.print("Ingrese autor a buscar: ");
-                String autorBuscar = sc.nextLine();
-
-                System.out.println("\n=== RESULTADOS DE BÚSQUEDA ===");
-
-                if (libroRegistrado != null &&
-                        libroRegistrado.getAutor().equalsIgnoreCase(autorBuscar)) {
-
-                    System.out.println("\n[LIBRO ENCONTRADO]");
-                    System.out.println(libroRegistrado);
-                    encontrado = true;
-                }
-
-                if (peliculaRegistrada != null &&
-                        peliculaRegistrada.getAutor().equalsIgnoreCase(autorBuscar)) {
-
-                    System.out.println("\n[PELÍCULA ENCONTRADA]");
-                    System.out.println(peliculaRegistrada);
-                    encontrado = true;
-                }
-
-                if (serieRegistrada != null &&
-                        serieRegistrada.getAutor().equalsIgnoreCase(autorBuscar)) {
-
-                    System.out.println("\n[SERIE ENCONTRADA]");
-                    System.out.println(serieRegistrada);
-                    encontrado = true;
-                }
-
-                if (videojuegoRegistrado != null &&
-                        videojuegoRegistrado.getAutor().equalsIgnoreCase(autorBuscar)) {
-
-                    System.out.println("\n[VIDEOJUEGO ENCONTRADO]");
-                    System.out.println(videojuegoRegistrado);
-                    encontrado = true;
-                }
-
-                if (!encontrado) {
-                    System.out.println("No se encontraron contenidos con ese autor.");
-                }
-
-                break;
-
-            case 0:
+            if (opcion == 0) {
                 System.out.println("Regresando...");
                 break;
-
-            default:
+            }
+            if (opcion < 1 || opcion > 3) {
                 System.out.println("Opción inválida.");
-        }
+                continue;
+            }
 
-    } while (opcion != 0);
-}
+            String etiquetaPrompt = (opcion == 1) ? "título" : (opcion == 2) ? "género" : "autor";
+            System.out.print("Ingrese " + etiquetaPrompt + " a buscar: ");
+            String criterio = sc.nextLine();
+
+            System.out.println("\n=== RESULTADOS DE BÚSQUEDA ===");
+            boolean encontrado = false;
+
+            for (Contenido c : obtenerContenidosActuales()) {
+                boolean coincide = (opcion == 1 && c.getTitulo().toLowerCase().contains(criterio.toLowerCase()))
+                        || (opcion == 2 && c.getGenero().equalsIgnoreCase(criterio))
+                        || (opcion == 3 && c.getAutor().equalsIgnoreCase(criterio));
+
+                if (coincide) {
+                    System.out.println("\n[" + obtenerEtiquetaTipo(c).toUpperCase() + " ENCONTRADO]");
+                    mostrarDetallePolimorfico(c);
+                    encontrado = true;
+                }
+            }
+
+            if (!encontrado) {
+                System.out.println("[INFO]: No se encontraron contenidos con ese " + etiquetaPrompt + ".");
+            }
+
+        } while (opcion != 0);
+    }
 
     private static Date convertirFecha(String fechaTxt) {
         try {
@@ -533,18 +464,18 @@ public class MenuContenido {
         }
     }
 
-
     // --- POLIMORFISMO + INSTANCEOF CON CASTING ---
     private static void mostrarDetallePolimorfico(Contenido contenido) {
         if (contenido == null) {
-            System.out.println("[INFO]: No hay contenido registrado en esta categoría aún.");
             return;
         }
-        // Ejecución polimórfica: llama al toString() y calcularTiempoConsumo() de la clase hija real
         System.out.println(contenido.toString());
         System.out.println(" -> Tiempo estimado de consumo: " + contenido.calcularTiempoConsumo() + " minutos.");
+        System.out.printf(" -> Valoración promedio: %.1f/5.0 (%d valoraciones, %d opiniones)%n",
+                contenido.calcularPromedioValoraciones(),
+                contenido.getCantidadValoraciones(),
+                contenido.getCantidadOpiniones());
 
-        // Uso de instanceof + casting para acceder a atributos exclusivos de cada subclase
         if (contenido instanceof Libro l) {
             System.out.println(" -> Detalle específico (Libro): " + l.getNumeroPaginas() + " páginas.");
         } else if (contenido instanceof Pelicula p) {
@@ -555,7 +486,4 @@ public class MenuContenido {
             System.out.println(" -> Detalle específico (Videojuego): Plataforma " + v.getPlataforma());
         }
     }
-
-
-
 }

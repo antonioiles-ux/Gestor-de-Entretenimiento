@@ -164,6 +164,20 @@ public class Usuario {
         return false;
     }
 
+    // EDITAR estado de una solicitud en el arreglo del usuario
+    public boolean actualizarEstadoSolicitud(int idSolicitud, String nuevoEstado) {
+        SolicitudConsumo encontrada = buscarSolicitud(idSolicitud);
+        if (encontrada == null) {
+            return false;
+        }
+        if (encontrada.setEstado(nuevoEstado)) {
+            encontrada.setFechaSolicitud(new java.util.Date());
+            return true;
+        }
+        return false;
+    }
+
+
     // LISTAR (copia para proteger el arreglo interno)
     public SolicitudConsumo[] listarSolicitudes() {
         SolicitudConsumo[] copia = new SolicitudConsumo[cantidadSolicitudes];
