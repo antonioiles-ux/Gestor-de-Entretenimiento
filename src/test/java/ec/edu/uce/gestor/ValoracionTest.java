@@ -1,11 +1,11 @@
 package ec.edu.uce.gestor;
-import ec.edu.uce.gestor.dominio.Valoracion;
+import ec.edu.uce.gestor.dominio.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import java.util.Date;
 
 public class ValoracionTest {
 
@@ -147,5 +147,34 @@ public class ValoracionTest {
         assertEquals(valoracion.hashCode(), mismaValoracion.hashCode());
         assertNotEquals(valoracion, distintaValoracion);
         assertFalse(valoracion.equals(null));
+    }
+
+    // =========================================================================
+    // TEST RELACIÓN: ASOCIACIÓN (Valoracion -> Usuario, Contenido y Solicitud)
+    // =========================================================================
+    @Test
+    void testAsociacionValoracionCompleta() {
+        Usuario usuario = new Usuario("Juan Betancourt", 1);
+        Contenido pelicula = new Contenido(1, "Interestelar", "Christopher Nolan", "Ciencia Ficcion", new Date());
+        SolicitudConsumo solicitud = new SolicitudConsumo(1, "Consumido", new Date(), "Pelicula", usuario);
+
+        Valoracion valoracion = new Valoracion();
+        assertTrue(valoracion.setIdValoracion(1));
+        assertTrue(valoracion.setCalificacion(5));
+        assertTrue(valoracion.setFechaValoracion("22/11/2026"));
+
+        // Asociar Usuario, Contenido y SolicitudConsumo
+        valoracion.setAutor(usuario);
+        valoracion.setSolicitudConsumo(solicitud);
+        assertTrue(pelicula.agregarValoracion(valoracion));
+
+        // Verificar que las referencias asociadas quedaron enlazadas
+        assertEquals(usuario, valoracion.getAutor());
+        assertEquals(pelicula, valoracion.getContenido());
+        assertEquals(solicitud, valoracion.getSolicitudConsumo());
+
+        // Verificar que el mismo usuario no pueda valorar dos veces el mismo contenido
+        Valoracion duplicada = new Valoracion(2, 4, "22/11/2026", usuario, pelicula);
+        assertFalse(pelicula.agregarValoracion(duplicada));
     }
 }
