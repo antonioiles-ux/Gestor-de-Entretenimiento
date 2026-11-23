@@ -8,9 +8,18 @@ public class Usuario {
     private String nombreCompleto;
     private int idUsuario;
 
+    // RELACIÓN UNO A UNO (objeto): cada usuario tiene UNA cuenta
+    private Cuenta cuenta;
+
+    // RELACIÓN UNO A MUCHOS (arreglo): un usuario tiene varias solicitudes
+    private SolicitudConsumo[] solicitudes;
+    private int cantidadSolicitudes;
+
     public Usuario() {
         this.nombreCompleto = "sin nombre";
         this.idUsuario = 0;
+        this.solicitudes = new SolicitudConsumo[50];
+        this.cantidadSolicitudes = 0;
     }
 
     public Usuario(String nombreCompleto, int idUsuario) {
@@ -19,6 +28,13 @@ public class Usuario {
         setIdUsuario(idUsuario);
     }
 
+    // Constructor con la cuenta (uno a uno)
+    public Usuario(String nombreCompleto, int idUsuario, Cuenta cuenta) {
+        this(nombreCompleto, idUsuario);
+        this.cuenta = cuenta;
+    }
+
+    // ---------- GET / SET ----------
     public String getNombreCompleto() {
         return nombreCompleto;
     }
@@ -43,17 +59,28 @@ public class Usuario {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Id: " + this.getIdUsuario() + ", Nombre: " + this.getNombreCompleto();
+    public Cuenta getCuenta() {
+        return cuenta;
     }
 
-    // --- POLIMORFISMO (Metodo base que sobreescribe GestorContenido) ---
+    public boolean setCuenta(Cuenta cuenta) {
+        if (cuenta == null) {
+            return false;
+        }
+        this.cuenta = cuenta;
+        return true;
+    }
+
+    public int getCantidadSolicitudes() {
+        return cantidadSolicitudes;
+    }
+
+    // ---------- POLIMORFISMO ----------
     public String obtenerRol() {
         return "Usuario Registrado";
     }
 
-    // --- SOBRECARGA DE MÉTODOS (incluye referencia de objeto) ---
+    // ---------- SOBRECARGA ----------
     public String mostrarPerfil() {
         return this.toString();
     }
@@ -72,7 +99,86 @@ public class Usuario {
         return this.idUsuario == otroUsuario.idUsuario;
     }
 
-    // --- EQUALS Y HASHCODE ---
+    // =========================================================
+    // CRUD DE SOLICITUDES (SolicitudConsumo[])
+    // =========================================================
+
+    // CREAR (con validación de duplicados)
+    public boolean agregarSolicitud(SolicitudConsumo solicitud) {
+        if (solicitud == null || cantidadSolicitudes == solicitudes.length
+                || esSolicitudDuplicada(solicitud)) {
+            return false;
+        }
+        solicitud.setSolicitante(this); // vincula la solicitud con su dueño
+        solicitudes[cantidadSolicitudes++] = solicitud;
+        return true;
+    }
+
+    // CONSULTAR
+    public SolicitudConsumo buscarSolicitud(int idSolicitud) {
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+            if (solicitudes[i].getIdSolicitud() == idSolicitud) {
+                return solicitudes[i];
+            }
+        }
+        return null;
+    }
+
+    // EDITAR
+    public boolean editarSolicitud(int idSolicitud, String nuevoEstado) {
+        SolicitudConsumo s = buscarSolicitud(idSolicitud);
+        if (s == null) {
+            return false;
+        }
+        return s.setEstado(nuevoEstado);
+    }
+
+    // ELIMINAR (desplaza a la izquierda)
+    public boolean eliminarSolicitud(int idSolicitud) {
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+            if (solicitudes[i].getIdSolicitud() == idSolicitud) {
+                for (int j = i; j < cantidadSolicitudes - 1; j++) {
+                    solicitudes[j] = solicitudes[j + 1];
+                }
+                solicitudes[--cantidadSolicitudes] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // LISTAR (copia para proteger el arreglo interno)
+    public SolicitudConsumo[] listarSolicitudes() {
+        SolicitudConsumo[] copia = new SolicitudConsumo[cantidadSolicitudes];
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+            copia[i] = solicitudes[i];
+        }
+        return copia;
+    }
+
+    // VALIDACIÓN DE DUPLICADOS: mismo ID, o mismo tipo de contenido mientras siga pendiente
+    private boolean esSolicitudDuplicada(SolicitudConsumo nueva) {
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+            SolicitudConsumo s = solicitudes[i];
+            if (s.getIdSolicitud() == nueva.getIdSolicitud()) {
+                return true;
+            }
+            if (s.getTipoContenido().equalsIgnoreCase(nueva.getTipoContenido())
+                    && s.getEstado().equalsIgnoreCase("pendiente")
+                    && nueva.getEstado().equalsIgnoreCase("pendiente")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ---------- TOSTRING ----------
+    @Override
+    public String toString() {
+        return "Id: " + this.getIdUsuario() + ", Nombre: " + this.getNombreCompleto();
+    }
+
+    // ---------- EQUALS Y HASHCODE (solo por ID, evita recursión) ----------
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {
@@ -81,12 +187,11 @@ public class Usuario {
         if (!(otro instanceof Usuario u)) {
             return false;
         }
-        return this.idUsuario == u.idUsuario
-                && Objects.equals(this.nombreCompleto, u.nombreCompleto);
+        return this.idUsuario == u.idUsuario;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idUsuario, nombreCompleto);
+        return Objects.hash(idUsuario);
     }
 }
