@@ -129,6 +129,7 @@ public class SolicitudConsumo {
         return false;
     }
 
+
     // =========================================================================
     // AGREGACIÓN: GESTIÓN DE CONTENIDOS EN LA SOLICITUD (Contenido[])
     // =========================================================================
