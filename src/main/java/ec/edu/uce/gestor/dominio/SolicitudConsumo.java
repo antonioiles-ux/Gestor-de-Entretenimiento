@@ -168,6 +168,13 @@ public class SolicitudConsumo {
     }
 
     // LISTAR (copia exacta)
+    public void visualizarContenido() {
+
+        for (int i = 0; i < cantidadContenidos; i++) {
+            System.out.println(contenidos[i]);
+        }
+    }
+
     public Contenido[] listarContenidos() {
         Contenido[] copia = new Contenido[cantidadContenidos];
         for (int i = 0; i < cantidadContenidos; i++) {
