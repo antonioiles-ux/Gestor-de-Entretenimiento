@@ -1,26 +1,20 @@
 package ec.edu.uce.gestor.dominio;
 import java.util.Objects;
 
-public class GestorContenido extends Usuario {
+public class GestorContenido {
     private int idGestor;
-
-    // RELACIÓN: AGREGACIÓN (Catálogo polimórfico de contenidos)
-    private Contenido[] catalogo;
-    private int cantidadContenidos;
 
     // RELACIÓN: ASOCIACIÓN (Usuarios registrados en el sistema)
     private Usuario[] usuarios;
     private int cantidadUsuarios;
 
     public GestorContenido() {
-        this("sin nombre", 0, 0);
+        this(0);
     }
 
-    public GestorContenido(String nombreCompleto, int idUsuario, int idGestor) {
-        super(nombreCompleto, idUsuario);
+    public GestorContenido(int idGestor) {
+
         this.idGestor = idGestor;
-        this.catalogo = new Contenido[50];
-        this.cantidadContenidos = 0;
         this.usuarios = new Usuario[50];
         this.cantidadUsuarios = 0;
     }
@@ -56,26 +50,8 @@ public class GestorContenido extends Usuario {
 
     @Override
     public String toString() {
-        return super.toString() + ", Id gestor: " + this.getIdGestor();
+        return "Gestor Contenido"+ ", Id gestor: " +idGestor;
     }
-
-    // --- POLIMORFISMO / SOBREESCRITURA (Heredado de Usuario) ---
-    @Override
-    public String obtenerRol() {
-        return "Administrador / Gestor de Contenidos";
-    }
-
-    // --- SOBRECARGA DE MÉTODOS ---
-    public boolean eliminarOpinion(String motivo) {
-        return this.idGestor > 0 && motivo != null && !motivo.trim().isEmpty();
-    }
-
-    // Sobrecarga 2: con referencia de objeto Opinion + motivo (no genera ambigüedad con null)
-    public boolean eliminarOpinion(Opinion opinion, String motivo) {
-        return this.idGestor > 0 && opinion != null && opinion.getIdOpinion() > 0
-                && motivo != null && !motivo.trim().isEmpty();
-    }
-
 
     // --- EQUALS Y HASHCODE ---
     @Override
@@ -86,131 +62,39 @@ public class GestorContenido extends Usuario {
         if (!(otro instanceof GestorContenido g)) {
             return false;
         }
-        return this.idGestor == g.idGestor && super.equals(g);
+        return this.idGestor == g.idGestor;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), idGestor);
+        return Objects.hash(idGestor);
     }
 
 // =========================================================================
     // MÉTODOS AUXILIARES PARA VALIDAR DUPLICADOS
     // =========================================================================
 
-    private boolean esDuplicadoEnCatalogo(Contenido contenido) {
-        for (int i = 0; i < cantidadContenidos; i++) {
-            Contenido actual = catalogo[i];
-            if (actual.getIdContenido() == contenido.getIdContenido()) {
-                return true;
-            }
-            if (actual.getTitulo() != null && contenido.getTitulo() != null
-                    && actual.getAutor() != null && contenido.getAutor() != null
-                    && !contenido.getTitulo().equalsIgnoreCase("sin titulo")) {
-
-                boolean mismoTitulo = actual.getTitulo().trim().equalsIgnoreCase(contenido.getTitulo().trim());
-                boolean mismoAutor = actual.getAutor().trim().equalsIgnoreCase(contenido.getAutor().trim());
-
-                if (mismoTitulo && mismoAutor) {
-                    if (actual instanceof Videojuego v1 && contenido instanceof Videojuego v2) {
-                        if (v1.getPlataforma() != null && v2.getPlataforma() != null
-                                && v1.getPlataforma().trim().equalsIgnoreCase(v2.getPlataforma().trim())) {
-                            return true;
-                        }
-                    } else {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
+    //Duplicacion de usuarios
     private boolean esUsuarioDuplicado(Usuario usuario) {
+
         if (buscarUsuario(usuario.getIdUsuario()) != null) {
             return true;
         }
+
         if (usuario.getCuenta() != null) {
+
             String correo = usuario.getCuenta().getCorreoElectronico();
-            if (correo != null && !correo.equalsIgnoreCase("sin correo")
-                    && buscarUsuarioPorCorreo(correo) != null) {
+
+            if (correo != null && !correo.equalsIgnoreCase("sin correo") && buscarUsuarioPorCorreo(correo) != null) {
                 return true;
             }
         }
-        if (usuario instanceof GestorContenido nuevoGestor && nuevoGestor.getIdGestor() > 0) {
-            for (int i = 0; i < cantidadUsuarios; i++) {
-                if (usuarios[i] instanceof GestorContenido g
-                        && g.getIdGestor() == nuevoGestor.getIdGestor()) {
-                    return true;
-                }
-            }
-        }
+
         return false;
     }
 
     // =========================================================================
-    // AGREGACIÓN: CATÁLOGO POLIMÓRFICO (Contenido[])
-    // =========================================================================
-
-    @Override
-    public boolean agregarContenido(Contenido contenido) {
-        if (contenido == null || cantidadContenidos == catalogo.length
-                || esDuplicadoEnCatalogo(contenido)) {
-            return false;
-        }
-        catalogo[cantidadContenidos++] = contenido;
-        return true;
-    }
-
-    @Override
-    public Contenido buscarContenido(int idContenido) {
-        for (int i = 0; i < cantidadContenidos; i++) {
-            if (catalogo[i].getIdContenido() == idContenido) {
-                return catalogo[i];
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public boolean editarContenido(int idContenido, String nuevoTitulo) {
-        Contenido c = buscarContenido(idContenido);
-        if (c == null) {
-            return false;
-        }
-        return c.setTitulo(nuevoTitulo);
-    }
-
-    @Override
-    public boolean eliminarContenido(int idContenido) {
-        for (int i = 0; i < cantidadContenidos; i++) {
-            if (catalogo[i].getIdContenido() == idContenido) {
-                for (int j = i; j < cantidadContenidos - 1; j++) {
-                    catalogo[j] = catalogo[j + 1];
-                }
-                catalogo[--cantidadContenidos] = null;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public Contenido[] listarContenidos() {
-        Contenido[] copia = new Contenido[cantidadContenidos];
-        for (int i = 0; i < cantidadContenidos; i++) {
-            copia[i] = catalogo[i];
-        }
-        return copia;
-    }
-
-    @Override
-    public int getCantidadContenidos() {
-        return cantidadContenidos;
-    }
-
-    // =========================================================================
-    // ASOCIACIÓN: GESTIÓN DE USUARIOS (Usuario[])
+    // ASOCIACIÓN: GESTIÓN DE USUARIOS (Usuario[]) - CRUD
     // =========================================================================
 
     public boolean agregarUsuario(Usuario usuario) {
