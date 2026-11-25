@@ -136,7 +136,7 @@ public class Usuario {
                     return true;
                 }
                 for (Contenido c : solicitud.listarContenidos()) {
-                    if (actual.buscarContenido(c.getIdContenido()) != null) {
+                    if (actual.buscarContenido(c.getTitulo(), c.getAutor()) != null) {
                         return true;
                     }
                 }
