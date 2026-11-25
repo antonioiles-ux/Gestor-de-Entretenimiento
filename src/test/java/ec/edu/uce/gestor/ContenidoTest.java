@@ -2,6 +2,7 @@ package ec.edu.uce.gestor;
 
 import ec.edu.uce.gestor.dominio.Contenido;
 import ec.edu.uce.gestor.dominio.Opinion;
+import ec.edu.uce.gestor.dominio.Usuario;
 import ec.edu.uce.gestor.dominio.Valoracion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,12 +15,14 @@ public class ContenidoTest {
     //Objeto de prueba
     private Contenido contenido;
     private Date fechaContenido;
+    private Usuario autorValoracion;
 
     //Preparar el objeto de prueba
     @BeforeEach
     public void setUp(){
         fechaContenido = new Date();
         contenido = new Contenido(1, "NEED FOR SPEED", "Electronic Arts", "Videojuego de Carreras", fechaContenido);
+        autorValoracion = new Usuario("Ana Perez", 1);
     }
 
     @Test
@@ -193,6 +196,8 @@ public class ContenidoTest {
         assertTrue(cadena.contains("Autor:Electronic Arts"));
     }
 
+    // ---------- OPINIONES (clave de búsqueda: comentario) ----------
+
     @Test
     void agregarOpinion() {
         Opinion op = new Opinion(1, "Excelente juego", "10/10/2026", "10/10/2026");
@@ -202,14 +207,15 @@ public class ContenidoTest {
     }
 
     @Test
-    void opinionDuplicada() {
+    void opinionDuplicadaPorComentario() {
 
         Opinion op1 = new Opinion(1, "Excelente juego", "10/10/2026", "10/10/2026");
-        Opinion op2 = new Opinion(1, "Otro comentario", "11/10/2026", "11/10/2026");
+        Opinion op2 = new Opinion(2, "Excelente juego", "11/10/2026", "11/10/2026");
 
         contenido.agregarOpinion(op1);
 
         assertFalse(contenido.agregarOpinion(op2));
+        assertEquals(1, contenido.getCantidadOpiniones());
     }
 
     @Test
@@ -217,7 +223,8 @@ public class ContenidoTest {
         Opinion op = new Opinion(1, "Excelente juego", "10/10/2026", "10/10/2026");
         contenido.agregarOpinion(op);
 
-        assertEquals(op, contenido.buscarOpinion(1));
+        assertEquals(op, contenido.buscarOpinion("Excelente juego"));
+        assertNull(contenido.buscarOpinion("No existe"));
     }
 
     @Test
@@ -226,8 +233,8 @@ public class ContenidoTest {
         Opinion op = new Opinion(1, "Comentario", "10/10/2026", "10/10/2026");
         contenido.agregarOpinion(op);
 
-        assertTrue(contenido.editarOpinion(1, "Nuevo comentario", "11/10/2026"));
-        assertEquals("Nuevo comentario", contenido.buscarOpinion(1).getComentario());
+        assertTrue(contenido.editarOpinion("Comentario", "Nuevo comentario", "11/10/2026"));
+        assertEquals("Nuevo comentario", contenido.buscarOpinion("Nuevo comentario").getComentario());
     }
 
     @Test
@@ -235,55 +242,9 @@ public class ContenidoTest {
 
         Opinion op = new Opinion(1, "Comentario", "10/10/2026", "10/10/2026");
         contenido.agregarOpinion(op);
-        assertTrue(contenido.eliminarOpinion(1));
-        assertNull(contenido.buscarOpinion(1));
-    }
-
-    @Test
-    void agregarValoracion() {
-
-        Valoracion v = new Valoracion(1, 5, "10/10/2026");
-        assertTrue(contenido.agregarValoracion(v));
-        assertEquals(1, contenido.getCantidadValoraciones());
-    }
-
-    @Test
-    void valoracionDuplicadaPorId() {
-
-        Valoracion v1 = new Valoracion(1, 5, "10/10/2026");
-        Valoracion v2 = new Valoracion(1, 4, "11/10/2026");
-        contenido.agregarValoracion(v1);
-
-        assertFalse(contenido.agregarValoracion(v2));
-    }
-
-    @Test
-    void buscarValoracion() {
-
-        Valoracion v = new Valoracion(1, 5, "10/10/2026");
-        contenido.agregarValoracion(v);
-        assertEquals(v, contenido.buscarValoracion(1));
-    }
-
-    @Test
-    void editarValoracion() {
-
-        Valoracion v = new Valoracion(1, 3, "10/10/2026");
-        contenido.agregarValoracion(v);
-        assertTrue(contenido.editarValoracion(1, 5, "11/10/2026"));
-        assertEquals(5, contenido.buscarValoracion(1).getCalificacion());
-    }
-
-    @Test
-    void eliminarValoracion() {
-
-        Valoracion v = new Valoracion(1, 5, "10/10/2026");
-
-        contenido.agregarValoracion(v);
-
-        assertTrue(contenido.eliminarValoracion(1));
-
-        assertNull(contenido.buscarValoracion(1));
+        assertTrue(contenido.eliminarOpinion("Comentario"));
+        assertNull(contenido.buscarOpinion("Comentario"));
+        assertEquals(0, contenido.getCantidadOpiniones());
     }
 
     @Test
@@ -298,15 +259,74 @@ public class ContenidoTest {
         assertEquals(op, opiniones[0]);
     }
 
+    // ---------- VALORACIONES (clave de búsqueda: autor) ----------
+
+    // Crea una valoración con su autor ya asignado
+    private Valoracion crearValoracion(int id, int calificacion, Usuario autor) {
+        Valoracion v = new Valoracion(id, calificacion, "10/10/2026");
+        v.setAutor(autor);
+        return v;
+    }
+
+    @Test
+    void agregarValoracion() {
+
+        Valoracion v = crearValoracion(1, 5, autorValoracion);
+        assertTrue(contenido.agregarValoracion(v));
+        assertEquals(1, contenido.getCantidadValoraciones());
+    }
+
+    @Test
+    void valoracionDuplicadaPorAutor() {
+
+        Valoracion v1 = crearValoracion(1, 5, autorValoracion);
+        Valoracion v2 = crearValoracion(2, 4, autorValoracion);
+        contenido.agregarValoracion(v1);
+
+        assertFalse(contenido.agregarValoracion(v2));
+        assertEquals(1, contenido.getCantidadValoraciones());
+    }
+
+    @Test
+    void buscarValoracion() {
+
+        Valoracion v = crearValoracion(1, 5, autorValoracion);
+        contenido.agregarValoracion(v);
+
+        assertEquals(v, contenido.buscarValoracion("Ana Perez"));
+        assertNull(contenido.buscarValoracion("Otra Persona"));
+    }
+
+    @Test
+    void editarValoracion() {
+
+        Valoracion v = crearValoracion(1, 3, autorValoracion);
+        contenido.agregarValoracion(v);
+
+        assertTrue(contenido.editarValoracion("Ana Perez", 5, "11/10/2026"));
+        assertEquals(5, contenido.buscarValoracion("Ana Perez").getCalificacion());
+    }
+
+    @Test
+    void eliminarValoracion() {
+
+        Valoracion v = crearValoracion(1, 5, autorValoracion);
+        contenido.agregarValoracion(v);
+
+        assertTrue(contenido.eliminarValoracion("Ana Perez"));
+        assertNull(contenido.buscarValoracion("Ana Perez"));
+        assertEquals(0, contenido.getCantidadValoraciones());
+    }
+
     @Test
     void listarValoraciones() {
 
-        Valoracion v = new Valoracion(1, 5, "10/10/2026");
+        Valoracion v = crearValoracion(1, 5, autorValoracion);
         contenido.agregarValoracion(v);
         Valoracion[] valoraciones = contenido.listarValoraciones();
+
         assertEquals(1, valoraciones.length);
         assertEquals(v, valoraciones[0]);
     }
-
 
 }

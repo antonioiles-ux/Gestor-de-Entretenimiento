@@ -1,8 +1,10 @@
 package ec.edu.uce.gestor.dominio;
+
 import ec.edu.uce.gestor.Util.Validaciones;
 
-import java.util.Objects;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Objects;
 
 public class Contenido {
     private int idContenido;
@@ -18,7 +20,7 @@ public class Contenido {
     private Valoracion[] valoraciones;
     private int cantidadValoraciones;
 
-    public Contenido(){
+    public Contenido() {
         this(0, "sin titulo", "sin autor", "sin genero", null);
     }
 
@@ -34,33 +36,45 @@ public class Contenido {
         this.cantidadValoraciones = 0;
     }
 
-    //GET
-    public int getIdContenido(){
+    // ---------- GET ----------
+    public int getIdContenido() {
         return idContenido;
     }
-    public String getTitulo(){
+
+    public String getTitulo() {
         return titulo;
     }
-    public String getAutor(){
+
+    public String getAutor() {
         return autor;
     }
-    public String getGenero(){
+
+    public String getGenero() {
         return genero;
     }
-    public Date getFechaPublicacion(){
+
+    public Date getFechaPublicacion() {
         return fechaPublicacion;
     }
 
-    //SET VALIDACIONES
-    public boolean setIdContenido(int idContenido){
-        if (idContenido <= 0){
+    public int getCantidadOpiniones() {
+        return cantidadOpiniones;
+    }
+
+    public int getCantidadValoraciones() {
+        return cantidadValoraciones;
+    }
+
+    // ---------- SET CON VALIDACIONES ----------
+    public boolean setIdContenido(int idContenido) {
+        if (idContenido <= 0) {
             return false;
         }
         this.idContenido = idContenido;
         return true;
     }
 
-    public boolean setTitulo(String titulo){
+    public boolean setTitulo(String titulo) {
         if (!Validaciones.validarLetras(titulo)) {
             return false;
         }
@@ -68,7 +82,7 @@ public class Contenido {
         return true;
     }
 
-    public boolean setAutor(String autor){
+    public boolean setAutor(String autor) {
         if (!Validaciones.validarLetras(autor)) {
             return false;
         }
@@ -76,7 +90,7 @@ public class Contenido {
         return true;
     }
 
-    public boolean setGenero(String genero){
+    public boolean setGenero(String genero) {
         if (!Validaciones.validarLetras(genero)) {
             return false;
         }
@@ -84,8 +98,7 @@ public class Contenido {
         return true;
     }
 
-
-    public boolean setFechaPublicacion(Date fechaPublicacion){
+    public boolean setFechaPublicacion(Date fechaPublicacion) {
         if (fechaPublicacion == null) {
             return false;
         }
@@ -94,19 +107,19 @@ public class Contenido {
     }
 
     @Override
-    public String toString(){
-        return "ID CONTENIDO:" +this.getIdContenido()+
-                "  Titulo:" +this.getTitulo()+"  Autor:" +this.getAutor()+
-                "  Genero:" +this.getGenero()+"  Fecha Publicacion:" +
+    public String toString() {
+        return "ID CONTENIDO:" + this.getIdContenido() +
+                "  Titulo:" + this.getTitulo() + "  Autor:" + this.getAutor() +
+                "  Genero:" + this.getGenero() + "  Fecha Publicacion:" +
                 this.getFechaPublicacion();
     }
 
-    // --- POLIMORFISMO (Metodo base que sobreescribir) ---
+    // ---------- POLIMORFISMO (método base que se sobrescribe) ----------
     public int calcularTiempoConsumo() {
         return 0;
     }
 
-    // --- SOBRECARGA DE MÉTODOS ---
+    // ---------- SOBRECARGA DE MÉTODOS ----------
     public String obtenerFicha() {
         return "[" + this.idContenido + "] " + this.titulo + " (" + this.genero + ")";
     }
@@ -126,167 +139,135 @@ public class Contenido {
         return this.genero.equalsIgnoreCase(otro.genero);
     }
 
-    //OPINION
-    //Duplicados Opinion
-    private boolean esOpinionDuplicada(Opinion opinion) {
-
-        for (int i = 0; i < cantidadOpiniones; i++) {
-
-            if (opiniones[i].getIdOpinion() == opinion.getIdOpinion()) {
-                return true;
-            }
-
-            if (opiniones[i].getComentario().equalsIgnoreCase(opinion.getComentario())) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     // =========================================================================
-    // COMPOSICIÓN 1: GESTIÓN DE OPINIONES DEL CONTENIDO (Opinion[])
+    // COMPOSICIÓN 1: GESTIÓN DE OPINIONES (Opinion[]), clave de búsqueda: comentario
     // =========================================================================
 
     // CREAR
     public boolean agregarOpinion(Opinion opinion) {
-        if (opinion == null || cantidadOpiniones == opiniones.length
-                || esOpinionDuplicada(opinion)) {
+        if (opinion == null || buscarOpinion(opinion.getComentario()) != null) {
             return false;
         }
-        opinion.setContenido(this); // Vincula la referencia al contenido dueño
+        if (cantidadOpiniones == opiniones.length) {
+            opiniones = Arrays.copyOf(opiniones, opiniones.length * 2);
+        }
+        opinion.setContenido(this); // vincula la opinión con el contenido dueño
         opiniones[cantidadOpiniones] = opinion;
         cantidadOpiniones++;
         return true;
     }
 
-    // BUSCAR
-    public Opinion buscarOpinion(int idOpinion) {
-        for (int i = 0; i < cantidadOpiniones; i++) {
-            if (opiniones[i].getIdOpinion() == idOpinion) {
-                return opiniones[i];
+    // LISTAR (copia para proteger el arreglo interno)
+    public Opinion[] listarOpiniones() {
+        return Arrays.copyOf(opiniones, cantidadOpiniones);
+    }
+
+    // BUSCAR por comentario
+    public Opinion buscarOpinion(String comentario) {
+        if (comentario == null) {
+            return null;
+        }
+        for (Opinion op : listarOpiniones()) {
+            if (op.getComentario().equalsIgnoreCase(comentario.trim())) {
+                return op;
             }
         }
         return null;
     }
 
     // EDITAR
-    public boolean editarOpinion(int idOpinion, String nuevoComentario, String nuevaFechaEdicion) {
-        Opinion op = buscarOpinion(idOpinion);
-        if (op == null) {
-            return false;
+    public boolean editarOpinion(String comentario, String nuevoComentario, String nuevaFechaEdicion) {
+        Opinion op = buscarOpinion(comentario);
+        if (op == null || buscarOpinion(nuevoComentario) != null) {
+            return false; // no existe, o el nuevo comentario ya está usado
         }
         return op.actualizarComentario(nuevoComentario, nuevaFechaEdicion);
     }
 
-    // ELIMINAR (con desplazamiento a la izquierda)
-    public boolean eliminarOpinion(int idOpinion) {
-        for (int i = 0; i < cantidadOpiniones; i++) {
-            if (opiniones[i].getIdOpinion() == idOpinion) {
-                for (int j = i; j < cantidadOpiniones - 1; j++) {
+    // ELIMINAR (desplaza los elementos a la izquierda)
+    public boolean eliminarOpinion(String comentario) {
+        if (comentario == null) {
+            return false;
+        }
+        int posicion = 0;
+        for (Opinion op : listarOpiniones()) {
+            if (op.getComentario().equalsIgnoreCase(comentario.trim())) {
+                for (int j = posicion; j < cantidadOpiniones - 1; j++) {
                     opiniones[j] = opiniones[j + 1];
                 }
                 opiniones[cantidadOpiniones - 1] = null;
                 cantidadOpiniones--;
                 return true;
             }
+            posicion++;
         }
-        return false;
-    }
-
-    // LISTAR (copia exacta para proteger el arreglo interno)
-    public Opinion[] listarOpiniones() {
-        Opinion[] copia = new Opinion[cantidadOpiniones];
-        for (int i = 0; i < cantidadOpiniones; i++) {
-            copia[i] = opiniones[i];
-        }
-        return copia;
-    }
-
-    public int getCantidadOpiniones() {
-        return cantidadOpiniones;
-    }
-
-    //VALORACION
-    //Duplicados Valoracion
-    private boolean esValoracionDuplicada(Valoracion valoracion) {
-
-        for (int i = 0; i < cantidadValoraciones; i++) {
-
-            if (valoraciones[i].getIdValoracion() == valoracion.getIdValoracion()) {
-                return true;
-            }
-
-            if (valoraciones[i].getAutor().equals(valoracion.getAutor())) {
-                return true;
-            }
-        }
-
         return false;
     }
 
     // =========================================================================
-    // COMPOSICIÓN 2: GESTIÓN DE VALORACIONES DEL CONTENIDO (Valoracion[])
+    // COMPOSICIÓN 2: GESTIÓN DE VALORACIONES (Valoracion[]), clave de búsqueda: autor
     // =========================================================================
 
     // CREAR
     public boolean agregarValoracion(Valoracion valoracion) {
-        if (valoracion == null || cantidadValoraciones == valoraciones.length
-                || esValoracionDuplicada(valoracion)) {
+        if (valoracion == null || valoracion.getAutor() == null
+                || buscarValoracion(valoracion.getAutor().getNombreCompleto()) != null) {
             return false;
         }
-        valoracion.setContenido(this); // Vincula la referencia al contenido dueño
+        if (cantidadValoraciones == valoraciones.length) {
+            valoraciones = Arrays.copyOf(valoraciones, valoraciones.length * 2);
+        }
+        valoracion.setContenido(this); // vincula la valoración con el contenido dueño
         valoraciones[cantidadValoraciones] = valoracion;
         cantidadValoraciones++;
         return true;
     }
 
+    // LISTAR (copia para proteger el arreglo interno)
+    public Valoracion[] listarValoraciones() {
+        return Arrays.copyOf(valoraciones, cantidadValoraciones);
+    }
 
-    // BUSCAR
-    public Valoracion buscarValoracion(int idValoracion) {
-        for (int i = 0; i < cantidadValoraciones; i++) {
-            if (valoraciones[i].getIdValoracion() == idValoracion) {
-                return valoraciones[i];
+    // BUSCAR por autor (nombre completo del usuario que hizo la valoración)
+    public Valoracion buscarValoracion(String autor) {
+        if (autor == null) {
+            return null;
+        }
+        for (Valoracion val : listarValoraciones()) {
+            if (val.getAutor().getNombreCompleto().equals(autor)) {
+                return val;
             }
         }
         return null;
     }
 
     // EDITAR
-    public boolean editarValoracion(int idValoracion, int nuevaCalificacion, String nuevaFecha) {
-        Valoracion val = buscarValoracion(idValoracion);
+    public boolean editarValoracion(String autor, int nuevaCalificacion, String nuevaFecha) {
+        Valoracion val = buscarValoracion(autor);
         if (val == null) {
             return false;
         }
         return val.actualizarValoracion(nuevaCalificacion, nuevaFecha);
     }
 
-    // ELIMINAR (con desplazamiento a la izquierda)
-    public boolean eliminarValoracion(int idValoracion) {
-        for (int i = 0; i < cantidadValoraciones; i++) {
-            if (valoraciones[i].getIdValoracion() == idValoracion) {
-                for (int j = i; j < cantidadValoraciones - 1; j++) {
+    // ELIMINAR (desplaza los elementos a la izquierda)
+    public boolean eliminarValoracion(String autor) {
+        if (autor == null) {
+            return false;
+        }
+        int posicion = 0;
+        for (Valoracion val : listarValoraciones()) {
+            if (val.getAutor().getNombreCompleto().equals(autor)) {
+                for (int j = posicion; j < cantidadValoraciones - 1; j++) {
                     valoraciones[j] = valoraciones[j + 1];
                 }
                 valoraciones[cantidadValoraciones - 1] = null;
                 cantidadValoraciones--;
                 return true;
             }
+            posicion++;
         }
         return false;
-    }
-
-    // LISTAR (copia exacta)
-    public Valoracion[] listarValoraciones() {
-        Valoracion[] copia = new Valoracion[cantidadValoraciones];
-        for (int i = 0; i < cantidadValoraciones; i++) {
-            copia[i] = valoraciones[i];
-        }
-        return copia;
-    }
-
-    public int getCantidadValoraciones() {
-        return cantidadValoraciones;
     }
 
     public double calcularPromedioValoraciones() {
@@ -294,13 +275,13 @@ public class Contenido {
             return 0.0;
         }
         int suma = 0;
-        for (int i = 0; i < cantidadValoraciones; i++) {
-            suma += valoraciones[i].getCalificacion();
+        for (Valoracion val : listarValoraciones()) {
+            suma += val.getCalificacion();
         }
         return (double) suma / cantidadValoraciones;
     }
 
-    // --- EQUALS Y HASHCODE ---
+    // ---------- EQUALS Y HASHCODE ----------
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {

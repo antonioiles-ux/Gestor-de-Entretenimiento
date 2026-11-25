@@ -107,9 +107,14 @@ public class GestorContenido {
     }
 
     public Usuario buscarUsuario(int idUsuario) {
-        for (int i = 0; i < cantidadUsuarios; i++) {
-            if (usuarios[i].getIdUsuario() == idUsuario) {
-                return usuarios[i];
+        for (Usuario usuario : usuarios) {
+
+            if (usuario == null) {
+                continue;
+            }
+
+            if (usuario.getIdUsuario() == idUsuario) {
+                return usuario;
             }
         }
         return null;
@@ -119,10 +124,16 @@ public class GestorContenido {
         if (correo == null) {
             return null;
         }
-        for (int i = 0; i < cantidadUsuarios; i++) {
-            Cuenta c = usuarios[i].getCuenta();
+        for (Usuario usuario : usuarios) {
+
+            if (usuario == null) {
+                continue;
+            }
+
+            Cuenta c = usuario.getCuenta();
+
             if (c != null && correo.trim().equalsIgnoreCase(c.getCorreoElectronico())) {
-                return usuarios[i];
+                return usuario;
             }
         }
         return null;
