@@ -136,84 +136,129 @@ public class MenuOpinion {
     }
 
     private static void editarOpinion(Scanner sc) {
+
         if (!consultarOpinion()) {
             return;
         }
 
-        int idBuscar = 0;
+        // CORRECCIÓN:
+        // Ahora las opiniones se identifican por comentario
+        String comentarioBuscar;
         boolean valido;
 
         do {
-            System.out.print("Ingrese el ID de la opinión a editar: ");
-            String idTxt = sc.nextLine();
-            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
-                idBuscar = Integer.parseInt(idTxt);
-                valido = true;
-            } else {
-                System.out.println("[ERROR]: ID inválido.");
-                valido = false;
+            System.out.print("Ingrese el comentario de la opinión a editar: ");
+            comentarioBuscar = sc.nextLine().trim();
+
+            valido = !comentarioBuscar.isEmpty();
+
+            if (!valido) {
+                System.out.println("[ERROR]: Debe ingresar un comentario.");
             }
+
         } while (!valido);
 
         for (Contenido c : MenuPrincipal.gestorGlobal.listarContenidos()) {
-            Opinion op = c.buscarOpinion(idBuscar);
+
+            // CORRECCIÓN:
+            // Antes: buscarOpinion(idBuscar)
+            Opinion op = c.buscarOpinion(comentarioBuscar);
+
             if (op != null) {
-                if (op.getAutor() != null && !op.getAutor().equals(MenuPrincipal.usuarioActivo)) {
+
+                if (op.getAutor() != null
+                        && !op.getAutor().equals(MenuPrincipal.usuarioActivo)) {
+
                     System.out.println("[ACCESO DENEGADO]: Solo el autor puede editar esta opinión.");
                     return;
                 }
+
                 do {
+
                     System.out.print("Ingrese nuevo comentario: ");
                     String nuevoComentario = sc.nextLine();
+
+                    // CORRECCIÓN:
+                    // Antes: editarOpinion(idBuscar,...)
                     valido = Validaciones.validarLetras(nuevoComentario)
-                            && c.editarOpinion(idBuscar, nuevoComentario, obtenerFechaActual());
-                    if (!valido) System.out.println("[ERROR]: El comentario solo puede contener letras y espacios.");
+                            && c.editarOpinion(
+                            comentarioBuscar,
+                            nuevoComentario,
+                            obtenerFechaActual());
+
+                    if (!valido) {
+                        System.out.println("[ERROR]: El comentario solo puede contener letras y espacios.");
+                    }
+
                 } while (!valido);
 
                 System.out.println("\n[EDICIÓN EXITOSA]: " + op.toString());
                 return;
             }
         }
-        System.out.println("[ERROR]: El ID ingresado no coincide con ninguna opinión.");
+
+        // CORRECCIÓN:
+        // Mensaje adaptado a búsqueda por comentario
+        System.out.println("[ERROR]: No existe una opinión con ese comentario.");
     }
 
     private static void eliminarOpinion(Scanner sc) {
+
         if (!consultarOpinion()) {
             return;
         }
 
-        int idBuscar = 0;
-        boolean valido;
+        // CORRECCIÓN:
+        // Ahora se elimina por comentario
+        String comentarioBuscar;
 
         do {
-            System.out.print("Ingrese el ID de la opinión a eliminar: ");
-            String idTxt = sc.nextLine();
-            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
-                idBuscar = Integer.parseInt(idTxt);
-                valido = true;
-            } else {
-                System.out.println("[ERROR]: ID inválido.");
-                valido = false;
+
+            System.out.print("Ingrese el comentario de la opinión a eliminar: ");
+            comentarioBuscar = sc.nextLine().trim();
+
+            if (!comentarioBuscar.isEmpty()) {
+                break;
             }
-        } while (!valido);
+
+            System.out.println("[ERROR]: Debe ingresar un comentario.");
+
+        } while (true);
 
         for (Contenido c : MenuPrincipal.gestorGlobal.listarContenidos()) {
-            Opinion op = c.buscarOpinion(idBuscar);
+
+            // CORRECCIÓN:
+            // Antes: buscarOpinion(idBuscar)
+            Opinion op = c.buscarOpinion(comentarioBuscar);
+
             if (op != null) {
-                if (!MenuPrincipal.esAdmin && op.getAutor() != null
+
+                if (!MenuPrincipal.esAdmin
+                        && op.getAutor() != null
                         && !op.getAutor().equals(MenuPrincipal.usuarioActivo)) {
+
                     System.out.println("[ACCESO DENEGADO]: No puedes eliminar opiniones de otro usuario.");
                     return;
                 }
+
                 if (MenuPrincipal.esAdmin) {
-                    MenuPrincipal.gestorGlobal.eliminarOpinion(op, "Moderación administrativa");
+
+                    // CORRECCIÓN:
+                    // La implementación actual de GestorContenido
+                    // solo tiene eliminarOpinion()
+                    MenuPrincipal.gestorGlobal.eliminarOpinion();
                 }
-                c.eliminarOpinion(idBuscar);
-                System.out.println("[SISTEMA]: Opinión eliminada correctamente.");
+
+                // CORRECCIÓN:
+                // Antes: eliminarOpinion(idBuscar)
+                c.eliminarOpinion(comentarioBuscar);
+
+                System.out.println("[SISTEMA]: Opinión eliminada da correctamente.");
                 return;
             }
         }
-        System.out.println("[ERROR]: El ID ingresado no coincide con ninguna opinión.");
+
+        System.out.println("[ERROR]: No existe una opinión con ese comentario.");
     }
 
     private static String obtenerFechaActual() {
