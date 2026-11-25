@@ -1,5 +1,6 @@
 package ec.edu.uce.gestor.dominio;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
@@ -147,11 +148,11 @@ public class SolicitudConsumo {
         return true;
     }
 
-    // BUSCAR
-    public Contenido buscarContenido(int idContenido) {
-        for (int i = 0; i < cantidadContenidos; i++) {
-            if (contenidos[i].getIdContenido() == idContenido) {
-                return contenidos[i];
+    public Contenido buscarContenido(String titulo, String autor) {
+        for (Contenido contenido : listarContenidos()) {
+            if (contenido.getTitulo().equalsIgnoreCase(titulo)
+                    && contenido.getAutor().equalsIgnoreCase(autor)) {
+                return contenido;
             }
         }
         return null;
@@ -159,7 +160,7 @@ public class SolicitudConsumo {
 
     // EDITAR (reemplazar un contenido de la solicitud por otro del catálogo)
     public boolean reemplazarContenido(int idContenidoActual, Contenido nuevoContenido) {
-        if (nuevoContenido == null || buscarContenido(nuevoContenido.getIdContenido()) != null) {
+        if (nuevoContenido == null || buscarContenido(nuevoContenido.getTitulo(), nuevoContenido.getAutor()) != null) {
             return false;
         }
         for (int i = 0; i < cantidadContenidos; i++) {
@@ -186,21 +187,15 @@ public class SolicitudConsumo {
         return false;
     }
 
-    // LISTAR (copia exacta)
     public void visualizarContenido() {
-
-        for (int i = 0; i < cantidadContenidos; i++) {
-            System.out.println(contenidos[i]);
+        for (Contenido contenido : listarContenidos()) {
+            System.out.println(contenido);
         }
     }
 
-    public Contenido[] listarContenidos() {
-        Contenido[] copia = new Contenido[cantidadContenidos];
-        for (int i = 0; i < cantidadContenidos; i++) {
-            copia[i] = contenidos[i];
-        }
-        return copia;
-    }
+      public Contenido[] listarContenidos() {
+          return Arrays.copyOf(contenidos, cantidadContenidos);
+      }
 
     public int getCantidadContenidos() {
         return cantidadContenidos;
