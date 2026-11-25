@@ -118,11 +118,7 @@ public class SolicitudConsumoTest {
         assertFalse(solicitud.setTipoContenido("Libro@"));
         assertEquals("Libro", solicitud.getTipoContenido()); // Mantiene el original
     }
-
-
-
     // --- Nuevos tests: Sobrecarga, equals y hashCode ---
-
     @Test
     public void testSobrecargaActualizarEstado() {
         assertTrue(solicitud.actualizarEstado("Consumido"));
@@ -165,7 +161,7 @@ public class SolicitudConsumoTest {
         Libro libro = new Libro(1, "Clean Code", "Robert Martin", "Programacion", new Date(), 450, "Buenas practicas");
         solicitud.agregarContenido(libro);
 
-        assertTrue(solicitud.eliminarContenido(libro.getIdContenido()));
+        assertTrue(solicitud.eliminarContenido(libro.getTitulo(), libro.getAutor()));
 
         assertNull(solicitud.buscarContenido("Clean Code", "Robert Martin"));
     }
@@ -178,7 +174,7 @@ public class SolicitudConsumoTest {
 
         solicitud.agregarContenido(libro1);
 
-        assertTrue(solicitud.reemplazarContenido(libro1.getIdContenido(), libro2));
+        assertTrue(solicitud.reemplazarContenido(libro1.getTitulo(), libro1.getAutor(), libro2));
         assertNull(solicitud.buscarContenido("Clean Code", "Robert Martin"));
         assertNotNull(solicitud.buscarContenido("Effective Java", "Joshua Bloch"));
     }
@@ -197,7 +193,6 @@ public class SolicitudConsumoTest {
     void testNoAgregarContenidoDuplicado() {
 
         Libro libro1 = new Libro(1, "Clean Code", "Robert Martin", "Programacion", new Date(), 450, "Buenas practicas");
-
         Libro libro2 = new Libro(2, "Clean Code", "Robert Martin", "Programacion", new Date(), 500, "Otra descripcion");
         assertTrue(solicitud.agregarContenido(libro1));
         assertFalse(solicitud.agregarContenido(libro2));
