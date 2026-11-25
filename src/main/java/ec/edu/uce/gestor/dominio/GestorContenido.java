@@ -4,6 +4,10 @@ import java.util.Objects;
 public class GestorContenido {
     private int idGestor;
 
+    // RELACIÓN: AGREGACIÓN (Catálogo polimórfico de contenidos)
+    private Contenido[] catalogo;
+    private int cantidadContenidos;
+
     // RELACIÓN: ASOCIACIÓN (Usuarios registrados en el sistema)
     private Usuario[] usuarios;
     private int cantidadUsuarios;
@@ -15,6 +19,8 @@ public class GestorContenido {
     public GestorContenido(int idGestor) {
 
         this.idGestor = idGestor;
+        this.catalogo = new Contenido[50];
+        this.cantidadContenidos = 0;
         this.usuarios = new Usuario[50];
         this.cantidadUsuarios = 0;
     }
@@ -74,6 +80,43 @@ public class GestorContenido {
     // MÉTODOS AUXILIARES PARA VALIDAR DUPLICADOS
     // =========================================================================
 
+    //Duplicaciones en catalogos
+    private boolean esDuplicadoEnCatalogo(Contenido contenido) {
+
+        for (Contenido actual : catalogo) {
+
+            if (actual == null) {
+                continue;
+            }
+
+            if (actual.getIdContenido() ==
+                    contenido.getIdContenido()) {
+                return true;
+            }
+
+            if (actual.getTitulo() != null
+                    && contenido.getTitulo() != null
+                    && actual.getAutor() != null
+                    && contenido.getAutor() != null) {
+
+                boolean mismoTitulo =
+                        actual.getTitulo().trim()
+                                .equalsIgnoreCase(
+                                        contenido.getTitulo().trim());
+
+                boolean mismoAutor =
+                        actual.getAutor().trim()
+                                .equalsIgnoreCase(
+                                        contenido.getAutor().trim());
+
+                if (mismoTitulo && mismoAutor) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     //Duplicacion de usuarios
     private boolean esUsuarioDuplicado(Usuario usuario) {
 
@@ -91,6 +134,68 @@ public class GestorContenido {
         }
 
         return false;
+    }
+
+    // =========================================================================
+    // ASOCIACIÓN: GESTIÓN DE CONTENIDOS (Contenido[]) - CRUD
+    // =========================================================================
+
+    public boolean agregarContenido(Contenido contenido) {
+        if (contenido == null || cantidadContenidos == catalogo.length
+                || esDuplicadoEnCatalogo(contenido)) {
+            return false;
+        }
+        catalogo[cantidadContenidos++] = contenido;
+        return true;
+    }
+
+    public Contenido buscarContenido(int idContenido) {
+
+        for (Contenido contenido : catalogo) {
+
+            if (contenido == null) {
+                continue;
+            }
+
+            if (contenido.getIdContenido() == idContenido) {
+                return contenido;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean editarContenido(int idContenido, String nuevoTitulo) {
+        Contenido c = buscarContenido(idContenido);
+        if (c == null) {
+            return false;
+        }
+        return c.setTitulo(nuevoTitulo);
+    }
+
+    public boolean eliminarContenido(int idContenido) {
+        for (int i = 0; i < cantidadContenidos; i++) {
+            if (catalogo[i].getIdContenido() == idContenido) {
+                for (int j = i; j < cantidadContenidos - 1; j++) {
+                    catalogo[j] = catalogo[j + 1];
+                }
+                catalogo[--cantidadContenidos] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Contenido[] listarContenidos() {
+        Contenido[] copia = new Contenido[cantidadContenidos];
+        for (int i = 0; i < cantidadContenidos; i++) {
+            copia[i] = catalogo[i];
+        }
+        return copia;
+    }
+
+    public int getCantidadContenidos() {
+        return cantidadContenidos;
     }
 
     // =========================================================================
