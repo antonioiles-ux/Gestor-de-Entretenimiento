@@ -197,7 +197,7 @@ public class MenuCuenta {
         if (cuentaAdmin.validarCredenciales(cuentaTemp)) {
             MenuPrincipal.sesionIniciada = true;
             MenuPrincipal.esAdmin = true;
-            MenuPrincipal.usuarioActivo = MenuPrincipal.gestorGlobal;
+            MenuPrincipal.usuarioActivo = null;
             System.out.println("\nIngreso exitoso como Administrador (" + MenuPrincipal.gestorGlobal.toString() + ").");
         } else {
             System.out.println("\n[ERROR]: Credenciales de administrador incorrectas.");

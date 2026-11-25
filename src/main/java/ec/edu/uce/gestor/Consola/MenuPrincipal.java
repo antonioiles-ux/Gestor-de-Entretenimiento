@@ -12,7 +12,7 @@ public class MenuPrincipal {
     public static boolean esAdmin = false;
 
     // Instancia centralizada que contiene los arreglos Contenido[] y Usuario[]
-    public static GestorContenido gestorGlobal = new GestorContenido("Administrador UCE", 99, 1);
+    public static GestorContenido gestorGlobal = new GestorContenido(1);
     // Referencia al usuario logueado para enlazar asociaciones
     public static Usuario usuarioActivo = null;
 

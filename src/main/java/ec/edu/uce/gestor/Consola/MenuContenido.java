@@ -170,14 +170,19 @@ public class MenuContenido {
     }
 
     private static void guardarEnCatalogo(Contenido nuevo) {
+
         if (MenuPrincipal.gestorGlobal.agregarContenido(nuevo)) {
+
             contadorIdContenido++;
-            if (!MenuPrincipal.esAdmin && MenuPrincipal.usuarioActivo != null) {
-                MenuPrincipal.usuarioActivo.agregarContenido(nuevo);
-            }
-            System.out.println("\n[REGISTRO EXITOSO]: " + nuevo.toString());
+
+            System.out.println(
+                    "\n[REGISTRO EXITOSO]: "
+                            + nuevo.toString());
+
         } else {
-            System.out.println("\n[ERROR]: No se pudo registrar (contenido duplicado o catálogo lleno).");
+
+            System.out.println(
+                    "\n[ERROR]: No se pudo registrar.");
         }
     }
 
@@ -330,10 +335,9 @@ public class MenuContenido {
         } while (!valido);
 
         if (MenuPrincipal.gestorGlobal.eliminarContenido(idBuscar)) {
-            if (!MenuPrincipal.esAdmin && MenuPrincipal.usuarioActivo != null) {
-                MenuPrincipal.usuarioActivo.eliminarContenido(idBuscar);
-            }
-            System.out.println("[SISTEMA]: Contenido eliminado correctamente del catálogo.");
+
+            System.out.println("[SISTEMA]: Contenido eliminado correctamente del catalogo.");
+
         } else {
             System.out.println("[ERROR]: El ID ingresado no coincide con ninguno de los contenidos mostrados.");
         }
