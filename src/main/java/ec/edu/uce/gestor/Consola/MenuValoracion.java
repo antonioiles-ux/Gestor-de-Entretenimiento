@@ -1,25 +1,25 @@
 package ec.edu.uce.gestor.Consola;
 
 import ec.edu.uce.gestor.Util.Validaciones;
-import ec.edu.uce.gestor.dominio.Valoracion;
 import ec.edu.uce.gestor.dominio.Contenido;
+import ec.edu.uce.gestor.dominio.Valoracion;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
 public class MenuValoracion {
 
+    private static final SimpleDateFormat FORMATO_FECHA = new SimpleDateFormat("dd/MM/yyyy");
     private static int contadorIdValoracion = 1;
 
     public static void mostrarMenu() {
-
         Scanner sc = new Scanner(System.in);
         int opcion = -1;
 
         do {
             System.out.println("\n===(H4). GESTIONAR VALORACIONES ===");
             System.out.println("1. Crear Valoración");
-            System.out.println("2. Consultar Valoración");
+            System.out.println("2. Consultar Valoraciones");
             System.out.println("3. Eliminar Valoración");
             System.out.println("4. Actualizar Valoración");
             System.out.println("0. Regresar");
@@ -33,12 +33,12 @@ public class MenuValoracion {
             opcion = Integer.parseInt(entrada);
 
             switch (opcion) {
-                case 1: crearValoracion(sc); break;
-                case 2: consultarValoracion(); break;
-                case 3: eliminarValoracion(sc); break;
-                case 4: actualizarValoracion(sc); break;
-                case 0: System.out.println("Regresando al menú principal..."); break;
-                default: System.out.println("[ERROR]: Opción inválida.");
+                case 1 -> crearValoracion(sc);
+                case 2 -> consultarValoracion();
+                case 3 -> eliminarValoracion(sc);
+                case 4 -> actualizarValoracion(sc);
+                case 0 -> System.out.println("Regresando al menú principal...");
+                default -> System.out.println("[ERROR]: Opción inválida.");
             }
 
         } while (opcion != 0);
@@ -51,144 +51,150 @@ public class MenuValoracion {
         }
 
         MenuContenido.mostrarResumenContenidos();
-
-        Contenido contenidoSeleccionado = null;
-        boolean valido;
-
-        do {
-            System.out.print("Ingrese el ID del contenido que desea valorar: ");
-            String idContTxt = sc.nextLine();
-            if (Validaciones.validarNumeros(idContTxt) && Integer.parseInt(idContTxt) > 0) {
-                contenidoSeleccionado = MenuContenido.obtenerContenidoPorId(Integer.parseInt(idContTxt));
-                if (contenidoSeleccionado == null) {
-                    System.out.println("[ERROR]: No existe ningún contenido con ese ID en la lista.");
-                    valido = false;
-                } else {
-                    valido = true;
-                }
-            } else {
-                System.out.println("[ERROR]: ID inválido.");
-                valido = false;
-            }
-        } while (!valido);
+        Contenido contenidoSeleccionado = solicitarContenidoCatalogo(sc, "valorar");
+        if (contenidoSeleccionado == null) {
+            return;
+        }
 
         Valoracion nueva = new Valoracion();
-
-        do {
-            System.out.print("Ingrese calificación para '" + contenidoSeleccionado.getTitulo() + "' (1 al 5): ");
-            String calTxt = sc.nextLine();
-            valido = Validaciones.validarCalificacion(calTxt) && nueva.setCalificacion(Integer.parseInt(calTxt));
-            if (!valido) System.out.println("[ERROR]: Calificación inválida. Debe ser un dígito del 1 al 5.");
-        } while (!valido);
+        int calificacion = solicitarCalificacion(sc, "Ingrese calificación para '" + contenidoSeleccionado.getTitulo() + "' (1 al 5): ");
 
         nueva.setIdValoracion(contadorIdValoracion);
+        nueva.setCalificacion(calificacion);
         nueva.setFechaValoracion(obtenerFechaActual());
-        nueva.setAutor(MenuPrincipal.usuarioActivo); // ASOCIACIÓN
+        nueva.setAutor(MenuPrincipal.usuarioActivo);
 
-        if (contenidoSeleccionado.agregarValoracion(nueva)) { // COMPOSICIÓN
+        if (contenidoSeleccionado.agregarValoracion(nueva)) {
             contadorIdValoracion++;
             System.out.println("\n[VALORACIÓN CREADA]: Sobre -> " + contenidoSeleccionado.getTitulo());
-            System.out.println(" -> " + nueva.toString());
+            System.out.println(" -> " + nueva);
             System.out.printf(" -> Promedio actual: %.1f/5.0%n", contenidoSeleccionado.calcularPromedioValoraciones());
         } else {
             System.out.println("\n[ERROR]: Ya has valorado este contenido anteriormente (usa la opción 4 para actualizar).");
         }
     }
 
-    private static boolean consultarValoracion() {
+    private static void consultarValoracion() {
         boolean hayValoraciones = false;
         System.out.println("\n--- VALORACIONES REGISTRADAS ---");
+
         for (Contenido c : MenuPrincipal.gestorGlobal.listarContenidos()) {
             for (Valoracion v : c.listarValoraciones()) {
                 String autor = (v.getAutor() != null) ? v.getAutor().getNombreCompleto() : "Anónimo";
-                System.out.println(" Contenido: " + c.getTitulo() + " | Autor: " + autor + " | " + v.toString());
+                System.out.println(" Contenido: " + c.getTitulo() + " | Autor: " + autor + " | " + v);
                 hayValoraciones = true;
             }
         }
+
         if (!hayValoraciones) {
             System.out.println("[RESTRICCIÓN]: No existen valoraciones registradas todavía.");
         }
-        return hayValoraciones;
     }
 
     private static void actualizarValoracion(Scanner sc) {
-        if (!consultarValoracion()) {
+        Contenido contenido = seleccionarContenidoValoradoPorUsuario(sc, "modificar");
+        if (contenido == null) {
             return;
         }
 
-        int idBuscar = 0;
-        boolean valido;
+        String autorActual = MenuPrincipal.usuarioActivo.getNombreCompleto();
+        int nuevaCalificacion = solicitarCalificacion(sc, "Ingrese nueva calificación (1 al 5): ");
 
-        do {
-            System.out.print("Ingrese el ID de la valoración a modificar: ");
-            String idTxt = sc.nextLine();
-            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
-                idBuscar = Integer.parseInt(idTxt);
-                valido = true;
-            } else {
-                System.out.println("[ERROR]: ID inválido.");
-                valido = false;
-            }
-        } while (!valido);
-
-        for (Contenido c : MenuPrincipal.gestorGlobal.listarContenidos()) {
-            Valoracion val = c.buscarValoracion(idBuscar);
-            if (val != null) {
-                if (val.getAutor() != null && !val.getAutor().equals(MenuPrincipal.usuarioActivo)) {
-                    System.out.println("[ACCESO DENEGADO]: Solo el autor puede modificar esta valoración.");
-                    return;
-                }
-                do {
-                    System.out.print("Ingrese nueva calificación (1 al 5): ");
-                    String calTxt = sc.nextLine();
-                    valido = Validaciones.validarCalificacion(calTxt)
-                            && c.editarValoracion(idBuscar, Integer.parseInt(calTxt), obtenerFechaActual());
-                    if (!valido) System.out.println("[ERROR]: Calificación inválida (1 al 5).");
-                } while (!valido);
-
-                System.out.println("\n[ACTUALIZACIÓN EXITOSA]: " + val.toString());
-                return;
-            }
+        if (contenido.editarValoracion(autorActual, nuevaCalificacion, obtenerFechaActual())) {
+            Valoracion actualizada = contenido.buscarValoracion(autorActual);
+            System.out.println("\n[ACTUALIZACIÓN EXITOSA]: " + actualizada);
+            System.out.printf(" -> Nuevo promedio: %.1f/5.0%n", contenido.calcularPromedioValoraciones());
+        } else {
+            System.out.println("[ERROR]: No se pudo actualizar la valoración.");
         }
-        System.out.println("[ERROR]: El ID ingresado no coincide con ninguna valoración.");
     }
 
     private static void eliminarValoracion(Scanner sc) {
-        if (!consultarValoracion()) {
+        Contenido contenido = seleccionarContenidoValoradoPorUsuario(sc, "eliminar");
+        if (contenido == null) {
             return;
         }
 
-        int idBuscar = 0;
-        boolean valido;
+        String autorActual = MenuPrincipal.usuarioActivo.getNombreCompleto();
+        if (contenido.eliminarValoracion(autorActual)) {
+            System.out.println("[SISTEMA]: Valoración eliminada correctamente.");
+        } else {
+            System.out.println("[ERROR]: No se pudo eliminar la valoración.");
+        }
+    }
 
-        do {
-            System.out.print("Ingrese el ID de la valoración a eliminar: ");
-            String idTxt = sc.nextLine();
-            if (Validaciones.validarNumeros(idTxt) && Integer.parseInt(idTxt) > 0) {
-                idBuscar = Integer.parseInt(idTxt);
-                valido = true;
-            } else {
-                System.out.println("[ERROR]: ID inválido.");
-                valido = false;
-            }
-        } while (!valido);
 
+
+    private static Contenido seleccionarContenidoValoradoPorUsuario(Scanner sc, String accion) {
+        if (MenuPrincipal.usuarioActivo == null) {
+            System.out.println("[ERROR]: No hay un usuario activo.");
+            return null;
+        }
+
+        String autorActual = MenuPrincipal.usuarioActivo.getNombreCompleto();
+        boolean tieneValoraciones = false;
+
+        System.out.println("\n--- MIS VALORACIONES ---");
         for (Contenido c : MenuPrincipal.gestorGlobal.listarContenidos()) {
-            Valoracion val = c.buscarValoracion(idBuscar);
+            Valoracion val = c.buscarValoracion(autorActual);
             if (val != null) {
-                if (val.getAutor() != null && !val.getAutor().equals(MenuPrincipal.usuarioActivo)) {
-                    System.out.println("[ACCESO DENEGADO]: Solo el autor puede eliminar esta valoración.");
-                    return;
-                }
-                c.eliminarValoracion(idBuscar);
-                System.out.println("[SISTEMA]: Valoración eliminada correctamente.");
-                return;
+                System.out.println(" [ID Contenido: " + c.getIdContenido() + "] " + c.getTitulo() + " -> " + val);
+                tieneValoraciones = true;
             }
         }
-        System.out.println("[ERROR]: El ID ingresado no coincide con ninguna valoración.");
+
+        if (!tieneValoraciones) {
+            System.out.println("[RESTRICCIÓN]: Aún no has registrado ninguna valoración para " + accion + ".");
+            return null;
+        }
+
+        while (true) {
+            System.out.print("Ingrese el ID del contenido cuya valoración desea " + accion + ": ");
+            String idTxt = sc.nextLine();
+            if (!Validaciones.validarNumeros(idTxt) || Integer.parseInt(idTxt) <= 0) {
+                System.out.println("[ERROR]: ID inválido.");
+                continue;
+            }
+
+            Contenido seleccionado = MenuContenido.obtenerContenidoPorId(Integer.parseInt(idTxt));
+            if (seleccionado == null || seleccionado.buscarValoracion(autorActual) == null) {
+                System.out.println("[ERROR]: No tienes ninguna valoración registrada en ese contenido.");
+                continue;
+            }
+            return seleccionado;
+        }
+    }
+
+    private static Contenido solicitarContenidoCatalogo(Scanner sc, String accion) {
+        while (true) {
+            System.out.print("Ingrese el ID del contenido que desea " + accion + ": ");
+            String idContTxt = sc.nextLine();
+            if (!Validaciones.validarNumeros(idContTxt) || Integer.parseInt(idContTxt) <= 0) {
+                System.out.println("[ERROR]: ID inválido.");
+                continue;
+            }
+
+            Contenido seleccionado = MenuContenido.obtenerContenidoPorId(Integer.parseInt(idContTxt));
+            if (seleccionado == null) {
+                System.out.println("[ERROR]: No existe ningún contenido con ese ID en la lista.");
+                continue;
+            }
+            return seleccionado;
+        }
+    }
+
+    private static int solicitarCalificacion(Scanner sc, String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String calTxt = sc.nextLine();
+            if (Validaciones.validarCalificacion(calTxt)) {
+                return Integer.parseInt(calTxt);
+            }
+            System.out.println("[ERROR]: Calificación inválida. Debe ser un dígito del 1 al 5.");
+        }
     }
 
     private static String obtenerFechaActual() {
-        return new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        return FORMATO_FECHA.format(new Date());
     }
 }
