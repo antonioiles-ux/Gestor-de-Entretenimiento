@@ -1,5 +1,7 @@
 package ec.edu.uce.gestor;
 
+import ec.edu.uce.gestor.dominio.Contenido;
+import ec.edu.uce.gestor.dominio.Libro;
 import ec.edu.uce.gestor.dominio.SolicitudConsumo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -145,5 +147,61 @@ public class SolicitudConsumoTest {
         assertNotEquals(solicitud, distintaSolicitud);
         assertFalse(solicitud.equals(null));
     }
+
+    @Test
+    void testBuscarContenidoPorTituloYAutor() {
+
+        Libro libro = new Libro(1, "Clean Code", "Robert Martin", "Programacion", new Date(), 450, "Buenas practicas");
+        solicitud.agregarContenido(libro);
+
+        Contenido encontrado = solicitud.buscarContenido("Clean Code", "Robert Martin");
+        assertNotNull(encontrado);
+        assertEquals(libro, encontrado);
+    }
+
+    @Test
+    void testEliminarContenido() {
+
+        Libro libro = new Libro(1, "Clean Code", "Robert Martin", "Programacion", new Date(), 450, "Buenas practicas");
+        solicitud.agregarContenido(libro);
+
+        assertTrue(solicitud.eliminarContenido(libro.getIdContenido()));
+
+        assertNull(solicitud.buscarContenido("Clean Code", "Robert Martin"));
+    }
+
+    @Test
+    void testReemplazarContenido() {
+
+        Libro libro1 = new Libro(1, "Clean Code", "Robert Martin", "Programacion", new Date(), 450, "Buenas practicas");
+        Libro libro2 = new Libro(2, "Effective Java", "Joshua Bloch", "Programacion",new Date(), 500, "Java avanzado");
+
+        solicitud.agregarContenido(libro1);
+
+        assertTrue(solicitud.reemplazarContenido(libro1.getIdContenido(), libro2));
+        assertNull(solicitud.buscarContenido("Clean Code", "Robert Martin"));
+        assertNotNull(solicitud.buscarContenido("Effective Java", "Joshua Bloch"));
+    }
+
+    @Test
+    void testListarContenidos() {
+
+        Libro libro = new Libro(1, "Clean Code", "Robert Martin", "Programacion", new Date(), 450, "Buenas practicas");
+        solicitud.agregarContenido(libro);
+        Contenido[] contenidos = solicitud.listarContenidos();
+        assertEquals(1, contenidos.length);
+        assertEquals(libro, contenidos[0]);
+    }
+
+    @Test
+    void testNoAgregarContenidoDuplicado() {
+
+        Libro libro1 = new Libro(1, "Clean Code", "Robert Martin", "Programacion", new Date(), 450, "Buenas practicas");
+
+        Libro libro2 = new Libro(2, "Clean Code", "Robert Martin", "Programacion", new Date(), 500, "Otra descripcion");
+        assertTrue(solicitud.agregarContenido(libro1));
+        assertFalse(solicitud.agregarContenido(libro2));
+    }
+
 }
 
