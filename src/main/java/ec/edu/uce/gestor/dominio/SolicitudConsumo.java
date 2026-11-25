@@ -159,31 +159,39 @@ public class SolicitudConsumo {
     }
 
     // EDITAR (reemplazar un contenido de la solicitud por otro del catálogo)
-    public boolean reemplazarContenido(int idContenidoActual, Contenido nuevoContenido) {
-        if (nuevoContenido == null || buscarContenido(nuevoContenido.getTitulo(), nuevoContenido.getAutor()) != null) {
+    public boolean reemplazarContenido(String titulo, String autor, Contenido nuevoContenido) {
+
+        if (nuevoContenido == null) {
             return false;
         }
         for (int i = 0; i < cantidadContenidos; i++) {
-            if (contenidos[i].getIdContenido() == idContenidoActual) {
+
+            if (contenidos[i].getTitulo().equalsIgnoreCase(titulo)
+                    && contenidos[i].getAutor().equalsIgnoreCase(autor)) {
                 contenidos[i] = nuevoContenido;
                 return true;
             }
         }
+
         return false;
     }
 
     // ELIMINAR (con desplazamiento a la izquierda)
-    public boolean eliminarContenido(int idContenido) {
+    public boolean eliminarContenido(String titulo, String autor) {
         for (int i = 0; i < cantidadContenidos; i++) {
-            if (contenidos[i].getIdContenido() == idContenido) {
+
+            if (contenidos[i].getTitulo().equalsIgnoreCase(titulo)
+                    && contenidos[i].getAutor().equalsIgnoreCase(autor)) {
                 for (int j = i; j < cantidadContenidos - 1; j++) {
                     contenidos[j] = contenidos[j + 1];
                 }
                 contenidos[cantidadContenidos - 1] = null;
                 cantidadContenidos--;
+
                 return true;
             }
         }
+
         return false;
     }
 

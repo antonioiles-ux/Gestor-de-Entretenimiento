@@ -486,4 +486,5 @@ public class MenuContenido {
             System.out.println(" -> Detalle específico (Videojuego): Plataforma " + v.getPlataforma());
         }
     }
+
 }

@@ -1,15 +1,23 @@
 package ec.edu.uce.gestor.dominio;
 
-import java.util.Objects;
+import ec.edu.uce.gestor.Util.Validaciones;
 import java.util.Date;
+import java.util.Objects;
 
-public class Cuenta{
+public class Cuenta {
+
+    // =========================================================================
+    // 1. ATRIBUTOS
+    // =========================================================================
     private int idCuenta;
     private String correoElectronico;
     private String contrasena;
     private Date fechaRegistro;
     private boolean activa;
 
+    // =========================================================================
+    // 2. CONSTRUCTORES
+    // =========================================================================
     public Cuenta() {
         this(0, "sin correo", "sin contrasena", null);
     }
@@ -22,6 +30,9 @@ public class Cuenta{
         this.activa = true;
     }
 
+    // =========================================================================
+    // 3. GETTERS Y SETTERS CON VALIDACIONES
+    // =========================================================================
     public int getIdCuenta() {
         return idCuenta;
     }
@@ -39,10 +50,10 @@ public class Cuenta{
     }
 
     public boolean setCorreoElectronico(String correoElectronico) {
-        if (correoElectronico == null || correoElectronico.equals("") || !correoElectronico.contains("@")) {
+        if (!Validaciones.validarCorreo(correoElectronico)) {
             return false;
         }
-        this.correoElectronico = correoElectronico;
+        this.correoElectronico = correoElectronico.trim();
         return true;
     }
 
@@ -51,10 +62,10 @@ public class Cuenta{
     }
 
     public boolean setContrasena(String contrasena) {
-        if (contrasena == null || contrasena.length() < 6) {
+        if (!Validaciones.validarContrasena(contrasena)) {
             return false;
         }
-        this.contrasena = contrasena;
+        this.contrasena = contrasena.trim();
         return true;
     }
 
@@ -78,13 +89,9 @@ public class Cuenta{
         this.activa = activa;
     }
 
-    @Override
-    public String toString() {
-        return "Id Cuenta: " + this.getIdCuenta() + ", Correo: " + this.getCorreoElectronico() + ", Contraseña: " + this.getContrasena() +
-                ", Fecha de registro: " + this.getFechaRegistro();
-    }
-
-    // --- SOBRECARGA DE MÉTODOS ---
+    // =========================================================================
+    // 4. MÉTODOS DE NEGOCIO Y SOBRECARGA
+    // =========================================================================
     public boolean validarCredenciales(String correo, String clave) {
         return this.correoElectronico.equals(correo) && this.contrasena.equals(clave);
     }
@@ -93,7 +100,6 @@ public class Cuenta{
         return this.contrasena.equals(clave);
     }
 
-    // Sobrecarga con referencia de objeto
     public boolean validarCredenciales(Cuenta otraCuenta) {
         if (otraCuenta == null) {
             return false;
@@ -102,7 +108,17 @@ public class Cuenta{
                 && this.contrasena.equals(otraCuenta.contrasena);
     }
 
-    // --- EQUALS Y HASHCODE ---
+    // =========================================================================
+    // 5. MÉTODOS SOBRESCRITOS (@Override)
+    // =========================================================================
+    @Override
+    public String toString() {
+        return "Id Cuenta: " + this.getIdCuenta()
+                + ", Correo: " + this.getCorreoElectronico()
+                + ", Contraseña: " + this.getContrasena()
+                + ", Fecha de registro: " + this.getFechaRegistro();
+    }
+
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {
@@ -111,7 +127,8 @@ public class Cuenta{
         if (!(otro instanceof Cuenta c)) {
             return false;
         }
-        return this.idCuenta == c.idCuenta && Objects.equals(this.correoElectronico, c.correoElectronico);
+        return this.idCuenta == c.idCuenta
+                && Objects.equals(this.correoElectronico, c.correoElectronico);
     }
 
     @Override
@@ -119,4 +136,3 @@ public class Cuenta{
         return Objects.hash(idCuenta, correoElectronico);
     }
 }
-

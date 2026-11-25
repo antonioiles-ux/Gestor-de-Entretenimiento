@@ -1,42 +1,49 @@
 package ec.edu.uce.gestor.dominio;
 
 import ec.edu.uce.gestor.Util.Validaciones;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
 public class Usuario {
 
+    // =========================================================================
+    // 1. ATRIBUTOS
+    // =========================================================================
     private String nombreCompleto;
     private int idUsuario;
 
-    // RELACIÓN: COMPOSICIÓN (1 a 1): cada usuario crea y posee su propia Cuenta
+    // Composición (1 a 1): cada usuario crea y posee su propia Cuenta
     private Cuenta cuenta;
 
-    // RELACIÓN: ASOCIACIÓN / UNO A MUCHOS (arreglo): un usuario tiene varias solicitudes
+    // Asociación (1 a muchos): solicitudes de consumo del usuario
     private SolicitudConsumo[] solicitudes;
     private int cantidadSolicitudes;
 
-    // RELACIÓN: ASOCIACIÓN / UNO A MUCHOS (arreglo): contenidos registrados por el usuario
-    private Contenido[] contenidos;
-    private int cantidadContenidos;
-
+    // =========================================================================
+    // 2. CONSTRUCTORES
+    // =========================================================================
     public Usuario() {
+        this(50);
+    }
+
+    public Usuario(int capacidadSolicitudes) {
+        if (capacidadSolicitudes <= 0) {
+            capacidadSolicitudes = 50;
+        }
         this.nombreCompleto = "sin nombre";
         this.idUsuario = 0;
         this.cuenta = new Cuenta();
-        this.solicitudes = new SolicitudConsumo[50];
+        this.solicitudes = new SolicitudConsumo[capacidadSolicitudes];
         this.cantidadSolicitudes = 0;
-        this.contenidos = new Contenido[50];
-        this.cantidadContenidos = 0;
     }
 
     public Usuario(String nombreCompleto, int idUsuario) {
-        this();
+        this(50);
         setNombreCompleto(nombreCompleto);
         setIdUsuario(idUsuario);
     }
 
-    // Constructor sobrecargado con la cuenta
     public Usuario(String nombreCompleto, int idUsuario, Cuenta cuenta) {
         this(nombreCompleto, idUsuario);
         if (cuenta != null) {
@@ -44,7 +51,9 @@ public class Usuario {
         }
     }
 
-    // ---------- GET / SET ----------
+    // =========================================================================
+    // 3. GETTERS Y SETTERS
+    // =========================================================================
     public String getNombreCompleto() {
         return nombreCompleto;
     }
@@ -85,16 +94,13 @@ public class Usuario {
         return cantidadSolicitudes;
     }
 
-    public int getCantidadContenidos() {
-        return cantidadContenidos;
-    }
-
-    // ---------- POLIMORFISMO ----------
+    // =========================================================================
+    // 4. MÉTODOS SOBRECARGA
+    // =========================================================================
     public String obtenerRol() {
         return "Usuario Registrado";
     }
 
-    // ---------- SOBRECARGA ----------
     public String mostrarPerfil() {
         return this.toString();
     }
@@ -113,18 +119,11 @@ public class Usuario {
         return this.idUsuario == otroUsuario.idUsuario;
     }
 
-    // =========================================================
-    // MÉTODOS AUXILIARES PARA VALIDAR DUPLICADOS
-    // =========================================================
-
     private boolean esSolicitudDuplicada(SolicitudConsumo solicitud) {
-        for (int i = 0; i < cantidadSolicitudes; i++) {
-            SolicitudConsumo actual = solicitudes[i];
-
+        for (SolicitudConsumo actual : listarSolicitudes()) {
             if (actual.getIdSolicitud() == solicitud.getIdSolicitud()) {
                 return true;
             }
-
             if ("Pendiente".equalsIgnoreCase(actual.getEstado())
                     && "Pendiente".equalsIgnoreCase(solicitud.getEstado())
                     && actual.getTipoContenido() != null
@@ -145,39 +144,9 @@ public class Usuario {
         return false;
     }
 
-    protected boolean esContenidoDuplicado(Contenido contenido) {
-        for (int i = 0; i < cantidadContenidos; i++) {
-            Contenido actual = contenidos[i];
-
-            if (actual.getIdContenido() == contenido.getIdContenido()) {
-                return true;
-            }
-
-            if (actual.getTitulo() != null && contenido.getTitulo() != null
-                    && actual.getAutor() != null && contenido.getAutor() != null
-                    && !contenido.getTitulo().equalsIgnoreCase("sin titulo")) {
-
-                boolean mismoTitulo = actual.getTitulo().trim().equalsIgnoreCase(contenido.getTitulo().trim());
-                boolean mismoAutor = actual.getAutor().trim().equalsIgnoreCase(contenido.getAutor().trim());
-
-                if (mismoTitulo && mismoAutor) {
-                    if (actual instanceof Videojuego v1 && contenido instanceof Videojuego v2) {
-                        if (v1.getPlataforma() != null && v2.getPlataforma() != null
-                                && v1.getPlataforma().trim().equalsIgnoreCase(v2.getPlataforma().trim())) {
-                            return true;
-                        }
-                    } else {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    // =========================================================
-    // CRUD 1: SOLICITUDES (SolicitudConsumo[])
-    // =========================================================
+    // =========================================================================
+    // 5. CRUD DE SOLICITUDES DE CONSUMO (ASOCIACIÓN: SolicitudConsumo[])
+    // =========================================================================
 
     // CREAR
     public boolean agregarSolicitud(SolicitudConsumo solicitud) {
@@ -186,26 +155,89 @@ public class Usuario {
             return false;
         }
         solicitud.setSolicitante(this);
-        solicitudes[cantidadSolicitudes++] = solicitud;
+        solicitudes[cantidadSolicitudes] = solicitud;
+        cantidadSolicitudes++;
         return true;
     }
 
-    // BUSCAR
-    public SolicitudConsumo buscarSolicitud(int idSolicitud) {
-        for (int i = 0; i < cantidadSolicitudes; i++) {
-            if (solicitudes[i].getIdSolicitud() == idSolicitud) {
-                return solicitudes[i];
+    // LISTAR (con Arrays.copyOf para evitar huecos null)
+    public SolicitudConsumo[] listarSolicitudes() {
+        return Arrays.copyOf(solicitudes, cantidadSolicitudes);
+    }
+
+    // BUSCAR (por atributo natural: tipo de contenido)
+    public SolicitudConsumo buscarSolicitud(String tipoContenido) {
+        if (tipoContenido == null || tipoContenido.isBlank()) {
+            return null;
+        }
+        for (SolicitudConsumo s : solicitudes) {
+            if (s != null && tipoContenido.trim().equalsIgnoreCase(s.getTipoContenido())) {
+                return s;
             }
         }
         return null;
     }
 
-    // EDITAR
-    public boolean editarSolicitud(int idSolicitud, String nuevoEstado) {
-        return actualizarEstadoSolicitud(idSolicitud, nuevoEstado);
+    // BUSCAR (sobrecarga por referencia de objeto)
+    public SolicitudConsumo buscarSolicitud(SolicitudConsumo solicitud) {
+        if (solicitud == null) {
+            return null;
+        }
+        for (SolicitudConsumo s : solicitudes) {
+            if (s != null && s.equals(solicitud)) {
+                return s;
+            }
+        }
+        return null;
     }
 
+    // BUSCAR (sobrecarga por ID)
+    public SolicitudConsumo buscarSolicitud(int idSolicitud) {
+        for (SolicitudConsumo s : solicitudes) {
+            if (s != null && s.getIdSolicitud() == idSolicitud) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    // ACTUALIZAR (por atributo natural: tipo de contenido)
+    public boolean actualizarEstadoSolicitud(String tipoContenido, String nuevoEstado) {
+        if (nuevoEstado == null || nuevoEstado.isBlank()) {
+            return false;
+        }
+        SolicitudConsumo encontrada = buscarSolicitud(tipoContenido);
+        if (encontrada == null) {
+            return false;
+        }
+        if (encontrada.setEstado(nuevoEstado)) {
+            encontrada.setFechaSolicitud(new Date());
+            return true;
+        }
+        return false;
+    }
+
+    // ACTUALIZAR (sobrecarga por referencia de objeto)
+    public boolean actualizarEstadoSolicitud(SolicitudConsumo solicitud, String nuevoEstado) {
+        if (nuevoEstado == null || nuevoEstado.isBlank()) {
+            return false;
+        }
+        SolicitudConsumo encontrada = buscarSolicitud(solicitud);
+        if (encontrada == null) {
+            return false;
+        }
+        if (encontrada.setEstado(nuevoEstado)) {
+            encontrada.setFechaSolicitud(new Date());
+            return true;
+        }
+        return false;
+    }
+
+    // ACTUALIZAR (sobrecarga por ID)
     public boolean actualizarEstadoSolicitud(int idSolicitud, String nuevoEstado) {
+        if (nuevoEstado == null || nuevoEstado.isBlank()) {
+            return false;
+        }
         SolicitudConsumo encontrada = buscarSolicitud(idSolicitud);
         if (encontrada == null) {
             return false;
@@ -217,92 +249,69 @@ public class Usuario {
         return false;
     }
 
-    // ELIMINAR
-    public boolean eliminarSolicitud(int idSolicitud) {
+    public boolean editarSolicitud(int idSolicitud, String nuevoEstado) {
+        return actualizarEstadoSolicitud(idSolicitud, nuevoEstado);
+    }
+
+    // ELIMINAR (por atributo natural con desplazamiento a la izquierda)
+    public boolean eliminarSolicitud(String tipoContenido) {
+        if (tipoContenido == null || tipoContenido.isBlank()) {
+            return false;
+        }
         for (int i = 0; i < cantidadSolicitudes; i++) {
-            if (solicitudes[i].getIdSolicitud() == idSolicitud) {
+            if (solicitudes[i] != null && tipoContenido.trim().equalsIgnoreCase(solicitudes[i].getTipoContenido())) {
                 for (int j = i; j < cantidadSolicitudes - 1; j++) {
                     solicitudes[j] = solicitudes[j + 1];
                 }
-                solicitudes[--cantidadSolicitudes] = null;
+                solicitudes[cantidadSolicitudes - 1] = null;
+                cantidadSolicitudes--;
                 return true;
             }
         }
         return false;
     }
 
-    // LISTAR (copia defensiva)
-    public SolicitudConsumo[] listarSolicitudes() {
-        SolicitudConsumo[] copia = new SolicitudConsumo[cantidadSolicitudes];
+    // ELIMINAR (sobrecarga por referencia de objeto)
+    public boolean eliminarSolicitud(SolicitudConsumo solicitud) {
+        if (solicitud == null) {
+            return false;
+        }
         for (int i = 0; i < cantidadSolicitudes; i++) {
-            copia[i] = solicitudes[i];
-        }
-        return copia;
-    }
-
-    // =========================================================
-    // CRUD 2: CONTENIDOS DEL USUARIO (Contenido[])
-    // =========================================================
-
-    // CREAR
-    public boolean agregarContenido(Contenido contenido) {
-        if (contenido == null || cantidadContenidos == contenidos.length
-                || esContenidoDuplicado(contenido)) {
-            return false;
-        }
-        contenidos[cantidadContenidos++] = contenido;
-        return true;
-    }
-
-    // BUSCAR
-    public Contenido buscarContenido(int idContenido) {
-        for (int i = 0; i < cantidadContenidos; i++) {
-            if (contenidos[i].getIdContenido() == idContenido) {
-                return contenidos[i];
-            }
-        }
-        return null;
-    }
-
-    // EDITAR
-    public boolean editarContenido(int idContenido, String nuevoTitulo) {
-        Contenido c = buscarContenido(idContenido);
-        if (c == null) {
-            return false;
-        }
-        return c.setTitulo(nuevoTitulo);
-    }
-
-    // ELIMINAR
-    public boolean eliminarContenido(int idContenido) {
-        for (int i = 0; i < cantidadContenidos; i++) {
-            if (contenidos[i].getIdContenido() == idContenido) {
-                for (int j = i; j < cantidadContenidos - 1; j++) {
-                    contenidos[j] = contenidos[j + 1];
+            if (solicitudes[i] != null && solicitudes[i].equals(solicitud)) {
+                for (int j = i; j < cantidadSolicitudes - 1; j++) {
+                    solicitudes[j] = solicitudes[j + 1];
                 }
-                contenidos[--cantidadContenidos] = null;
+                solicitudes[cantidadSolicitudes - 1] = null;
+                cantidadSolicitudes--;
                 return true;
             }
         }
         return false;
     }
 
-    // LISTAR (copia defensiva)
-    public Contenido[] listarContenidos() {
-        Contenido[] copia = new Contenido[cantidadContenidos];
-        for (int i = 0; i < cantidadContenidos; i++) {
-            copia[i] = contenidos[i];
+    // ELIMINAR (sobrecarga por ID)
+    public boolean eliminarSolicitud(int idSolicitud) {
+        for (int i = 0; i < cantidadSolicitudes; i++) {
+            if (solicitudes[i] != null && solicitudes[i].getIdSolicitud() == idSolicitud) {
+                for (int j = i; j < cantidadSolicitudes - 1; j++) {
+                    solicitudes[j] = solicitudes[j + 1];
+                }
+                solicitudes[cantidadSolicitudes - 1] = null;
+                cantidadSolicitudes--;
+                return true;
+            }
         }
-        return copia;
+        return false;
     }
 
-    // ---------- TOSTRING ----------
+    // =========================================================================
+    // 6. MÉTODOS SOBRESCRITOS (@Override)
+    // =========================================================================
     @Override
     public String toString() {
         return "Id: " + this.getIdUsuario() + ", Nombre: " + this.getNombreCompleto();
     }
 
-    // ---------- EQUALS Y HASHCODE ----------
     @Override
     public boolean equals(Object otro) {
         if (this == otro) {
